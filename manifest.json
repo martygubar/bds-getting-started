@@ -7,7 +7,7 @@
         "labs": [
             {
                 "number": "0",
-                "filename": "copy-to-objectstore.md",
+                "filename": "copy-to-objstore.md",
                 "title": "Backup Hadoop Data to Object Store",
                 "description": "Backup data that is in your cluster to Oracle Object Store.",
                 "labels": {
