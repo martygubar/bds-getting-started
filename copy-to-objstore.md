@@ -27,8 +27,8 @@ In this lab you will back up data in Oracle Big Data Cloud Service to Oracle Obj
 * Click **Generate Secret Key**
 * Name the secret key `migration-key`
 * Save the secret key to a safe place.  It will not be shown again..
-    * Access Key: `4d2002329319070bc8ba3eb9c4a487093bee5c17`
-    * Secret Key: `CI/S4C16AJYAei7nxviRI1cQwZO4sSN0lAoUwVN6C1Q=`
+    * Access Key: `myaccesskey`
+    * Secret Key: `mysecretkey`
 
 
 ### **STEP 3:** Configure Hadoop cluster to access Oracle Object Store
@@ -57,12 +57,12 @@ Oracle Object Store supports the S3 protocol.  In **Cloudera Manager**, update t
     </property>
 ```
 
-PM CLuster Details:
+Example
 * Tenancy:  `oraclebigdatadb`
 * Endpoint: https://oraclebigdatadb.compat.objectstorage.us-phoenix-1.oraclecloud.com
 * Bucket:  `BDCS-MIGRATION`
-* Access Key: `4d2002329319070bc8ba3eb9c4a487093bee5c17`
-* Secret Key: `CI/S4C16AJYAei7nxviRI1cQwZO4sSN0lAoUwVN6C1Q=`
+* Access Key: `myaccesskey`
+* Secret Key: `mysecretkey`
 ```xml
     <property>
       <name>fs.s3a.endpoint</name>
@@ -70,11 +70,11 @@ PM CLuster Details:
     </property>
     <property>
       <name>fs.s3a.secret.key</name>
-      <value>CI/S4C16AJYAei7nxviRI1cQwZO4sSN0lAoUwVN6C1Q=</value>
+      <value>mysecretkey</value>
     </property>
     <property>
       <name>fs.s3a.access.key</name>
-      <value>4d2002329319070bc8ba3eb9c4a487093bee5c17</value>
+      <value>myaccesskey</value>
     </property>
     <property>
       <name>fs.s3a.path.style.access</name>
