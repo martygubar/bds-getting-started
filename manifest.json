@@ -1,0 +1,28 @@
+{
+    "workshop": {
+        "title": "Getting Started with Oracle Big Data Service",
+        "description": "Use Oracle SQL to query data across your data lake.",
+        "theme": "default",
+        "interactive":"https://launch.oracle.com/?mono-to-micro",
+        "labs": [
+            {
+                "number": "0",
+                "filename": "copy-to-objectstore.md",
+                "title": "Backup Hadoop Data to Object Store",
+                "description": "Backup data that is in your cluster to Oracle Object Store.",
+                "labels": {
+                    "version": "Instructor Led"
+                }
+            },
+            {
+                "number": "100",
+                "filename": "LabGuide100.md",
+                "title": "Lab 100:  Review Ridership",
+                "description": "Use Zeppelin to review ridership info in Oracle Database.  Add Big Data SQL tables that access weather data in Oracle Object Store. ",
+                "labels": {
+                    "version": "Instructor Led"
+                }
+            }
+        ]
+    }
+}
