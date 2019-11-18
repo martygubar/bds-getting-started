@@ -8,20 +8,30 @@
             {
                 "number": "0",
                 "filename": "copy-to-objstore.md",
-                "title": "Backup Hadoop Data to Object Store",
-                "description": "Backup data that is in your cluster to Oracle Object Store.",
+                "title": "Copy Hadoop Data to Object Store",
+                "description": "Copy data that is in your cluster to Oracle Object Storage.",
                 "labels": {
                     "version": "Instructor Led"
                 }
             },
             {
-                "number": "100",
-                "filename": "LabGuide100.md",
-                "title": "Lab 100:  Review Ridership",
-                "description": "Use Zeppelin to review ridership info in Oracle Database.  Add Big Data SQL tables that access weather data in Oracle Object Store. ",
+                "number": "1",
+                "filename": "bdr-to-objstore.md",
+                "title": "Backup Your Hadoop Cluster to Object Storage",
+                "description": "Backup data that is in your cluster to Oracle Object Storage.",
                 "labels": {
                     "version": "Instructor Led"
                 }
+            },
+            {
+                "number": "2",
+                "filename": "bdr-to-hadoop.md",
+                "title": "Restore Your Hadoop Cluster from Object Storage",
+                "description": "Backup data that is in your cluster to Oracle Object Storage.",
+                "labels": {
+                    "version": "Instructor Led"
+                }
+            
             }
         ]
     }
