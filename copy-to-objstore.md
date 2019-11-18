@@ -1,4 +1,4 @@
-# Lab Copy to Object Store
+# Copy HDFS Data to Object Store
   ![](images/100/Title-100.png)
 
 ## Introduction

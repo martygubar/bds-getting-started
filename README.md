@@ -4,3 +4,11 @@
 ## Introduction
 
 How to get started with Big Data Service!
+
+This to highlight re: migration
+* Connecting
+* Setting up an edge (?)
+* Users and groups
+* Monitoring the jobs
+* Hue access?
+* Do we need a larger /tmp for object store cache?

@@ -1,18 +1,17 @@
-# Use BDR to Backup Your Cluster to Object Store
+# Use BDR to Backup Your Hadoop Cluster to Oracle Object Storage
   ![](images/100/Title-100.png)
 
 ## Introduction
 
-In this lab you will back up data and Metadata to Oracle Object Store
+In this lab you will back up data and Metadata to Oracle Object Storage
 
-## Lab:  Backup to Oracle Object Store
+## Lab:  Backup to Oracle Object Storage
 
-- Use Zeppelin to report on data captured in Oracle Database 18c
-- Learn how to seamlessly access data in Oracle Object Store from Oracle Database using Big Data SQL-enabled external tables.
+* Restore the data created during
 
 ## Steps
 
-### **STEP 1:** Create a bucket in Oracle Object Store
+### **STEP 1:** Create a bucket in Oracle Object Storage
 
 * From your browser, Oracle Cloud Infrastructure:
   [http://localhost:8090/#/](http://localhost:8090/#/)
@@ -31,7 +30,7 @@ In this lab you will back up data and Metadata to Oracle Object Store
     * Secret Key: `mysecretkey`
 
 
-### **STEP 3:** Create an External Account in Cloudera Manager
+### **STEP 1:** Create an External Account in Cloudera Manager
 Use the Access Key and Secret Key to create an external account in Cloudera Manager
 * Go to **Administration >> External Accounts**
 * Click **Add Access Key Credentials** and specify your Access and Secret Key
@@ -40,7 +39,7 @@ Use the Access Key and Secret Key to create an external account in Cloudera Mana
   * **AWS Secret Key:** `mysecretkey`
 * Do not check **Enable S3Guard** 
 
-### **STEP 4:** Create a Hive Replication Schedule
+### **STEP 2:** Create a Hive Replication Schedule
 Prior to running the replication, ensure that snapshots are enabled for the /user/hive/warehouse directory.  This will ensure that any changes made to files during the replication process will not cause replication failures.
 
 For more details, see [Using Snapshots with Replication](https://docs.cloudera.com/documentation/enterprise/5-15-x/topics/cm_bdr_snap_repl.html) in the Cloudera Administration documentation..
