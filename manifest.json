@@ -27,7 +27,7 @@
                 "number": "2",
                 "filename": "bdr-to-hadoop.md",
                 "title": "Restore Your Hadoop Cluster from Object Storage",
-                "description": "Backup data that is in your cluster to Oracle Object Storage.",
+                "description": "Restore your Haddop Cluster to Big Data Service.",
                 "labels": {
                     "version": "Instructor Led"
                 }
