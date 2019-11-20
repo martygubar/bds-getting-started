@@ -56,10 +56,13 @@ Run the following commands to generate the public/private key pair in PEM format
 ```bash
 # store generated keys in this folder
 mkdir ~/.oci
+
 # generate the private key w/no passcode.  Alter this command to add a passcode
 openssl genrsa -out ~/.oci/oci_api_key.pem 2048
+
 # change the permissions so that only you can see the private key
 chmod go-rwx ~/.oci/oci_api_key.pem
+
 # generate the public key
 openssl rsa -pubout -in ~/.oci/oci_api_key.pem -out ~/.oci/oci_api_key_public.pem
 ```
@@ -76,7 +79,7 @@ openssl rsa -pubout -in ~/.oci/oci_api_key.pem -out ~/.oci/oci_api_key_public.pe
 **Create a Configuration File with Collected Information**
 
 You now have collected all of the information required to make trusted API calls to OCI.  You will save this information to a config file on your compute.  Using a text editor (not Microsoft Word):
-* Create a file ~/.oci/config
+* `Create a file ~/.oci/config`
 * Add the following to that follow, replacing the highlighted fields with the infomration you collected:
 ```INI
 [DEFAULT]
