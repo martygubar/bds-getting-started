@@ -29,8 +29,10 @@ The opc user has sudo privileges on the cluster - allowing it to switch to the r
 ### **STEP 3:** Add the `bds` OS User
 Create the `bds` admin user and it to the hive and hdfs superuser groups.  Use **dcli** to add the user to each node on the cluster:
 
-    dcli -C "useradd -G hdfs,hive bds"
+    dcli -C "useradd -G hdfs,hive ,hadoop bds"
 
+### **STEP 4:** Update HDFS Supergroup and Sentry Admins
+Make BDS the supergroup
 ### **STEP 4:** Optionally Add `bds` User to Hue
 Log into Hue as an administrator and add the bds user as an administrator.
 
