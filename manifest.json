@@ -32,6 +32,16 @@
                     "version": "Instructor Led"
                 }
             
+            },
+            {
+                "number": "3",
+                "filename": "access-node-public-ip.md",
+                "title": "Restore Your Hadoop Cluster from Object Storage",
+                "description": "Restore your Haddop Cluster to Big Data Service.",
+                "labels": {
+                    "version": "Instructor Led"
+                }
+            
             }
         ]
     }

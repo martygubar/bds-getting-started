@@ -11,4 +11,6 @@ This to highlight re: migration
 * Users and groups
 * Monitoring the jobs
 * Hue access?
+* Network - what is a service gateway?  
 * Do we need a larger /tmp for object store cache?
+    * test symlinks?
