@@ -27,7 +27,7 @@
                 "number": "2",
                 "filename": "bdr-to-hadoop.md",
                 "title": "Restore Your Hadoop Cluster from Oracle Object Storage",
-                "description": "Restore your Big  Cluster to Big Data Service.",
+                "description": "Restore your Haddop Cluster from a Backup on Oracle Object Storage.",
                 "labels": {
                     "version": "Instructor Led"
                 }
@@ -38,6 +38,16 @@
                 "filename": "access-node-public-ip.md",
                 "title": "Set up Access to a BDS Node Using a Public IP",
                 "description": "Steps required to make your Big Data Service node available using a public IP Address",
+                "labels": {
+                    "version": "Instructor Led"
+                }
+            
+            },
+            {
+                "number": "4",
+                "filename": "create-user.md",
+                "title": "Adding a Hadoop User to Big Data Service",
+                "description": "Describes how to add a user to a secure Big Data Service cluster",
                 "labels": {
                     "version": "Instructor Led"
                 }
