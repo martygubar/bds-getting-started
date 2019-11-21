@@ -9,7 +9,7 @@
                 "number": "0",
                 "filename": "copy-to-objstore.md",
                 "title": "Copy Hadoop Data to Object Store",
-                "description": "Copy data that is in your cluster to Oracle Object Storage.",
+                "description": "Copy data that is in your Hadoop cluster to Oracle Object Storage.",
                 "labels": {
                     "version": "Instructor Led"
                 }
@@ -17,8 +17,8 @@
             {
                 "number": "1",
                 "filename": "bdr-to-objstore.md",
-                "title": "Backup Your Hadoop Cluster to Object Storage",
-                "description": "Backup data that is in your cluster to Oracle Object Storage.",
+                "title": "Backup Your Hadoop Cluster to Oracle Object Storage",
+                "description": "Backup data that is in your Hadoop to Oracle Object Storage.",
                 "labels": {
                     "version": "Instructor Led"
                 }
@@ -26,8 +26,8 @@
             {
                 "number": "2",
                 "filename": "bdr-to-hadoop.md",
-                "title": "Restore Your Hadoop Cluster from Object Storage",
-                "description": "Restore your Haddop Cluster to Big Data Service.",
+                "title": "Restore Your Hadoop Cluster from Oracle Object Storage",
+                "description": "Restore your Big  Cluster to Big Data Service.",
                 "labels": {
                     "version": "Instructor Led"
                 }
@@ -36,8 +36,8 @@
             {
                 "number": "3",
                 "filename": "access-node-public-ip.md",
-                "title": "Restore Your Hadoop Cluster from Object Storage",
-                "description": "Restore your Haddop Cluster to Big Data Service.",
+                "title": "Set up Access to a BDS Node Using a Public IP",
+                "description": "Steps required to make your Big Data Service node available using a public IP Address",
                 "labels": {
                     "version": "Instructor Led"
                 }
