@@ -1,17 +1,25 @@
-# Use BDR to Backup Your Hadoop Cluster to Oracle Object Storage
-  ![](images/100/Title-100.png)
+# Backup Your Hadoop Cluster to Oracle Object Storage
 
-## Introduction
+## Before You Begin
 
-In this lab you will back up data and Metadata to Oracle Object Storage
+### Objectives
+The goal for this tutorial is to back up your Cloudera Apache Hadoop cluster to Oracle Object Storage.  After backing up your cluster, you can restore it to a your Big Data Service cluster.
 
-## Lab:  Backup to Oracle Object Storage
+To backup your Hadoop cluster, you will:
+* Log into Oracle Cloud Infrastructure and create a bucket in Oracle Object Storage
+* Create a Secret Key, which you will use to connect to Oracle Object Storage from your Hadoop Cluster
+* Log into Cloudera Manager on your source cluster
+* User Cloudera Backup and Disaster Recovery to backup both HDFS data and Hive Metadata
 
-* Restore the data created during
+### Requirements
+* An Oracle Cloud Infrastructure account and privileges to create a bucket in Oracle Object Storage
+* Admin credentials for Cloudera Manager on your source cluster
 
-## Steps
 
-### **STEP 1:** Create a bucket in Oracle Object Storage
+
+
+
+## Create a bucket in Oracle Object Storage
 
 * From your browser, Oracle Cloud Infrastructure:
   [http://localhost:8090/#/](http://localhost:8090/#/)
@@ -20,7 +28,7 @@ In this lab you will back up data and Metadata to Oracle Object Storage
 
 * Create a bucket called `BDCS-MIGRATION`.  Use an UPPERCASE name; this is required for the Hadoop S3 connector to work.
 
-### **STEP 2:** Create a Customer Secret Key
+## Create a Customer Secret Key
 
 * Select **Identity >> Users >> User Details >> Customer Secret Keys**
 * Click **Generate Secret Key**
@@ -30,7 +38,7 @@ In this lab you will back up data and Metadata to Oracle Object Storage
     * Secret Key: `mysecretkey`
 
 
-### **STEP 1:** Create an External Account in Cloudera Manager
+## Create an External Account in Cloudera Manager
 Use the Access Key and Secret Key to create an external account in Cloudera Manager
 * Go to **Administration >> External Accounts**
 * Click **Add Access Key Credentials** and specify your Access and Secret Key
@@ -39,7 +47,7 @@ Use the Access Key and Secret Key to create an external account in Cloudera Mana
   * **AWS Secret Key:** `mysecretkey`
 * Do not check **Enable S3Guard** 
 
-### **STEP 2:** Create a Hive Replication Schedule
+## Create a Hive Replication Schedule
 Prior to running the replication, ensure that snapshots are enabled for the /user/hive/warehouse directory.  This will ensure that any changes made to files during the replication process will not cause replication failures.
 
 For more details, see [Using Snapshots with Replication](https://docs.cloudera.com/documentation/enterprise/5-15-x/topics/cm_bdr_snap_repl.html) in the Cloudera Administration documentation..
@@ -62,7 +70,7 @@ For more details, see [Using Snapshots with Replication](https://docs.cloudera.c
   
   Click **Save Schedule** and run the backup.  You can monitor the replication in Replication Schedules.
 
-### **STEP 5:** Create an HDFS Replication Schedule
+## Create an HDFS Replication Schedule
 Similar to Hive replication, ensure that the directories that will be replicated are Snapshot enabled.  In this example, `/data/` directory will be backed up to object store.
 * Enable Snapshots for the **/data** directory.  In Cloudera Manager:
   * Select the **HDFS** service
