@@ -52,7 +52,7 @@ The Secret Key is associated with the user making the API requests.
     * A new secret key is created.  Copy the **Access Key** associated with that secret key
 
 **Generate an API Signing Key**
-Run the following commands to generate the public/private key pair in PEM format.  The steps below work in Linux and MACOS environments - see the documentation for [Windows environments](https://docs.cloud.oracle.com/iaas/Content/API/Concepts/apisigningkey.htm).
+Run the following commands to generate the public/private key pair in PEM format.  The steps below work in Linux and Macos environments - see the documentation for [Windows environments](https://docs.cloud.oracle.com/iaas/Content/API/Concepts/apisigningkey.htm).
 ```bash
 # store generated keys in this folder
 mkdir ~/.oci
