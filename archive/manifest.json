@@ -46,8 +46,8 @@
             {
                 "number": "4",
                 "filename": "create-user.md",
-                "title": "Adding a Hadoop User to Big Data Service",
-                "description": "Describes how to add a user to a secure Big Data Service cluster",
+                "title": "Creating a Hadoop Admin User",
+                "description": "Describes how to add an admin user to a secure Big Data Service cluster",
                 "labels": {
                     "version": "Instructor Led"
                 }
