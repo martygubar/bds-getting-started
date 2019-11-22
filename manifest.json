@@ -1,12 +1,12 @@
 {
     "tutorials": [
         {            
-            "title": "Migrating from BDCS to BDS",
+            "title": "Migrating to BDS",
             "description": "Migrating to Big Data Service.  Why?  How?",
             "partnumber": "0",
             "publisheddate": "11/21/2019",
             "contentid": "0",
-            "filename": "lab-create-user/create-user.md"
+            "filename": "lab-migrating-to-bds/migrating-to-bds.md"
         },
         {            
             "title": "Create a Hadoop Admin User",
