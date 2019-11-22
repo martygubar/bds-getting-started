@@ -9,6 +9,14 @@
             "filename": "lab-migrating-to-bds/migrating-to-bds.md"
         },
         {            
+            "title": "Authorization Requirements",
+            "description": "Authorization requirements for managing and using your BDS cluster.",
+            "partnumber": "0",
+            "publisheddate": "11/21/2019",
+            "contentid": "0",
+            "filename": "lab-authorization/authorization-reqs.md"
+        },
+        {            
             "title": "Create a Hadoop Admin User",
             "description": "Create a Hadoop admin user that will be used for the BDS.  This Hadoop superuser will have access to all data on the cluster an all Hive metadata.",
             "partnumber": "0",
