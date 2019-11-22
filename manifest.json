@@ -1,6 +1,14 @@
 {
     "tutorials": [
         {            
+            "title": "Migrating from BDCS to BDS",
+            "description": "Migrating to Big Data Service.  Why?  How?",
+            "partnumber": "0",
+            "publisheddate": "11/21/2019",
+            "contentid": "0",
+            "filename": "lab-create-user/create-user.md"
+        },
+        {            
             "title": "Create a Hadoop Admin User",
             "description": "Create a Hadoop admin user that will be used for the BDS.  This Hadoop superuser will have access to all data on the cluster an all Hive metadata.",
             "partnumber": "0",
