@@ -20,14 +20,17 @@ To complete this lab, you need to have the following:
 * Privileges to create a bucket in Oracle Object Storage
 * Admin credentials for Cloudera Manager on your source cluster
 
-If you don't have a Big Data Service cluster created, then you can follow the steps in [Create a Big Data Service Cluster](lab-createcluster/create-cluster.md) to create one.
+If you don't have a Big Data Service cluster created, then you can follow the steps in [Create a Big Data Service Cluster](../?create-cluster) to create one.
 
 
 ## Log Into Oracle Cloud Infrastructure
-You will need an Oracle Cloud Infrastructure 
+You will need your Oracle Cloud Infrastructure account credentials.
 ## Create a bucket in Oracle Object Storage
 
-* From your browser, [login Oracle Cloud Infrastructure](http://localhost:8090/#/)
+* From your browser, [login to Oracle Cloud Infrastructure](https://console.us-ashburn-1.oraclecloud.com/a/tenancy)
+    * Enter your **Tenancy** and then click **Continue**.
+    * Enter your OCI user name and password
+
 
 * Select **Object Storage**
 
