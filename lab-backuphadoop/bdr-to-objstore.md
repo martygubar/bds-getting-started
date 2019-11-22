@@ -23,9 +23,6 @@ To complete this lab, you need to have the following:
 
 If you don't have a Big Data Service cluster created, then you can follow the steps in [Create a Big Data Service Cluster](../?create-cluster) to create one.
 
-
-## Log Into Oracle Cloud Infrastructure
-You will need your Oracle Cloud Infrastructure account credentials.
 ## Create a bucket in Oracle Object Storage
 
 * From your browser, [login to Oracle Cloud Infrastructure](https://console.us-ashburn-1.oraclecloud.com/a/tenancy)
