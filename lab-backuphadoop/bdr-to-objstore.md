@@ -12,19 +12,24 @@ To backup your Hadoop cluster, you will:
 * User Cloudera Backup and Disaster Recovery to backup both HDFS data and Hive Metadata
 
 ### Requirements
-* An Oracle Cloud Infrastructure account and privileges to create a bucket in Oracle Object Storage
+
+To complete this lab, you need to have the following:
+
+* Login credentials and a tenancy name for the Oracle Cloud Infrastructure Console
+* Oracle Big Data Service Hadoop cluster deployed 
+* Privileges to create a bucket in Oracle Object Storage
 * Admin credentials for Cloudera Manager on your source cluster
 
+If you don't have a Big Data Service cluster created, then you can follow the steps in [Create a Big Data Service Cluster](lab-createcluster/create-cluster.md) to create one.
 
 
-
-
+## Log Into Oracle Cloud Infrastructure
+You will need an Oracle Cloud Infrastructure 
 ## Create a bucket in Oracle Object Storage
 
-* From your browser, Oracle Cloud Infrastructure:
-  [http://localhost:8090/#/](http://localhost:8090/#/)
+* From your browser, [login Oracle Cloud Infrastructure](http://localhost:8090/#/)
 
-* Select Object Storage
+* Select **Object Storage**
 
 * Create a bucket called `BDCS-MIGRATION`.  Use an UPPERCASE name; this is required for the Hadoop S3 connector to work.
 
@@ -92,8 +97,6 @@ Similar to Hive replication, ensure that the directories that will be replicated
   
 
 ## Summary
-You just created an Oracle Big Data SQL table over data stored in Oracle Object Store and queried it as you would any other Oracle table.  This allows you to easily blend data across data sources to gain new insights.
+Your Hadoop data and metadata are now backed up to Oracle Object Storage.  You can perform incremental backups of this data by scheduling the backup jobs.  Your next step will be to restore this data to your Big Data Service Hadoop cluster.
 
-**This completes the Lab!**
-
-**You are ready to proceed to [Lab 200](LabGuide200.md)**
+**This completes the tutorial!**

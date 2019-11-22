@@ -1,20 +1,31 @@
-# Use BDR to Restore Your Hadoop Cluster from Oracle Object Storage
+# Restore Your Hadoop Cluster from Oracle Object Storage
   ![](images/100/Title-100.png)
 
-## Introduction
+## Before You Begin
 
-In this lab you will restore the data and Metadata from Oracle Object Store to your Hadoop Cluster
+The goal for this tutorial is to restore a backup of your Hadoop cluster to Big Data service.
 
-## Lab:  Restore Hadoop Data and Metadata from Oracle Object Storage
+To restore your Hadoop cluster, you will:
+* As an administrator, log into Cloudera Manager on your Big Data Service
+* Configure your Big Data Service Cluster to access Oracle Object Storage
+* Restore Hive data and metadata 
+* Restore HDFS data 
 
-* Restore the cluster that was backed up in [BDR to Backup Your Cluster to Object Storage]()
-    * Configure your Big Data Service Cluster to access Oracle Object Storage
-    * Restore Hive data and metadata 
-    * Restore HDFS data 
+### Requirements
 
-## Steps
+To complete this lab, you need to have the following:
 
-### **STEP 1:** Create an External Account in Cloudera Manager
+* A Hadoop cluster backup.  See tutorial [Backup Your Cluster to Object Storage](lab-backuphadoop/bdr-to-objstore.md)
+* Oracle Big Data Service Hadoop cluster deployed 
+* Access to the Secret Key that has privileges to read the Oracle Object Storage bucket containing the Hadoop cluster backup
+* Admin credentials for Cloudera Manager on your Big Data Service Cluster
+
+
+## Log into Cloudera Manager on Your Big Data Service Cluster
+* Log into https://your-utility-node-1:7183
+* Enter user name `admin` and the password specified during cluster creation
+
+## Create an External Account in Cloudera Manager
 Use the Access Key and Secret Key to create an external account in Cloudera Manager
 * Go to **Administration >> External Accounts**
 * Click **Add Access Key Credentials** and specify your Access and Secret Key
@@ -28,11 +39,18 @@ After saving the credential, allow **Cluster Access to S3**:
 * Select **More Secure** credential policy
 * Restart the dependent services
 
-Finally, update the s3a endpoint to point to Oracle Object Storage
+## Update the s3a Endpoint
+Update the s3a endpoint to point to Oracle Object Storage.  
+* Go to the Cloudera Manager home.  
+* Select **S3 Connector >> Configuration**
+* Update the **Default S3 Endpoint* property with the following
+    https://`yourtenancy`.compat.objectstorage.`yourregion`.oraclecloud.com`
 
-https://oraclebigdatadb.compat.objectstorage.us-phoenix-1.oraclecloud.com
+    For example:
+    `https://oraclebigdatadb.compat.objectstorage.us-phoenix-1.oraclecloud.com`
 
-### **STEP 2:** Create a Hive Replication Schedule
+
+## Create a Hive Replication Schedule
 Create a Hive Replication Schedule to restore from Oracle Object Storage.  In Cloudera Manager:
 
 * Select **Backup >> Replication Schedules** and the select **Create Schedule**.  Fill out the details for the Hive replication schedule.  For example:
@@ -45,17 +63,12 @@ Create a Hive Replication Schedule to restore from Oracle Object Storage.  In Cl
   * **Databases:** `Replicate All`
   * **Replication Option:**  `Metadata and Data`
   * **Schedule:** `Immediate`
-  * **Run As Username:** `bds`  (See [Create a Hadoop Admin User](create-user.md))
+  * **Run As Username:** `bds`  (See [Create a Hadoop Admin User](lab-createuser/create-user.md))
   
   Click **Save Schedule** and run the restore.  You can monitor the replication in Replication Schedules.
 
-### **STEP 5:** Create an HDFS Replication Schedule
-Similar to Hive replication, ensure that the directories that will be replicated are Snapshot enabled.  In this example, `/data/` directory will be backed up to object store.
-* Enable Snapshots for the **/data** directory.  In Cloudera Manager:
-  * Select the **HDFS** service
-  * Click the **File Browser**
-  * Navigate to **/data** directory
-  * Click **Enable Snapshots**
+## Create an HDFS Replication Schedule
+Restore HDFS data that had been backed up to Oracle Object Storage.  In this example, `/data/` directory had been backed up.  Restore the HDFS data to the HDFS file system root directory in order to mirror the source.
 
 * Create an HDFS Replication Schedule.  In Cloudera Manager, select **Backup >> Replication Schedules** and the select **Create Schedule**.  Fill out the details for the HDFS replication schedule.  For example:
 
@@ -71,8 +84,5 @@ Similar to Hive replication, ensure that the directories that will be replicated
   
 
 ## Summary
-You just created an Oracle Big Data SQL table over data stored in Oracle Object Store and queried it as you would any other Oracle table.  This allows you to easily blend data across data sources to gain new insights.
-
-**This completes the Lab!**
-
-**You are ready to proceed to [Lab 200](LabGuide200.md)**
+Your Big Data Service cluster has been updated with the data and metadata from your source cluster.  You can now use the cluster to analyze and process data.
+**This completes the tutorial!**
