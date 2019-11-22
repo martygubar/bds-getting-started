@@ -15,7 +15,7 @@ To restore your Hadoop cluster, you will:
 
 To complete this lab, you need to have the following:
 
-* A Hadoop cluster backup.  See tutorial [Backup Your Cluster to Object Storage](../lab-backuphadoop/bdr-to-objstore.md)
+* A Hadoop cluster backup.  See tutorial [Backup Your Cluster to Object Storage](?bdr-to-objstore.md)
 * Oracle Big Data Service Hadoop cluster deployed 
 * Access to the Secret Key that has privileges to read the Oracle Object Storage bucket containing the Hadoop cluster backup
 * Admin credentials for Cloudera Manager on your Big Data Service Cluster
