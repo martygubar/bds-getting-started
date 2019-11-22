@@ -1,4 +1,4 @@
-# Migrating from Big Data Cloud Service to Big Data Service on Oracle Cloud Infrastructure
+# Migrating to Big Data Service on Oracle Cloud Infrastructure
 
 ## Before You Begin
 
@@ -46,6 +46,6 @@ To learn more, see [Key Concepts and Terminology](https://www.oracle.com/pls/top
 
 ## Migration Scope
 Migrating from BDCS to BDS on OCI is done in several steps:
-* [Backup Your Hadoop Cluster to Oracle Object Storage](../bdr-to-objstore)
-* [Create Big Data Service cluster on Oracle Cloud Infrastructure](../create-cluster)
-* [Restore Your Hadoop Cluster from Oracle Object Storage](../bdr-to-hadoop)
+* [Backup Your Hadoop Cluster to Oracle Object Storage](../?bdr-to-objstore)
+* [Create Big Data Service cluster on Oracle Cloud Infrastructure](../?create-cluster)
+* [Restore Your Hadoop Cluster from Oracle Object Storage](../?bdr-to-hadoop)
