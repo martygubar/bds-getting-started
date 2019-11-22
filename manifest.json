@@ -1,12 +1,44 @@
 {
     "tutorials": [
         {            
+            "title": "Create a Hadoop Admin User",
+            "description": "Create a Hadoop admin user that will be used for the BDS.  This Hadoop superuser will have access to all data on the cluster an all Hive metadata.",
+            "partnumber": "0",
+            "publisheddate": "11/21/2019",
+            "contentid": "0",
+            "filename": "lab-create-user/create-user.md"
+        },
+        {            
             "title": "Backup Hadoop Cluster to Object Storage",
             "description": "Backup HDFS data and Hive metadata to Oracle Object Storage",
             "partnumber": "1",
             "publisheddate": "11/21/2019",
             "contentid": "1",
             "filename": "lab-backuphadoop/bdr-to-objstore.md"
+        },
+        {            
+            "title": "Create a BDS Hadoop Cluster",
+            "description": "Use the BDS console to create a highly available and secure hadoop cluster.",
+            "partnumber": "2",
+            "publisheddate": "11/21/2019",
+            "contentid": "2",
+            "filename": "lab-createcluster/create-cluster.md"
+        },
+        {            
+            "title": "Access a BDS Utility Node Using a Public IP",
+            "description": "Create a public IP address and assign it to a BDS Utility Node",
+            "partnumber": "2",
+            "publisheddate": "11/21/2019",
+            "contentid": "2",
+            "filename": "lab-publicip/access-node-public-ip.md"
+        },
+        {            
+            "title": "Restore Hadoop Cluster from Object Store",
+            "description": "Restore HDFS data and Hive metadata from Oracle Object Storage",
+            "partnumber": "2",
+            "publisheddate": "11/21/2019",
+            "contentid": "2",
+            "filename": "lab-restorehadoop/bdr-to-hadoop.md"
         },
         {            
             "title": "Restore Hadoop Cluster from Object Store",
@@ -16,5 +48,6 @@
             "contentid": "2",
             "filename": "lab-restorehadoop/bdr-to-hadoop.md"
         }
+
     ]
 }
