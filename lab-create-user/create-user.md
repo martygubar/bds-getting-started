@@ -3,7 +3,7 @@
 
 ## Introduction
 
-Create a Hadoop admin user that will be used for the Big Data Servi Cluster
+Create a Hadoop admin user that will be used for the Big Data Service Cluster
 
 ## Lab:  Create a User
 

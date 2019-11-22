@@ -19,6 +19,7 @@ To complete this lab, you need to have the following:
 * Oracle Big Data Service Hadoop cluster deployed 
 * Privileges to create a bucket in Oracle Object Storage
 * Admin credentials for Cloudera Manager on your source cluster
+* Key services on the source cluster (Zookeeper, Hive, HDFS, etc.) are running and healthy
 
 If you don't have a Big Data Service cluster created, then you can follow the steps in [Create a Big Data Service Cluster](../?create-cluster) to create one.
 
@@ -97,6 +98,13 @@ Similar to Hive replication, ensure that the directories that will be replicated
   * **Run As Username:** `Default`
   
   Click **Save Schedule** and run the backup.
+
+## Review Source Cluster Configuration
+Make note of any custom configuration settings on your source cluster.  You may have to make similar updates to your BDS cluster.  This includes things like application jar files, updated paths, etc.  Log into Cloudera Manager and then download the cluster deployment using the following URL:
+    
+https://`your-cm-host`:7183/api/v18/cm/deployment
+
+This will dump the configuration in JSON format - listing any overrides made on the cluster.  For example, search for `hive.aux.jars.path` to view the list of application jars required to run your hive queries.  These files will need to be copied to your BDS cluster and an equivalent update to `hive.aux.jars.path` should be made.
   
 
 ## Summary
