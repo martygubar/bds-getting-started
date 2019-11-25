@@ -1,6 +1,8 @@
 # Access a BDS Node Using a Public IP
   ![](images/100/Title-100.png)
 
+
+## CHANGE TO CM NODE
 ## Introduction
 
 When Big Data Service deploys a cluster, the nodes are not accessible on the public internet.  They can only be accessed via hosts on the same subnet.  In this example, we will make the BDS Utility node running Hue available externally by a creating public IP that maps to the node's private IP address.
@@ -15,7 +17,7 @@ When Big Data Service deploys a cluster, the nodes are not accessible on the pub
 ## Steps
 
 ### **STEP 1:** Prerequisite Tasks 
-You will need to perform the following tasks prior to setting up the public IP Address.  These steps will allow you to perform OCI API calls required by the IP address assignment:
+You will need to perform the following tasks prior to setting up the public IP Address.  These steps will allow you to perform OCI API calls required by the IP address assignment.  These steps are the same for any client setup that will make requests using the OCI API (see [Tools Configuration](https://docs.cloud.oracle.com/iaas/Content/ToolsConfig.htm)):
 1. Collect the required identifiers (user, tenancy, subnet) and Big Data Service region
 1. Create a secret key
 1. Generate an API Signing Key

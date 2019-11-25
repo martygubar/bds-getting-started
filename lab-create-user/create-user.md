@@ -26,13 +26,32 @@ The opc user has sudo privileges on the cluster - allowing it to switch to the r
     kamdin.local: addprinc bds
     kadmin.local: exit
 
+### **STEP X: Create a `hadoopadmin` Group
+Create a hadoopgroup that will server Hadoop admins for the system.  This group will be superusers and can update any HDFS directory.  While still logged in as the root user, use **dcli** to add the group to each node on the cluster:
+
+    dcli -C "groupadd hadoopadmin"
+
 ### **STEP 3:** Add the `bds` OS User
 Create the `bds` admin user and it to the hive and hdfs superuser groups.  Use **dcli** to add the user to each node on the cluster:
 
-    dcli -C "useradd -G hdfs,hive ,hadoop bds"
+    dcli -C "useradd -G hdfs,hive,hadoop,hadoopadmin bds"
 
-### **STEP 4:** Update HDFS Supergroup and Sentry Admins
-Make BDS the supergroup
+Because `bds` is part of the hive group, it is considered an admin for Sentry.
+
+### **STEP 4:** Update HDFS Supergroup
+Make `hadoopadmin` the supergroup for HDFS.
+* Log into Cloudera Manager (1st Utility Node):  https://`your-utility-node1`:7183
+* Enter the Cloudera `admin` User and the password specified a cluster creation.
+* In the list of Hadoop services, click **HDFS >> Configuration**
+* Search for property `super`.  Specify `hadoopadmin` in the **Superuser Group**.
+* At the bottom of the page, enter a reason for the update and click **Save Changes**.
+
+You will now need to update the cluster with the new settings by deploying the cluster client configuration and restarting the cluster:
+* Click **Cloudera Manager** to return to the home screen
+* Next to the cluster name, click the triangle and then select **Deploy Client Configuration**.  Confirm that the step should be run.  Click **Close** when complete.
+* Restart the cluster by clicking the triangle next to the cluster and select **Restart**.  This action will take a few minutes.
+
+
 ### **STEP 4:** Optionally Add `bds` User to Hue
 Log into Hue as an administrator and add the bds user as an administrator.
 
