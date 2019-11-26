@@ -11,9 +11,12 @@ There are a few tasks that are required to get started with Big Data Service.  S
 
 | User | Task | Purpose | Required | How to |
 |:----|:----|:----|:----|:----|
-|Cloud Admin| Create a Compartment for BDS Resources| Helps organize your cloud resources | No |OCI Console: Identity >> Compartments |
-|Cloud Admin| Create an Admin Group for users that will manage BDS Clusters| Apply policies to groups instead of indivisual users | No | OCI Console: Identity >> Compartments |
+|Cloud Admin| [Create a Compartment for BDS Resources](#create-a-compartment)| Helps organize your cloud resources | No |OCI Console: Identity >> Compartments |
+|Cloud Admin| Create a BDS Admin Group for users that will manage BDS Cluster lifecycle| Apply policies to groups instead of individual users | No | OCI Console: Identity >> Compartments |
 |Cloud Admin| Create a Big Data Service Cluster Administrator | User that will manage cluster lifecycle operations | No | OCI Console:  Identity >> Users |
+|Cloud Admin | Create policy to enable BDS Admin Group to manage clusters | Required when Tenancy Admin is delegating cluster management to BDS Administrators | No|OCI Console: Identity >> Policies|
+|Cloud Admin | Create policy to enable BDS service to create clusters within a customer tenancy | BDS Service will create cloud resources (VMs, Bare Metal nodes, etc).  It must be granted the privilege to do so. | Yes|OCI Console: Identity >> Policies|
+|Cloud Admin or BDS Admin | Create a Virtual Cloud Network| Use an existing Tenancy VCN or create a new one.  Required if a VCN does not exist | Yes |OCI Console: Networking >> Virtual Cloud Networks|
 
 
 ## Create a Compartment
@@ -23,60 +26,29 @@ Log into the OCI console as the Cloud Administrator.  Then,
 * Select **Identity >> Compartments**
 * Click **Create Compartment**.  Specify `your-compartment`, provide a description, and then click **Create Compartment**
 
-In this example, all Big Data Service related items are going to be stored in a compartment called `bds-cluster`.
-
-## Create a BDS Administrator Group
-Create a group for you Big Data Service administrators.  You will grant privileges to this group to perform the critical administrative tasks required to manage your cluster.
+## Create a BDS Administrator Group and add an Admin User
+Create a group for you Big Data Service administrators.  You will grant privileges to this group to perform the critical administrative tasks required to manage your cluster lifecycle.
 * Select **Identity >> Groups**
 * Click **Create Group**.  Specify `your-admin-group`, provide a description, and then click **Create Group**
+* Select `your-admin-group` from the list of groups
+* Click **Add User to Group**
+* Select `your-admin-user` from the list of users and click **Add**
 
-In subsequent examples, we will use `bds-administrators` as the group name.
-
-### Add an OCI User to the `bds-administrators` Group
-Select a user that will be the administrator for your 
 
 ## Create Policies Required to Administer your Big Data Service Instances
-### Manage Big Data Services
+### Manage Big Data Services and Manage Virtual Cloud Networks
+In the OCI Console navigation menu, select **Identity >> Policies**.  Ensure that you are in the `your-tenancy` compartment. Then, click **Create Policy**.  Name the policy `your-admin-policies` and provide a description.  Then, add the following policiy statements:
 
     allow group your-admin-group to manage bds-instance in compartment your-compartment
-
-### Manage Virtual Cloud Networks
-
     allow group your-admin-group to manage virtual-network-family in compartment your-compartment
-
 
 ### Creating a Cluster
 
-BDS Control Plane creates for BDS VMs VNICs to customer's subnet that is used for accessing BDS instance. Please, create following policy in your root compartment:
+The Big Data Service creates VMs, creates VNICs and adds them to the customer subnet that is used for accessing BDS instance. Create following policy in your **root** compartment to allow cluster creation. 
+
+In the OCI Console navigation menu, select **Identity >> Policies**.  Ensure that you are in the **root** compartment.  Click **Create Policy** and name it `your-bds-policy`.  Then, add the following policy statement:
     
     allow service bdsprod to {VNIC_READ, VNIC_ATTACH, VNIC_CREATE, VNIC_ATTACHMENT_READ, SUBNET_READ, SUBNET_ATTACH} in compartment your-compartment
-
-### Example
-Listed below is an example of all the policies the Cloud Administrator required to set up a cluster.  It assumes that the Big Data Service administrator will also be responsible for setting up the network.  The example uses the following values for `your-*`:
-
-* your-compartment = `bds-cluster`
-* your-admin-group = `bds-administrators`
-
-In the OCI Console navigation menu, select **Identity >> Policies**.  Ensure that you are in the `bds-cluster` compartment. Then, click **Create Policy**.  Name the policy `bds-admin-policies` and provide a description.  Then, add the following policiy statements:
-
-```        
-allow group bds-administrators to manage bds-instance in compartment bds-cluster
-
-allow group bds-administrators to manage virtual-network-family in compartment bds-cluster
-
-```
-
-Create a second policy in the **root** compartment that will allow the Big Data Service to create clusters on your behalf in the `bds-cluster` compartment.  Select **Identity >> Policies**, name the policy `enable-bds-cluster`, and add the following:
-
-```
-allow service bdsprod to {VNIC_READ, VNIC_ATTACH, VNIC_CREATE, VNIC_ATTACHMENT_READ, SUBNET_READ, SUBNET_ATTACH} in compartment bds-cluster
-```
-
-## Assign a User to the `bds-administrators` Group
-
-
-Cloudera amdin id, password
-Utility Node 1 IP Address
 
 ## Create a Virtual Cloud Network 
 In this section, you will set up the Virtal Cloud Network that will be used by your Big Data Service.  Note, you may also leverage an existing VCN if you already have one.  If you have an existing VCN, ensure it is using a Regional subnet and that the appropriate ports are opened.
@@ -87,16 +59,16 @@ In this section, you will set up the Virtal Cloud Network that will be used by y
     * **Name:** `your-network-name`
     * **Create in Compartment:** `your-compartment`
     * Select **CREATE VIRTUAL CLOUD NETWORK ONLY**
-    * **CIDR BLOCK:** 10.0.0.0/16 (modify as required)
+    * **CIDR BLOCK:** `10.0.0.0/16` (modify as required)
     * Select **Use DNS Hostnames in this VCN:** 
-    * **DNS LABEL:** `beddsnetwork`
+    * **DNS LABEL:** `bdsnetwork`
     * **Create Virtual Cloud Network**
 
 ### Create a Subnet
 * Click **Create Subnet** in this VCN
     * **Name:** `your-subnet`
     * **Subnet Type:** `Regional`
-    * **CIDR Block:** `10.0.0.0/24`
+    * **CIDR Block:** `10.0.0.0/24` (modify as required)
     * **Route Table:**  `Default Route Table for your-network`
     * Select **Public Subnet**
     * Check **Use DNS Hostnames in this Subnet**
@@ -158,14 +130,6 @@ Open up ports for Hadoop services:
     * Specify the following **Destination Port Range**: `7183,7182,7180,8888-8890,8090,18088`
     * Click **Add Ingress Rules** 
 
-
-
-## Table of things you need
-
-| Area          | Item      | Description   | Value|
-|:---------------|:-----------|:---------------|:------|
-|Create Cluster|
-|Networking | Subnet OCID| Used
 
 
 
