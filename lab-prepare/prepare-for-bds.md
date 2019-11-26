@@ -6,22 +6,21 @@ There are a few tasks that are required to get started with Big Data Service.  S
 | User | Task | Purpose | Required | How to |
 |:----|:----|:----|:----|:----|
 |Cloud Admin| [Create a Compartment for BDS Resources](/?preparing-for-big-data-service#CreateaCompartment)| Helps organize your cloud resources | No |OCI Console: Identity >> Compartments |
-|Cloud Admin| Create a BDS Admin Group for users that will manage BDS Cluster lifecycle| Apply policies to groups instead of individual users | No | OCI Console: Identity >> Compartments |
-|Cloud Admin| Create a Big Data Service Cluster Administrator | User that will manage cluster lifecycle operations | No | OCI Console:  Identity >> Users |
-|Cloud Admin | Create policy to enable BDS Admin Group to manage clusters | Required when Tenancy Admin is delegating cluster management to BDS Administrators | No|OCI Console: Identity >> Policies|
-|Cloud Admin | Create policy to enable BDS service to create clusters within a customer tenancy | BDS Service will create cloud resources (VMs, Bare Metal nodes, etc).  It must be granted the privilege to do so. | Yes|OCI Console: Identity >> Policies|
-|Cloud Admin or BDS Admin | Configure API Access to OCI| Enables programmatic control over cluster lifecycle operations | Yes |OCI API and CLI|
-|Cloud Admin or BDS Admin | Create a Virtual Cloud Network| Use an existing Tenancy VCN or create a new one.  Required if a VCN does not exist | Yes |OCI Console: Networking >> Virtual Cloud Networks|
+|Cloud Admin| [Create a BDS Administrator Group and Add an Admin User]()| Apply policies to groups instead of individual users | No | OCI Console: Identity >> Compartments |
+|Cloud Admin | [Create Policies Required to Administer your Big Data Service Instances]() | Enable the Big Data Service to create clusters in the customer tenancy.  Also delegate cluster lifecycle management operations to BDS Administrators | Yes|OCI Console: Identity >> Policies|
+|Cloud Admin or BDS Admin | [Create a Virtual Cloud Network]()| Use an existing Tenancy VCN or create a new one.  Required if a VCN does not exist | Yes |OCI Console: Networking >> Virtual Cloud Networks|
+|Cloud Admin or BDS Admin | [Configure API Access to OCI]()| Enables programmatic control over cluster lifecycle operations | Yes |OCI API and CLI|
+
 
 
 ## Create a Compartment
-Create a **Compartment** that will capture the resources used by Big Data Service.  There are other ways of organizing Oracle Cloud resources that you can also explore.
+Create a **Compartment** that will organize the resources used by Big Data Service.  There are other ways of organizing Oracle Cloud resources that you can also explore.
 
 Log into the OCI console as the Cloud Administrator.  Then, 
 * Select **Identity >> Compartments**
 * Click **Create Compartment**.  Specify `your-compartment`, provide a description, and then click **Create Compartment**
 
-## Create a BDS Administrator Group and add an Admin User
+## Create a BDS Administrator Group and Add an Admin User
 Create a group for you Big Data Service administrators.  You will grant privileges to this group to perform the critical administrative tasks required to manage your cluster lifecycle.
 * Select **Identity >> Groups**
 * Click **Create Group**.  Specify `your-admin-group`, provide a description, and then click **Create Group**
@@ -39,7 +38,7 @@ In the OCI Console navigation menu, select **Identity >> Policies**.  Ensure tha
 
 ### Creating a Cluster
 
-The Big Data Service creates VMs, creates VNICs and adds them to the customer subnet that is used for accessing BDS instance. Create following policy in your **root** compartment to allow cluster creation. 
+The Big Data Service creates VMs, creates VNICs and adds them to the customer subnet that is used for accessing BDS instance. Create the following policy in your **root** compartment to allow cluster creation. 
 
 In the OCI Console navigation menu, select **Identity >> Policies**.  Ensure that you are in the **root** compartment.  Click **Create Policy** and name it `your-bds-policy`.  Then, add the following policy statement:
     
@@ -116,7 +115,8 @@ Add two routing rules, one for internet access and the other for the Oracle serv
     * Click **Add Route Rules**
 
 ### Update the Security List
-Open up ports for Hadoop services:
+Open ports for Hadoop services.  Ports include those required by Hue and Cloudera Manager.
+
 * Click **Security Lists**
 * Click **Default Security List for `your-network-name`**
 * Add the following Ingress Rules:
@@ -142,8 +142,6 @@ These steps are highlighted below.  For more details, please review the OCI docu
 Follow the steps listed below.  For more details, please review the OCI documentation [Required Keys and OCIDs](https://docs.cloud.oracle.com/iaas/Content/API/Concepts/apisigningkey.htm).
 
 #### Collect Oracle Cloud Identifiers (OCIDs)
-
-
 **Tenancy:**  Find the Oracle Cloud Identifiers (OCID) for your *tenancy*:
 * Go to **Administration >> Tenancy Details**
 * Copy the **OCID** in the **Tenancy Information** tab.  Save this information.
@@ -153,12 +151,12 @@ Follow the steps listed below.  For more details, please review the OCI document
 * Go to **Networking >> Virtual Cloud Networks**
 * Click the VCN used by your BDS cluster
 * Click the three dots for your cluster's subnet.  Click **Copy OCID**.  Save this information.
-* Example:  `ocid1.publicip.oc1.iad.aaabbbbbcccccc`
+* Example:  `ocid1.subnet.oc1.xxxxxx`
 
 **User Identity:** Next, find the OCID for your *User Identity*:
 * Select **Identity >> Users**
 * Navigate to the IAM user that will be making the API call.  Copy the user OCID
-* Example:  `ocid1.subnet.oc1.xxxxxx`
+* Example:  `ocid1.user.oc1..aaabbbcccc`
 
 ### Create a Secret Key
 The Secret Key is associated with the user making the API requests.  
@@ -168,7 +166,7 @@ The Secret Key is associated with the user making the API requests.
 * Click **Generate Secret Key**.  
     * Give the secret key a name and click **Generate Secret Key**
     * Save the generated secret key.  It will not be shown again.  Click **Close**
-    * A new secret key is created.  Copy the **Access Key** associated with that secret key
+    * A new secret key is created.  Copy the **Access Key** associated with that secret key and save it.
 
 ### Generate an API Signing Key
 Run the following commands to generate the public/private key pair in PEM format.  The steps below work in Linux and Macos environments - see the documentation for [Windows environments](https://docs.cloud.oracle.com/iaas/Content/API/Concepts/apisigningkey.htm).
