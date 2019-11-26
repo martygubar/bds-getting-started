@@ -1,18 +1,16 @@
-# Auth Rules
-
-
+# Preparing for Big Data Service
 
 ## Getting Started
-There are a few tasks that are required to get started with Big Data Service.  Several of these tasks need to be performed by the Cloud Administrator for your tenancy.  There are also optional tasks that make it easier to manage your environment.  For example, creating compartments and groups will simplify administration tasks as your environment exapnds.
+There are a few tasks that are required to get started with Big Data Service.  Several of these tasks need to be performed by the Cloud Administrator for your tenancy.  There are also optional tasks that make it easier to manage your environment.  For example, creating compartments and groups are optional - but they will simplify administration tasks as your environment exapnds.
 
 | User | Task | Purpose | Required | How to |
 |:----|:----|:----|:----|:----|
-|Cloud Admin| [Create a Compartment for BDS Resources](#createacompartment)| Helps organize your cloud resources | No |OCI Console: Identity >> Compartments |
+|Cloud Admin| [Create a Compartment for BDS Resources](prepare-for-bds#createacompartment)| Helps organize your cloud resources | No |OCI Console: Identity >> Compartments |
 |Cloud Admin| Create a BDS Admin Group for users that will manage BDS Cluster lifecycle| Apply policies to groups instead of individual users | No | OCI Console: Identity >> Compartments |
 |Cloud Admin| Create a Big Data Service Cluster Administrator | User that will manage cluster lifecycle operations | No | OCI Console:  Identity >> Users |
 |Cloud Admin | Create policy to enable BDS Admin Group to manage clusters | Required when Tenancy Admin is delegating cluster management to BDS Administrators | No|OCI Console: Identity >> Policies|
 |Cloud Admin | Create policy to enable BDS service to create clusters within a customer tenancy | BDS Service will create cloud resources (VMs, Bare Metal nodes, etc).  It must be granted the privilege to do so. | Yes|OCI Console: Identity >> Policies|
-|Cloud Admin or BDS Admin | Create an OCI API Signing Key| Use an existing Tenancy VCN or create a new one.  Required if a VCN does not exist | Yes |OCI Console: Networking >> Virtual Cloud Networks|
+|Cloud Admin or BDS Admin | Configure API Access to OCI| Enables programmatic control over cluster lifecycle operations | Yes |OCI API and CLI|
 |Cloud Admin or BDS Admin | Create a Virtual Cloud Network| Use an existing Tenancy VCN or create a new one.  Required if a VCN does not exist | Yes |OCI Console: Networking >> Virtual Cloud Networks|
 
 

@@ -9,12 +9,12 @@
             "filename": "lab-migrating-to-bds/migrating-to-bds.md"
         },
         {            
-            "title": "Authorization Requirements",
-            "description": "Authorization requirements for managing and using your BDS cluster.",
+            "title": "Preparing for Big Data Service",
+            "description": "Prerequisite steps required for Big Data Service deployments.",
             "partnumber": "0",
             "publisheddate": "11/21/2019",
             "contentid": "0",
-            "filename": "lab-authorization/authorization-reqs.md"
+            "filename": "lab-prepare/prepare-for-bds.md"
         },
         {            
             "title": "Create a Hadoop Admin User",
