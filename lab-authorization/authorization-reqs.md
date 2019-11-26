@@ -11,7 +11,7 @@ There are a few tasks that are required to get started with Big Data Service.  S
 
 | User | Task | Purpose | Required | How to |
 |:----|:----|:----|:----|:----|
-|Cloud Admin| [Create a Compartment for BDS Resources](#CreateaCompartment)| Helps organize your cloud resources | No |OCI Console: Identity >> Compartments |
+|Cloud Admin| [Create a Compartment for BDS Resources](./#CreateaCompartment)| Helps organize your cloud resources | No |OCI Console: Identity >> Compartments |
 |Cloud Admin| Create a BDS Admin Group for users that will manage BDS Cluster lifecycle| Apply policies to groups instead of individual users | No | OCI Console: Identity >> Compartments |
 |Cloud Admin| Create a Big Data Service Cluster Administrator | User that will manage cluster lifecycle operations | No | OCI Console:  Identity >> Users |
 |Cloud Admin | Create policy to enable BDS Admin Group to manage clusters | Required when Tenancy Admin is delegating cluster management to BDS Administrators | No|OCI Console: Identity >> Policies|
