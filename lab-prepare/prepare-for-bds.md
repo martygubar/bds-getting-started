@@ -6,12 +6,10 @@ There are a few tasks that are required to get started with Big Data Service.  S
 | User | Task | Purpose | Required | How to |
 |:----|:----|:----|:----|:----|
 |Cloud Admin| [Create a Compartment for BDS Resources](/?preparing-for-big-data-service#CreateaCompartment)| Helps organize your cloud resources | No |OCI Console: Identity >> Compartments |
-|Cloud Admin| [Create a BDS Administrator Group and Add an Admin User]()| Apply policies to groups instead of individual users | No | OCI Console: Identity >> Compartments |
-|Cloud Admin | [Create Policies Required to Administer your Big Data Service Instances]() | Enable the Big Data Service to create clusters in the customer tenancy.  Also delegate cluster lifecycle management operations to BDS Administrators | Yes|OCI Console: Identity >> Policies|
-|Cloud Admin or BDS Admin | [Create a Virtual Cloud Network]()| Use an existing Tenancy VCN or create a new one.  Required if a VCN does not exist | Yes |OCI Console: Networking >> Virtual Cloud Networks|
-|Cloud Admin or BDS Admin | [Configure API Access to OCI]()| Enables programmatic control over cluster lifecycle operations | No |OCI API and CLI|
-
-
+|Cloud Admin| [Create a BDS Administrator Group and Add an Admin User](/)| Apply policies to groups instead of individual users | No | OCI Console: Identity >> Compartments |
+|Cloud Admin | [Create Policies Required to Administer your Big Data Service Instances](/) | Enable the Big Data Service to create clusters in the customer tenancy.  Also delegate cluster lifecycle management operations to BDS Administrators | Yes|OCI Console: Identity >> Policies|
+|Cloud Admin or BDS Admin | [Create a Virtual Cloud Network](/)| Use an existing Tenancy VCN or create a new one.  Required if a VCN does not exist | Yes |OCI Console: Networking >> Virtual Cloud Networks|
+|Cloud Admin or BDS Admin | [Configure API Access to OCI](/)| Enables programmatic control over cluster lifecycle operations | No |OCI API and CLI|
 
 ## Create a Compartment
 Create a **Compartment** that will organize the resources used by Big Data Service.  There are other ways of organizing Oracle Cloud resources that you can also explore.
@@ -42,7 +40,7 @@ The Big Data Service creates VMs, creates VNICs and adds them to the customer su
 
 In the OCI Console navigation menu, select **Identity >> Policies**.  Ensure that you are in the **root** compartment.  Click **Create Policy** and name it `your-bds-policy`.  Then, add the following policy statement:
     
-    allow service bdsprod to {VNIC_READ, VNIC_ATTACH, VNIC_CREATE, VNIC_ATTACHMENT_READ, SUBNET_READ, SUBNET_ATTACH} in compartment your-compartment
+    allow service bds to VNIC_READ, VNIC_ATTACH, VNIC_CREATE, VNIC_ATTACHMENT_READ, SUBNET_READ, SUBNET_ATTACH in compartment your-compartment
 
 ## Create a Virtual Cloud Network 
 In this section, you will set up the Virtal Cloud Network that will be used by your Big Data Service.  Note, you may also leverage an existing VCN if you already have one.  If you have an existing VCN, ensure it is using a Regional subnet and that the appropriate ports are opened.

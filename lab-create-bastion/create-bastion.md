@@ -14,6 +14,7 @@ To create the bastion, you will:
 To complete this lab, you need to have the following:
 
 * Login credentials and a tenancy name for the Oracle Cloud Infrastructure Console
+* Private key required to access the BDS cluster
 * Privileges to create a Compute Node
 * Oracle Big Data Service Hadoop cluster deployed 
 * Admin credentials for Cloudera Manager on your source cluster
@@ -113,17 +114,63 @@ Administration >> Settings >> Security
 Disable Use TLS Encryption for Agents.  Save
 sudo systemctl restart cloudera-scm-server
 
+Install Kerberos
+* Log into `your-bastion`
+* Install the Kerberos clients
+
+    sudo yum install -y krb5-workstation krb5-libs
+
+* Copy the private key for your cluster to the bastion.  From a MacOS or Linux client, use secure copy to copy the private key
+
+    ```bash
+    scp -i your-private-key your-private-key opc@your-bastion:~opc/.ssh/
+    ```
+* Log into the bastion and copy the krb5.conf file from `your-utility-node1` to `your-bastion`
+
+    ```bash
+    scp -i ~opc/.ssh/bdsKey 10.0.0.6:/etc/krb5.conf /tmp
+    sudo mv /tmp/krb5.conf /etc/
+    sudo chown root:root /etc/krb5.conf
+    sudo chmod 644 /etc/krb5.conf
+    ```
+* Copy the bda.repo file to /etc/yum.repos.d/
+    ```bash
+    scp -i ~opc/.ssh/bdsKey 10.0.0.6:/etc/yum.repos.d/bda.repo /tmp
+    sudo mv /tmp/bda.repo /etc/yum.repos.d
+    sudo chown root:root /etc/yum.repos.d/bda.repo
+    sudo chmod 644 /etc/yum.repos.d/bda.repo
+    ```
+* Update /etc/hosts on the bastion with settings from 
+
 Install continued, but then it attempts to install parcels and fails b/c 
+
+ * BDS sets up TLS Encryption for Cloudera Manager Agents.  Temporarily disable TLS:
+    * Click **Administration >> Settings**
+    * Select the **Security** category.
+    * Disable TLS by clearing the option: **Use TLS Encryption for Agents**
+    * Click **Save Changes**
+    * Log into the Cloudera Manager host (first utility node)
+    * Restart the Cloudera Manager server
+
+    sudo systemctl restart cloudera-scm-server
+
+    * The server will take a few minutes to restart.  You will not be able to log into Cloudera Manager until the restart successfullhy compltes
+
+
 
  * Click menu item **Hosts >> Add Hosts**
  * Select **Add hosts to cluster** `your-cluster`.  Click **Continue**
  * Copy the `your-bastion-private-ip` into the hostname field.  Click **Search**
  * The host will be found and displayed in the table.  If it's not listed, then fix the private IP address.  Click **Continue**
- * Select Repository:  Accept the default **Cusomter Repository**.  Click **Continue**
- * Select **Install Oracle Java SE Development Kit (JDK 8)**.  Click **Continue**
- * Enter Login Credentials.  
+ * Select Repository:  Accept the default **Custom Repository**. http://pmteammn0.bmbdcsad1.bmbdcs.oraclevcn.com/bda  Click **Continue**
+ * **Accept JDK License**
+    * Select **Install Oracle Java SE Development Kit (JDK 8)**.  
+    * Select **Install Java Unlimited Strength Encryption Policy Files**
+    * Click **Continue**
+ * **Enter Login Credentials**
     * Select **Login To All Hosts as Another User**: `opc`  
-    * **Authentication Method:** Check **All hosts accept same private key**.  Upload the private key you used to create the cluster.  Click **Continue**
+    * **Authentication Method:** Check **All hosts accept same private key**.  Upload the private key you used to create the cluster.  
+    * Click **Continue**
 
 The Cloudera Manager Agents will then be installed on the 
 

@@ -12,12 +12,12 @@ In this tutorial, you will:
 * Add a user to the Linux OS
 * Add this new user to Hadoop admin groups
 
-## Connect to the Cluster's Master Node that Contains the Primary Kerberos KDC
-The KDC is running on the first master node.  As the OPC user:
+## Connect to the Cluster's First Master Node
+The KDC is running on the cluster's first master node.  Log into that node as the OPC user:
 
     ssh `your-first-master-node``
 
-## Create the admin `bds` kerberos principal
+## Create the Admin `bds` Kerberos Principal
 The opc user has sudo privileges on the cluster - allowing it to switch to the root user and then run privileged commands.  Change to the root user, connect to the Kerberos KDC and add a new kerberos principal `bds`.  Specify a password for this user and keep the password in a safe place.
 
     # sudo bash
