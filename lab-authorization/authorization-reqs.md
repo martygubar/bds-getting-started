@@ -1,21 +1,18 @@
 # Auth Rules
 
 
-•	Collect/prepare the following:
-o	Generate S3 API Secret Key, capture the secret key and access key.
-o	OCI Object Storage Bucket name and OCI Tenancy name
-
 
 ## Getting Started
 There are a few tasks that are required to get started with Big Data Service.  Several of these tasks need to be performed by the Cloud Administrator for your tenancy.  There are also optional tasks that make it easier to manage your environment.  For example, creating compartments and groups will simplify administration tasks as your environment exapnds.
 
 | User | Task | Purpose | Required | How to |
 |:----|:----|:----|:----|:----|
-|Cloud Admin| [Create a Compartment for BDS Resources](./#CreateaCompartment)| Helps organize your cloud resources | No |OCI Console: Identity >> Compartments |
+|Cloud Admin| [Create a Compartment for BDS Resources](?./#CreateaCompartment)| Helps organize your cloud resources | No |OCI Console: Identity >> Compartments |
 |Cloud Admin| Create a BDS Admin Group for users that will manage BDS Cluster lifecycle| Apply policies to groups instead of individual users | No | OCI Console: Identity >> Compartments |
 |Cloud Admin| Create a Big Data Service Cluster Administrator | User that will manage cluster lifecycle operations | No | OCI Console:  Identity >> Users |
 |Cloud Admin | Create policy to enable BDS Admin Group to manage clusters | Required when Tenancy Admin is delegating cluster management to BDS Administrators | No|OCI Console: Identity >> Policies|
 |Cloud Admin | Create policy to enable BDS service to create clusters within a customer tenancy | BDS Service will create cloud resources (VMs, Bare Metal nodes, etc).  It must be granted the privilege to do so. | Yes|OCI Console: Identity >> Policies|
+|Cloud Admin or BDS Admin | Create an OCI API Signing Key| Use an existing Tenancy VCN or create a new one.  Required if a VCN does not exist | Yes |OCI Console: Networking >> Virtual Cloud Networks|
 |Cloud Admin or BDS Admin | Create a Virtual Cloud Network| Use an existing Tenancy VCN or create a new one.  Required if a VCN does not exist | Yes |OCI Console: Networking >> Virtual Cloud Networks|
 
 
@@ -130,8 +127,95 @@ Open up ports for Hadoop services:
     * Specify the following **Destination Port Range**: `7183,7182,7180,8888-8890,8090,18088`
     * Click **Add Ingress Rules** 
 
+## Configure API Access to OCI
+There are times when you will want programmatic access to OCI.  This is useful, for example, when you want to automate cluster management using the API. 
+
+These steps are the same for any client setup that will make requests using the OCI API (see [Tools Configuration](https://docs.cloud.oracle.com/iaas/Content/ToolsConfig.htm)):
+1. Collect the required identifiers (user, tenancy, subnet) and Big Data Service region
+1. Create a secret key
+1. Generate an API Signing Key
+1. Upload the API Signing Key
+1. Create a Configuration File that uses all of this information
+
+These steps are highlighted below.  For more details, please review the OCI documentation [Required Keys and OCIDs](https://docs.cloud.oracle.com/iaas/Content/API/Concepts/apisigningkey.htm).
 
 
+### Collect Oracle Cloud Identifiers (OCIDs) Needed by APIs
+Follow the steps listed below.  For more details, please review the OCI documentation [Required Keys and OCIDs](https://docs.cloud.oracle.com/iaas/Content/API/Concepts/apisigningkey.htm).
 
-Access Key: cca1aff544e45b565418e81e94c6f6b2bc6edf5d
-Secret Key: gvAzaMwncIfeiwKcwMHqg2i5GYBSMhCqXrvb7yuoiiA=
+#### Collect Oracle Cloud Identifiers (OCIDs)
+
+
+**Tenancy:**  Find the Oracle Cloud Identifiers (OCID) for your *tenancy*:
+* Go to **Administration >> Tenancy Details**
+* Copy the **OCID** in the **Tenancy Information** tab.  Save this information.
+* Example:  `ocid1.tenancy.oc1..xxx`
+
+**Subnet:**  Next, find the Oracle Cloud Identifiers (OCID) for the *subnet* specified when creating the BDS Cluster:
+* Go to **Networking >> Virtual Cloud Networks**
+* Click the VCN used by your BDS cluster
+* Click the three dots for your cluster's subnet.  Click **Copy OCID**.  Save this information.
+* Example:  `ocid1.publicip.oc1.iad.aaabbbbbcccccc`
+
+**User Identity:** Next, find the OCID for your *User Identity*:
+* Select **Identity >> Users**
+* Navigate to the IAM user that will be making the API call.  Copy the user OCID
+* Example:  `ocid1.subnet.oc1.xxxxxx`
+
+### Create a Secret Key
+The Secret Key is associated with the user making the API requests.  
+* Select **Identity >> Users**.  
+* Navigate to the IAM user that will be making the API call.
+* Click **Customer Secret Keys** on the left side
+* Click **Generate Secret Key**.  
+    * Give the secret key a name and click **Generate Secret Key**
+    * Save the generated secret key.  It will not be shown again.  Click **Close**
+    * A new secret key is created.  Copy the **Access Key** associated with that secret key
+
+### Generate an API Signing Key
+Run the following commands to generate the public/private key pair in PEM format.  The steps below work in Linux and Macos environments - see the documentation for [Windows environments](https://docs.cloud.oracle.com/iaas/Content/API/Concepts/apisigningkey.htm).
+```bash
+# store generated keys in this folder
+mkdir ~/.oci
+
+# generate the private key w/no passcode.  Alter this command to add a passcode
+openssl genrsa -out ~/.oci/oci_api_key.pem 2048
+
+# change the permissions so that only you can see the private key
+chmod go-rwx ~/.oci/oci_api_key.pem
+
+# generate the public key
+openssl rsa -pubout -in ~/.oci/oci_api_key.pem -out ~/.oci/oci_api_key_public.pem
+```
+
+**Upload this key to the OCI Console and associate.**
+* Select **Identity >> Users**.  
+* Navigate to the IAM user that will be making the API call.
+* Click **API Keys** on the left side of the page
+* Click **Add Public Key**
+* Copy the entire contents of the public key `~/.oci/oci_api_key_public.pem' into the **Public Key** field
+* Click **Add**
+* Copy the generated **Fingerprint** and save it to a safe place
+
+### Create a Configuration File with Collected Information
+
+You now have collected all of the information required to make trusted API calls to OCI.  You will save this information to a config file on your compute.  Using a text editor (not Microsoft Word):
+* Create a file `~/.oci/config`
+* Add the following to that config file, replacing the highlighted fields with the infomration you collected:
+```INI
+[DEFAULT]
+user=your-user-ocid
+fingerprint=your-fingerprint
+key_file=~/.oci/oci_api_key.pem
+tenancy=your-tenancy
+region=your-bds-region
+```
+Below is an example with all of the fields completed:
+```INI
+[DEFAULT]
+user=ocid1.user.oc1..aaaaaaaaqbbbbccccccddddeeeefffgggg
+fingerprint=a1:2b:65:a1:31:1c:ae:4f:43:8a:1c:75:d3:gg:94:ea
+key_file=~/.oci/oci_api_key.pem
+tenancy=ocid1.tenancy.oc1..aaaabbbbbcccccddddddeeeeeefffff
+region=us-ashburn-1
+```
