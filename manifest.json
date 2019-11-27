@@ -6,7 +6,7 @@
             "partnumber": "0",
             "publisheddate": "11/21/2019",
             "contentid": "0",
-            "filename": "https://martygubar.github.io/bds-getting-started/lab-migrating-to-bds/migrating-to-bds.md"
+            "filename": "lab-migrating-to-bds/migrating-to-bds.md"
         },
         {            
             "title": "Preparing for Big Data Service",
@@ -14,7 +14,7 @@
             "partnumber": "0",
             "publisheddate": "11/21/2019",
             "contentid": "0",
-            "filename":"https://martygubar.github.io/bds-getting-started/lab-prepare/prepare-for-bds.md"
+            "filename":"lab-prepare/prepare-for-bds.md"
         },
         {            
             "title": "Create a Hadoop Admin User",
@@ -22,7 +22,7 @@
             "partnumber": "0",
             "publisheddate": "11/21/2019",
             "contentid": "0",
-            "filename": "https://martygubar.github.io/bds-getting-started/lab-create-user/create-user.md"
+            "filename": "lab-create-user/create-user.md"
         },
         {            
             "title": "Backup Hadoop Cluster to Object Storage",
@@ -30,7 +30,7 @@
             "partnumber": "1",
             "publisheddate": "11/21/2019",
             "contentid": "1",
-            "filename": "https://martygubar.github.io/bds-getting-started/lab-backuphadoop/bdr-to-objstore.md"
+            "filename": "lab-backuphadoop/bdr-to-objstore.md"
         },
         {            
             "title": "Create a BDS Hadoop Cluster",
@@ -38,7 +38,7 @@
             "partnumber": "2",
             "publisheddate": "11/21/2019",
             "contentid": "2",
-            "filename": "https://martygubar.github.io/bds-getting-started/lab-createcluster/create-cluster.md"
+            "filename": "lab-createcluster/create-cluster.md"
         },
         {            
             "title": "Access a BDS Utility Node Using a Public IP",
@@ -46,7 +46,7 @@
             "partnumber": "2",
             "publisheddate": "11/21/2019",
             "contentid": "2",
-            "filename": "https://martygubar.github.io/bds-getting-started/lab-publicip/access-node-public-ip.md"
+            "filename": "lab-publicip/access-node-public-ip.md"
         },
         {            
             "title": "Restore Hadoop Cluster from Object Store",
@@ -54,7 +54,7 @@
             "partnumber": "2",
             "publisheddate": "11/21/2019",
             "contentid": "2",
-            "filename": "https://martygubar.github.io/bds-getting-started/lab-restorehadoop/bdr-to-hadoop.md"
+            "filename": "lab-restorehadoop/bdr-to-hadoop.md"
         }
 
     ]
