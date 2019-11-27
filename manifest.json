@@ -57,7 +57,7 @@
             "filename": "lab-publicip/access-node-public-ip.md"
         },
         {            
-            "title": "Getting Started with Cloud SQL",
+            "title": "Get Started with Cloud SQL",
             "description": "Add Cloud SQL to your cluster and query Hadoop using Oracle SQL",
             "partnumber": "2",
             "publisheddate": "11/21/2019",
