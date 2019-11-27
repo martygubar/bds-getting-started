@@ -17,6 +17,14 @@
             "filename":"lab-prepare/prepare-for-bds.md"
         },
         {            
+            "title": "Create a BDS Hadoop Cluster",
+            "description": "Use the BDS console to create a highly available and secure hadoop cluster.",
+            "partnumber": "2",
+            "publisheddate": "11/21/2019",
+            "contentid": "2",
+            "filename": "lab-createcluster/create-cluster.md"
+        },
+        {            
             "title": "Create a Hadoop Admin User",
             "description": "Create a Hadoop admin user that will be used for the BDS.  This Hadoop superuser will have access to all data on the cluster an all Hive metadata.",
             "partnumber": "0",
@@ -33,12 +41,12 @@
             "filename": "lab-backuphadoop/bdr-to-objstore.md"
         },
         {            
-            "title": "Create a BDS Hadoop Cluster",
-            "description": "Use the BDS console to create a highly available and secure hadoop cluster.",
+            "title": "Restore Hadoop Cluster from Object Store",
+            "description": "Restore HDFS data and Hive metadata from Oracle Object Storage",
             "partnumber": "2",
             "publisheddate": "11/21/2019",
             "contentid": "2",
-            "filename": "lab-createcluster/create-cluster.md"
+            "filename": "lab-restorehadoop/bdr-to-hadoop.md"
         },
         {            
             "title": "Access a BDS Utility Node Using a Public IP",
@@ -49,12 +57,12 @@
             "filename": "lab-publicip/access-node-public-ip.md"
         },
         {            
-            "title": "Restore Hadoop Cluster from Object Store",
-            "description": "Restore HDFS data and Hive metadata from Oracle Object Storage",
+            "title": "Getting Started with Cloud SQL",
+            "description": "Add Cloud SQL to your cluster and query Hadoop using Oracle SQL",
             "partnumber": "2",
             "publisheddate": "11/21/2019",
             "contentid": "2",
-            "filename": "lab-restorehadoop/bdr-to-hadoop.md"
+            "filename": "lab-getstarted-cloudsql/cloud-sql-getstarted.md"
         }
 
     ]
