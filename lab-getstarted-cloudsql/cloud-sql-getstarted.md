@@ -1,25 +1,26 @@
 # Getting Started with Cloud SQL
-  ![](images/100/Title-100.png)
-
-## Introduction
+## Before You Begin
 
 Cloud SQL allows you to run Oracle SQL against data on your Big Data Service cluster.  It is comprised of a Query Server plus Cloud SQL "cells" that are deployed to each Worker node on the cluster.  The Query Server is base on Oracle Database 18c; you will connect to Query Server and run queries against it.  Cloud SQL cells perform data local processing; they scan, filter and aggregate data on Worker nodes and return the result to the Query Server for final processing.  Cloud SQL is an optional feature on a Big Data Service cluster and is configured after the cluster creation.
 
-In this lab you will set up Cloud SQL, set up users and then query data that's in Hive.
-
-## Lab:  Getting Started with Cloud SQL
-You will perform the following tasks in this section:
+### Objectives
+In this lab you will set up Cloud SQL, set up users and then query data that's in Hive.  You will perform the following tasks:
 1. Add Cloud SQL to your Big Data Service
 1. Synchronize Kerberos users (assuming a secure cluster)
 1. Synchronize Hive Metadata
 1. Run a query against Hive data
 
+### Requirements
+* Login credentials and a tenancy name for the Oracle Cloud Infrastructure Console
+* Big Data Service Cluster is deployed and you have the Admin credentials for that cluster [Create a Big Data Service Cluster](?create-cluster)
 
-## Steps
+## Add Cloud SQL to Your Big Data Service Cluster
+* From your browser, [login to Oracle Cloud Infrastructure](https://console.us-ashburn-1.oraclecloud.com/a/tenancy)
+    * Enter your **Tenancy** and then click **Continue**.
+    * Enter your OCI user name and password
 
-### **STEP 1:** Add Cloud SQL to Your Big Data Service Cluster
-* Go to the OCI Console
-* Select  **Big Data** from the menu
+* In the OCI Console naviation menu, select **Big Data**
+* Select **Compartment** `your-compartment` to vew the clusters in that compartment
 * Find the cluster where you will add Cloud SQL.  Click the three dots and select **Add Cloud SQL**.  Sizing will depend on expected usage (number of users and amount of data that you expect to access).  This example will be for a development environment (view the [OCI Instance Shapes for more details](https://docs.cloud.oracle.com/iaas/Content/Compute/References/computeshapes.htm)):
 
     * **Query Server Node Shape Configuration:** `VM.Standard2.8`
@@ -29,7 +30,7 @@ You will perform the following tasks in this section:
 
 Big Data Service will deploy a new node to the cluster.  This step will take several minutes.  This new node will run the Query Server only and will not run other Hadoop Services.
 
-### **STEP 2:** Synchronize Kerberos Users
+## Synchronize Kerberos Users
 
 Once Cloud SQL is deployed, go Cloud SQL Service in Cloudera Manager and Synchronize Kerberos users
 * Log into Cloudera Manager:  https://your-utility-node-1:7183
@@ -38,7 +39,7 @@ Once Cloud SQL is deployed, go Cloud SQL Service in Cloudera Manager and Synchro
 
 The synchronization job will be started.  You can monitor it from Cloudera Manager.
 
-### **STEP 3:** Synchronize Hive Metadata
+## Synchronize Hive Metadata
 
 You can synchronize Hive Metadata using Cloudera Manager or thru a PL/SQL API.  Optionally, update properties for the sync in Cloudera  Manager:
 * Click **Cloud SQL** in the list of services
@@ -53,9 +54,9 @@ Next, execute the sync:
 
 The synchronization job will be started.  You can monitor it from Cloudera Manager.  Once the job is complete, you can exit Cloudera Manager.
 
-### **STEP 4:** Review Query Server Schemas
+## Review Query Server Schemas
 
-Review the users that are available. Connect to Query Server as the `bds` user - the super user that was added in section [Create User](create-user.md).  Because this is a secure environment, you will need a kerberos ticket prior to logging into SQL Plus.  Notice, SQL Plus will not prompt for a password because you authenticated thru Kerberos:
+Review the users that are available. Connect to Query Server as the `bds` user - the super user that was added in section [Create User](?create-user.md).  Because this is a secure environment, you will need a kerberos ticket prior to logging into SQL Plus.  Notice, SQL Plus will not prompt for a password because you authenticated thru Kerberos:
 ```bash
 [~]$ kinit bds
 Password for bds@BDACLOUDSERVICE.ORACLE.COM:  mypassword
@@ -81,7 +82,7 @@ Let's review three of these users:
 
 These schemas/users where created as part of the sync processes in the previous sections.
 
-### **STEP 4:** Run a Query Against Hive Data
+## Run a Query Against Hive Data
 What are the most popular CitiBike starting stations?  Run a query against data stored in Hive.
 
 ```SQL
