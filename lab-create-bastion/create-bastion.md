@@ -114,25 +114,18 @@ Administration >> Settings >> Security
 Disable Use TLS Encryption for Agents.  Save
 sudo systemctl restart cloudera-scm-server
 
+* Copy the private key for your cluster to the bastion.  From a MacOS or Linux client, use secure copy to copy the private key
+
+    ```bash
+    scp -i your-private-key your-private-key opc@your-bastion:~opc/.ssh/
+    ```
+    
 Install Kerberos
 * Log into `your-bastion`
 * Install the Kerberos clients
 
     sudo yum install -y krb5-workstation krb5-libs
 
-* Copy the private key for your cluster to the bastion.  From a MacOS or Linux client, use secure copy to copy the private key
-
-    ```bash
-    scp -i your-private-key your-private-key opc@your-bastion:~opc/.ssh/
-    ```
-* Log into the bastion and copy the krb5.conf file from `your-utility-node1` to `your-bastion`
-
-    ```bash
-    scp -i ~opc/.ssh/bdsKey 10.0.0.6:/etc/krb5.conf /tmp
-    sudo mv /tmp/krb5.conf /etc/
-    sudo chown root:root /etc/krb5.conf
-    sudo chmod 644 /etc/krb5.conf
-    ```
 * Copy the bda.repo file to /etc/yum.repos.d/
     ```bash
     scp -i ~opc/.ssh/bdsKey 10.0.0.6:/etc/yum.repos.d/bda.repo /tmp
@@ -141,6 +134,16 @@ Install Kerberos
     sudo chmod 644 /etc/yum.repos.d/bda.repo
     ```
 * Update /etc/hosts on the bastion with settings from 
+
+
+* Log into the bastion and copy the krb5.conf file from `your-utility-node1` to `your-bastion`
+
+    ```bash
+    scp -i ~opc/.ssh/bdsKey 10.0.0.6:/etc/krb5.conf /tmp
+    sudo mv /tmp/krb5.conf /etc/
+    sudo chown root:root /etc/krb5.conf
+    sudo chmod 644 /etc/krb5.conf
+    ```
 
 Install continued, but then it attempts to install parcels and fails b/c 
 
@@ -157,12 +160,13 @@ Install continued, but then it attempts to install parcels and fails b/c
     * The server will take a few minutes to restart.  You will not be able to log into Cloudera Manager until the restart successfullhy compltes
 
 
-
  * Click menu item **Hosts >> Add Hosts**
  * Select **Add hosts to cluster** `your-cluster`.  Click **Continue**
  * Copy the `your-bastion-private-ip` into the hostname field.  Click **Search**
  * The host will be found and displayed in the table.  If it's not listed, then fix the private IP address.  Click **Continue**
- * Select Repository:  Accept the default **Custom Repository**. http://pmteammn0.bmbdcsad1.bmbdcs.oraclevcn.com/bda  Click **Continue**
+ * Select Repository:  
+    * Choose **Public Cloudera Repository**
+    * Click **Continue**
  * **Accept JDK License**
     * Select **Install Oracle Java SE Development Kit (JDK 8)**.  
     * Select **Install Java Unlimited Strength Encryption Policy Files**
