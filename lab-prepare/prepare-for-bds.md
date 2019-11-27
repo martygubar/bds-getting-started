@@ -5,7 +5,7 @@ There are a few tasks that are required to get started with Big Data Service.  S
 
 | User | Task | Purpose | Required | How to |
 |:----|:----|:----|:----|:----|
-|Cloud Admin| [Create a Compartment for BDS Resources](#createacompartment)| Helps organize your cloud resources | No |OCI Console: Identity >> Compartments |
+|Cloud Admin| [Create a Compartment for BDS Resources](#CreateaCompartment)| Helps organize your cloud resources | No |OCI Console: Identity >> Compartments |
 |Cloud Admin| [Create a BDS Administrator Group and Add an Admin User](#createabdsadministratorgroupandaddanadminuser)| Apply policies to groups instead of individual users | No | OCI Console: Identity >> Compartments |
 |Cloud Admin | [Create Policies Required to Administer your Big Data Service Instances](#createpoliciesrequiredtoadministeryourbigdataserviceinstances) | Enable the Big Data Service to create clusters in the customer tenancy.  Also delegate cluster lifecycle management operations to BDS Administrators | Yes|OCI Console: Identity >> Policies|
 |Cloud Admin or BDS Admin | [Create a Virtual Cloud Network](#createavirtualcloudnetwork)| Use an existing Tenancy VCN or create a new one.  Required if a VCN does not exist | Yes |OCI Console: Networking >> Virtual Cloud Networks|
