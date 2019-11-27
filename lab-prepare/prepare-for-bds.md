@@ -3,6 +3,8 @@
 ## Before You Begin
 There are a few tasks that are required to get started with Big Data Service.  Several of these tasks need to be performed by the Cloud Administrator for your tenancy.  There are also optional tasks that make it easier to manage your environment.  For example, creating compartments and groups are optional - but they will simplify administration tasks as your environment exapnds.
 
+[Create a Compartment for BDS Resources](#createacompartment)
+
 | User | Task | Purpose | Required | How to |
 |:----|:----|:----|:----|:----|
 |Cloud Admin| [Create a Compartment for BDS Resources](#createacompartment)| Helps organize your cloud resources | No |OCI Console: Identity >> Compartments |
