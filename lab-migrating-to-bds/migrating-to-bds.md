@@ -47,7 +47,7 @@ To learn more, see [Key Concepts and Terminology](https://www.oracle.com/pls/top
 ## Migration Overview
 ### Introduction
 Migrating from BDCS to BDS on OCI is done in several steps:
-* [Backup Your Hadoop Cluster to Oracle Object Storage](../?backup-hadoop-cluster-object-storage)
+* [Backup Your Hadoop Cluster to Oracle Object Storage](?backup-hadoop-cluster-object-storage)
 * [Create Big Data Service cluster on Oracle Cloud Infrastructure](../?create-bds-hadoop-cluster)
 * [Restore Your Hadoop Cluster from Oracle Object Storage](../?restore-hadoop-cluster-object-store)
 
