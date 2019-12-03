@@ -85,6 +85,7 @@ Once connected to the bastion, connect to a utility node on the Hadoop cluster. 
 After successfully connecting, proceed to the next step and open a network port to enable the bastion to connect to the Cloudera Manager Server.
 
 ## Enable Bastion to Communicate to Cloudera Manager Server
+### Bastion to Cloudera Manager Server
 The configuration of the bastion will on the cluster require that it can communicate to Cloudera Manager Server on port 7182.  Update the Security List for the VCN to enable that communication:
 
 * Select **Networking >> Virtual Cloud Networks** from the OCI Console navigation menu
@@ -99,6 +100,23 @@ The configuration of the bastion will on the cluster require that it can communi
     * **Destination Port Range:** 7182
 
     Click **Add Ingress Rules**
+
+### Enable Cloudera Manager to Monitor Bastion Hosts 
+On Oracle Big Data Service, Host Monitor and Service Monitor by default can only be accessed using private cluster IP addresses. Trying to access Host Monitor and Service Monitor using other IPs will fail either from a Big Data Service node or a bastion node. This will cause an issue when adding a bastion node to the cluster and then subsequently monitoring that node.
+
+To solve this issue, you will update the Host and Service Monitor conifiguration using Cloudera Manager:
+* Log into Cloudera Manager.  Enter the admin id and password used when creating the cluster:
+
+    https://`your-utility-node1`:7183
+* Navigate to the Cloudera Management Service configuration:  **mgmt >> Configuration**  
+* Apply the following snippet to both **Host Monitor Advanced Configuration Snippet (Safety Valve) for cmon.conf** and **Service Monitor Configuration Safety Valve for cmon.conf** parameters:
+```XML
+<property>
+    <name>firehose.server.host</name>
+    <value>0.0.0.0</value>
+</property>
+```
+
 
 
 ## Add Bastion to Your Big Data Service Cluster
@@ -119,7 +137,7 @@ sudo systemctl restart cloudera-scm-server
     ```bash
     scp -i your-private-key your-private-key opc@your-bastion:~opc/.ssh/
     ```
-    
+
 Install Kerberos
 * Log into `your-bastion`
 * Install the Kerberos clients

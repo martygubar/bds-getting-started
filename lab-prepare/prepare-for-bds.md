@@ -120,7 +120,7 @@ Open ports for Hadoop services.  Ports include those required by Hue and Clouder
 * Add the following Ingress Rules:
     * Click **Add Ingress Rule**
     * Update Source CDR: `0.0.0.0/0`
-    * Specify the following **Destination Port Range**: `7183,7182,7180,8888-8890,8090,18088`
+    * Specify the following **Destination Port Range**: `7180,7182,7183,8086,9996,9997,5678,8083,8087,9998,9999,8091,9994,9995,7184,8084,10101,19001,9000,7190,7191`
     * Click **Add Ingress Rules** 
 
 ## Configure API Access to OCI
