@@ -1,17 +1,22 @@
 # Create a Bastion to Access Your Cluster
 
 ## Before You Begin
+A bastion is a compute instance that serves as the public entry point to users that will be accessing the cluster.  It enables you to protect sensitive resources by placing them in private networks that can't be accessed directly from the public internet. You expose a single, known public entry point that you audit regularly, harden,and secure. So you avoid exposing the more sensitive parts of the topology, without compromising access to them.  For more information about bastions, you can refer to the [OCI documentation](https://docs.oracle.com/en/solutions/set-resources-to-provision-deploy-cloud-environment/index.html#GUID-8A2C8FB7-66E8-4838-8162-09EDDC834BE2).
+
+In the context of this tutorial, there are two types of bastions.  The first is a simple compute node that provides access to the Big Data Service cluster nodes; these nodes are only accessible thru private IP addresses (unless you decide to assign a public IP to a node).  The second has Hadoop gateway roles deployed to it (e.g. HDFS, Spark, Hive).  This allows you to easily access HDFS and run jobs from the bastion.
 
 ### Objectives
 The goal for this tutorial is to create a bastion (aka "Edge Node") to your Hadoop cluster.  From this node, you will connect to the cluster to view its contents, run jobs, and more.  This eliminates the need to connect directly to the cluster nodes from a public network.
 
 To create the bastion, you will:
-* Log into Oracle Cloud Infrastructure and create a Compute node in the same subnet as your Big Data Service cluster
-* Enable Connectivity from the Bastion to the BDS Cluster
-* Update the bastion with required software (e.g. Kerberos, Java)
-* Connect to Cloudera Manager and add that new Compute Node to the cluster - deploying only gateway roles to it
+1. Log into Oracle Cloud Infrastructure and create a Compute node in the same subnet as your Big Data Service cluster
+1. Enable Connectivity from the Bastion to the BDS Cluster
+1. Update the bastion with required software (e.g. Kerberos, Java)
+1. Connect to Cloudera Manager and add that new Compute Node to the cluster - deploying only gateway roles to it
 
-### Requirements
+You can stop after step 2 if you do not want to access HDFS and submit jobs from the bastion.
+
+## Requirements
 
 To complete this lab, you need to have the following:
 
@@ -72,7 +77,7 @@ To enable connectivity from the bastion to the BDS Cluster, copy the private key
 
     ssh -i `your-private-key` opc@`your-public-ip`
 
-Once connected to the bastion, connect to a utility node on the Hadoop cluster.  You can find the IP address by performing the following tasks:
+Once connected to the bastion, connect to the first utility node on the Hadoop cluster.  You can find the utility node IP address by performing the following tasks:
 * In a browser, log into your tenancy on OCI using the following URL:
 
     https://console.us-ashburn-1.oraclecloud.com/
@@ -109,8 +114,12 @@ You can now connect to the utility node more easily, using just the hostname:
 
     ssh your-utility-node1
 
-After successfully connecting, proceed to the next step and open a network port to enable the bastion to connect to the Cloudera Manager Server.
+Copy this file to the root users .ssh home:
+```bash
+sudo cp ~opc/.ssh/config /root/.ssh/
+```
 
+## DONT THINK DCLI IS REQUIRED
 ### Enable dcli to Work with the Bastion
 **dcli** is an Oracle utility installed on the cluster nodes that allows you to execute commands and copy files across multiple hosts.  It is an extremely useful utility that we will use later when updating the cluster and the bastion.  **dcli** is typically executed by the root user and requires passwordless connections.  To enable passwordless ssh into the bastion from the cluster, copy the ssh public key from the utility node to the bastion and then add it to the authorized_keys file for the root user.
 
@@ -130,11 +139,15 @@ hostname
 The hostname that is returned by the command is the fqdn.  The short name is the name prior to the first ".".  Add the IP address, fqdn and host short name to the /etc/hosts file on the bastion.  NOTE: the IP addresses in the /etc/hosts file on the utility and master nodes will be different than the IP addresses add to the bastion; they are private IP addresses used for intra-cluster communication.  Use the IP addresses that you added to the SSH config file in the previous section.
 
 Below is an example of a before and after snapshot of an /etc/hosts file for the ``pmteam`` cluster.
+
+**Before:**
 ```bash
 $ cat /etc/hosts
 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
-
+```
+**After**
+```bash
 $ echo "10.0.0.14 pmteamun0.bmbdcsad1.bmbdcs.oraclevcn.com pmteamun0.bmbdcsad1.bmbdcs.oraclevcn.com. pmteamun0" | sudo tee -a /etc/hosts
 $ echo "10.0.0.12 pmteammn0.bmbdcsad1.bmbdcs.oraclevcn.com pmteamun0.bmbdcsad1.bmbdcs.oraclevcn.com. pmteammn0" | sudo tee -a /etc/hosts
 
@@ -152,8 +165,51 @@ Now that connectivity to the cluster is configured, install and configure the re
 * Cloudera Manager Agents
 * Java 8
 
-Use **dcli** from the cluster to perform these tasks.
+### Install Core Software
+The core software will be installed from Oracle's software repository.  The Big Data Service specific repository is on the first master node of the cluster.  Copy the **bda.repo** file from the cluster node to the bastion.  On the bastion node:
+
+* Make Big Data Service software available to the bastion via YUM.  Copy the **bda.repo** file to the bastion node as the root user.  
+```bash
+sudo scp your-utility-node1:/etc/yum.repos.d/bda.repo /etc/yum.repos.d/
+
+```
+
+* Now that the Big Data Service software is available, install Kerberos, Cloudera Manager Agents and the Oracle JDK (v8).  As the root user on the utililty node, run the following commands:
+    ```bash
+    sudo yum clean all
+    sudo yum install -y krb5-workstation krb5-libs jdk1.8 cloudera-manager-agent
+    ```
+### Configure the Core Software
+There are configuration files that must be updated for each of the newly installed packages:
+* Java:  Java Cryptography Extension (JCE) unlimited strength jurisdiction policy files.  This is required for Kerberos access to the cluster.
+    ```bash
+    sudo scp pmteamun0:/usr/java/latest/jre/lib/security/*.jar /usr/java/latest/jre/lib/security/
+    ```
+* Keberos:  Kerberos configuration file
+    ```bash
+    sudo scp pmteamun0:/etc/krb5.conf /etc/
+    ```
+* Cloudera Manager Agent: Configuration files and PEM file
+Update the Cloudera Manager configuration so that it can connect to the Cloudera Manager Server.
+    
+    ```bash
+    sudo scp pmteamun0:/etc/cloudera-scm-agent/config.ini /etc/cloudera-scm-agent/
+    sudo mkdir -p /opt/cloudera/security/x509/
+    sudo scp pmteamun0:/opt/cloudera/security/x509/agents.pem /opt/cloudera/security/x509/
+    ```
 ** Update the /etc/yum.repos.d
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## Enable Bastion to Communicate to Cloudera Manager Server
