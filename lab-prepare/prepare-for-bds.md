@@ -30,17 +30,19 @@ Create a group for you Big Data Service administrators.  You will grant privileg
 ## Create Policies Required to Administer your Big Data Service Instances
 ### Manage Big Data Services and Manage Virtual Cloud Networks
 In the OCI Console navigation menu, select **Identity >> Policies**.  Ensure that you are in the `mytenancy` compartment. Then, click **Create Policy**.  Name the policy `myadmin-policies` and provide a description.  Then, add the following policiy statements:
-
+<copy>
     allow group myadmin-group to manage bds-instance in compartment mycompartment
     allow group myadmin-group to manage virtual-network-family in compartment mycompartment
-
+</copy>
 ### Creating a Cluster
 
 The Big Data Service creates VMs, creates VNICs and adds them to the customer subnet that is used for accessing BDS instance. Create the following policy in your **root** compartment to allow cluster creation. 
 
 In the OCI Console navigation menu, select **Identity >> Policies**.  Ensure that you are in the **root** compartment.  Click **Create Policy** and name it `mybds-policy`.  Then, add the following policy statement:
-```    
+```   
+<copy> 
 allow service bdspreprod to {VNIC_READ, VNIC_ATTACH, VNIC_CREATE, VNIC_ATTACHMENT_READ, SUBNET_READ, SUBNET_ATTACH} in compartment mycompartment
+</copy>
 ```
 ## Create a Virtual Cloud Network 
 In this section, you will set up the Virtal Cloud Network that will be used by your Big Data Service.  Note, you may also leverage an existing VCN if you already have one.  If you have an existing VCN, ensure it is using a Regional subnet and that the appropriate ports are opened.
