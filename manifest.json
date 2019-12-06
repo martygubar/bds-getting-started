@@ -57,6 +57,14 @@
             "filename": "lab-publicip/access-node-public-ip.md"
         },
         {            
+            "title": "Create a Bastion to Access Your Cluster",
+            "description": "Securely access you cluster using a Bastion",
+            "partnumber": "2",
+            "publisheddate": "11/21/2019",
+            "contentid": "2",
+            "filename": "lab-create-bastion/create-bastion.md"
+        },
+        {            
             "title": "Get Started with Cloud SQL",
             "description": "Add Cloud SQL to your cluster and query Hadoop using Oracle SQL",
             "partnumber": "2",

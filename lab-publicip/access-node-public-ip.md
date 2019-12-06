@@ -2,13 +2,13 @@
 
 ## Before You Begin
 
-When Big Data Service deploys a cluster, the nodes are not accessible on the public internet.  They can only be accessed via hosts on the same subnet.  In this example, we will make the BDS Utility node running Cloudera Manager (first utility node) available externally by a creating public IP that maps to the node's private IP address.
+When Big Data Service deploys a cluster, the nodes are not accessible on the public internet.  They can only be accessed via hosts on the same virtual cloud network.  In this example, we will make the BDS Utility node running Cloudera Manager (first utility node) available externally by a creating public IP that maps to the node's private IP address.  In another tutorial, you will access the cluster using a bastion host [Create a Bastion to Access Your Cluster](?lab=).
 
 To make a utility node available using a public IP address:
-* Configure API Access to OCI (see [Preparing for Big Data Service]())
+* Configure API Access to OCI (see [Preparing for Big Data Service](?lab=preparing-for-big-data-service))
 * Create a public IP address for Cloudera Manager's utility node ()
-* Assign the IP to the utility node
-* Connect to Hue using the new, external IP address
+* Assign the public IP to the first utility node's private IP
+* Connect to Cloudera Manager using the new, external IP address
 
 ## Prerequisite Tasks 
 You will need to perform the following tasks prior to setting up the public IP Address.  These steps will allow you to perform OCI API calls required by the IP address assignment.  These steps are the same for any client setup that will make requests using the OCI API (see [Tools Configuration](https://docs.cloud.oracle.com/iaas/Content/ToolsConfig.htm)):
@@ -18,11 +18,11 @@ You will need to perform the following tasks prior to setting up the public IP A
 1. Upload the API Signing Key
 1. Create a Configuration File that uses all of this information
 
-These steps are detailed in tutorial [Preparing for Big Data Service]().
+These steps are detailed in tutorial [Preparing for Big Data Service](?lab=preparing-for-big-data-service).
 
 ## Locate the Private IP Address for Cloudera Manager's Utility Node
 You can find the private IP address in your Hadoop cluster's list of attached nodes.  In the Big Data Service console: 
-* Select your cluster from the compartment's cluster list
+* Select `mycluster` from the compartment's cluster list
 * Find the first Utility node
 * Copy the IP address `your-utility-node-private-ip` associated with this BDS cluster node.
 
@@ -30,7 +30,7 @@ You can find the private IP address in your Hadoop cluster's list of attached no
 ## Create public IP addresses
 In the OCI Console, select the region where you Big Data Service is located and the Compartment within that region where your network has been defined.  Select **Networking >> Public IPs**.  Then,
 * Click **Create Reserved Public IP**
-* Provide a name.  For example; `your-utility-1`
+* Provide a name.  For example; `myutilitynode-pubip`
 * Click **Create Reserved Public IP** to create the IP address
 * Copy the OCID for the Public IP address by clicking the three dots for that public IP and select **Copy OCID**.  Save `your-public-ip-ocid` for use later.
 
@@ -42,7 +42,7 @@ Use the information that you collected and run the following command:
 
 ```bash
 cd <location where you downloaded the jar file>
-java -jar bdsPublicIpcli.jar -ociConfig your-config-file -ip "your-utility-node-private-ip" -subnetId "your-subnet-ocid" -operation attach -publicIpId "your-public-ip-ocid"
+java -jar bdsPublicIpcli.jar -ociConfig your-config-file -ip "your-utility-node-private-ip" -subnetId "your-public-subnet-ocid" -operation attach -publicIpId "your-public-ip-ocid"
 ```
 
 For example:

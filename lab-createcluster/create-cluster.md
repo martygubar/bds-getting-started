@@ -14,7 +14,7 @@ To create your Hadoop cluster:
 To complete this lab, you need to have the following:
 
 * Login credentials and a tenancy name for the Oracle Cloud Infrastructure Console
-* Performed the prerequisite tasks found in tutorial [Preparing for Big Data Service](?preparing-for-big-data-service)
+* Performed the prerequisite tasks found in tutorial [Preparing for Big Data Service](?lab=preparing-for-big-data-service)
 
 
 ## Open the Big Data Service Console
@@ -64,6 +64,8 @@ The cluster creation will take some time.  You can monitor its progress at any t
 * Select **Big Data** from the OCI navigation menu
 * Select `mycluster` from the list of clusters
 * Click **Work Requests**
+
+## Review Your Cluster
 
 
 ## Summary

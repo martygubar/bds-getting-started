@@ -12,6 +12,14 @@ In this tutorial, you will:
 * Add a user to the Linux OS
 * Add this new user to Hadoop admin groups
 
+### Requirements
+
+To complete this lab, you need to have the following:
+
+* Created a Hadoop Cluster
+* Set up access to the cluster using either a bastion (see )
+* Performed the prerequisite tasks found in tutorial [Preparing for Big Data Service](?lab=preparing-for-big-data-service)
+
 ## Connect to the Cluster's First Master Node
 The KDC is running on the cluster's first master node.  Log into that node as the OPC user:
 
