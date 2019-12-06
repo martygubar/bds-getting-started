@@ -174,7 +174,7 @@ Follow the steps listed below.  For more details, please review the OCI document
 * Copy the **OCID** in the **Tenancy Information** tab.  Save this information.
 * Example:  `ocid1.tenancy.oc1..xxx`
 
-**Subnet:**  Next, find the Oracle Cloud Identifiers (OCID) for the *subnet* specified when creating the BDS Cluster:
+**Subnet:**  Next, find the Oracle Cloud Identifiers (OCID) for the *public subnet* specified when creating the BDS Cluster:
 * Go to **Networking >> Virtual Cloud Networks**
 * Click the VCN used by your BDS cluster
 * Click the three dots for your cluster's subnet.  Click **Copy OCID**.  Save this information.
@@ -230,7 +230,7 @@ You now have collected all of the information required to make trusted API calls
 user=myuser-ocid
 fingerprint=myfingerprint
 key_file=~/.oci/oci_api_key.pem
-tenancy=mytenancy
+tenancy=mytenancy-ocid
 region=mybds-region
 ```
 Below is an example with all of the fields completed:

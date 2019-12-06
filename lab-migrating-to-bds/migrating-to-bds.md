@@ -47,9 +47,9 @@ To learn more, see [Key Concepts and Terminology](https://www.oracle.com/pls/top
 ## Migration Overview
 ### Introduction
 Migrating from BDCS to BDS on OCI is done in several steps:
-* [Backup Your Hadoop Cluster to Oracle Object Storage](?backup-hadoop-cluster-object-storage)
-* [Create Big Data Service cluster on Oracle Cloud Infrastructure](?create-bds-hadoop-cluster)
-* [Restore Your Hadoop Cluster from Oracle Object Storage](å?restore-hadoop-cluster-object-store)
+* [Backup Your Hadoop Cluster to Oracle Object Storage](?lab=backup-hadoop-cluster-object-storage)
+* [Create Big Data Service cluster on Oracle Cloud Infrastructure](?lab=create-bds-hadoop-cluster)
+* [Restore Your Hadoop Cluster from Oracle Object Storage](?lab=restore-hadoop-cluster-object-store)
 
 
 Customers are advised to retain their Big Data Cloud Service for minimum of 3 months (at least in stopped state) after migrating to OCI so that if any data/metadata/configuration is found missing, they can refer to the BDCS cluster to get the required information.
