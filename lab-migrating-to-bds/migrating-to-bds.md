@@ -64,17 +64,17 @@ When accessing Object Storage directly from compute instances on OCI, clusters c
 * Make sure you have admin access to your Big Data Cloud Service cluster
     * You will need the administrator credentials for Cloudera Manager
     * If you are running a secure cluster, ensure you have a Hadoop admin user that has full access to the HDFS data and Hive metadata that will be backed up to Oracle Object Storage
-* Setup OCI Object store to which HDFS data can be copied. See [Overview of Object Storage](https://docs.cloud.oracle.com/iaas/Content/Object/Concepts/objectstorageoverview.htm) for more details. 
+* Setup OCI Object Storage to which HDFS data can be copied. See [Overview of Object Storage](https://docs.cloud.oracle.com/iaas/Content/Object/Concepts/objectstorageoverview.htm) for more details. 
 * Setup your OCI Tenancy
     * Ensure an OCI User is created and added to required groups by the tenancy admin. 
         * User has permission and is able to access OCI Console
         * User has permission and is able to create a bucket. (See “Let Object Storage admins manage Buckets and Objects”).
-        * User is able to inspect configuration for OCI Object Store 
+        * User is able to inspect configuration for OCI Object Storage 
     
-    See [Authorization Requirements](../?authorization-requirements) for details.
+    See [Preparing for Big Data Service](?lab=preparing-for-big-data-service) for details.
 
 ### Perform the BDCS Backup
-Now that you have the appropriate permissions to backup your cluster, you can run the steps found in the [Backup Your Hadoop Cluster to Oracle Object Storage](../?backup-hadoop-cluster-object-storage) tutorial.
+Now that you have the appropriate permissions to backup your cluster, you can run the steps found in the [Backup Your Hadoop Cluster to Oracle Object Storage](?lab=backup-hadoop-cluster-object-storage) tutorial.
 
 ## Create a Big Data Service cluster on Oracle Cloud Infrastructure
 You are now ready to create a Big Data Service Hadoop Cluster.  
@@ -83,14 +83,14 @@ Creating a cluster requires a few simple steps.  However, you will need to plan 
 * What sizing is required, from both a data storage and compute capcity perspective?
 * What type of storage is required?  Do you want the flexibility of Oracle Block Storage?  The high performance of direct attached NVmE storage?
 * How do you want to access the cluster?  Using a bastion?  FastConnect?  Public IP?
-* Do you need advanced security and high availability?  Or, a simple cluster, insecure cluster?
+* Do you need advanced security and high availability?  Or, a simple, insecure cluster?
 
 Once you have this information, you are ready to create your Hadoop cluster
 
 ### Create a Big Data Service Cluster
 Now that you have the details for your cluster, you can run the steps found in 
-[Create Big Data Service cluster on Oracle Cloud Infrastructure](../?create-bds-hadoop-cluster).
+[Create Big Data Service cluster on Oracle Cloud Infrastructure](?lab=create-bds-hadoop-cluster).
 
 ## Restore Your Backup to Your Big Data Service Cluster
-Go to the [Restore Your Hadoop Cluster from Oracle Object Storage](../?restore-hadoop-cluster-object-store) tutorial to replicate the source cluster to your Big Data Service cluster.
+Your is backed up to Oracle Object Storage and your Big Data Service has been created.  Go to the [Restore Your Hadoop Cluster from Oracle Object Storage](?lab=restore-hadoop-cluster-object-store) tutorial to replicate the source cluster to your Big Data Service cluster.
 
