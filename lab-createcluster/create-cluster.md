@@ -54,7 +54,7 @@ Click **Create Cluster**.  Specify the cluster properties:
     * **Choose VCN:** `your-vcn`
     * **Choose Subnet:** `your-subnet`
     * Select **Enable NAT Gateway**
-    * **CIDR Block:** `your-cidr` (e.g. 10.0.0.0/16)
+    * **CIDR Block:** `your-cidr` (private network used for intra-cluster communications. e.g. 10.200.0.0/16)
 * **Additional Options**
     * Upload your public key.  The associated private will be used to make SSH connections to the cluster
 * **Click Create**
