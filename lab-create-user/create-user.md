@@ -17,8 +17,9 @@ In this tutorial, you will:
 To complete this lab, you need to have the following:
 
 * Created a Hadoop Cluster
-* Set up access to the cluster using either a bastion (see )
-* Performed the prerequisite tasks found in tutorial [Preparing for Big Data Service](?lab=preparing-for-big-data-service)
+* Set up access to the cluster using either a bastion (see [Create a Bastion to Access Your Cluster](?lab=create-bastion-access-cluster)) or a public IP address (see [Access a BDS Node Using a Public IP
+](?lab=access-bds-utility-node-using-public-ip))
+
 
 ## Connect to the Cluster's First Master Node
 The KDC is running on the cluster's first master node.  Log into that node as the OPC user:
