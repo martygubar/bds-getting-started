@@ -16,81 +16,109 @@ Create a **Compartment** that will organize the resources used by Big Data Servi
 
 Log into the OCI console as the Cloud Administrator.  Then, 
 * Select **Identity >> Compartments**
-* Click **Create Compartment**.  Specify `your-compartment`, provide a description, and then click **Create Compartment**
+* Click **Create Compartment**.  Specify `mycompartment`, provide a description, and then click **Create Compartment**
 
 ## Create a BDS Administrator Group and Add an Admin User
 Create a group for you Big Data Service administrators.  You will grant privileges to this group to perform the critical administrative tasks required to manage your cluster lifecycle.
 * Select **Identity >> Groups**
-* Click **Create Group**.  Specify `your-admin-group`, provide a description, and then click **Create Group**
-* Select `your-admin-group` from the list of groups
+* Click **Create Group**.  Specify `myadmin-group`, provide a description, and then click **Create Group**
+* Select `myadmin-group` from the list of groups
 * Click **Add User to Group**
-* Select `your-admin-user` from the list of users and click **Add**
+* Select `myadmin-user` from the list of users and click **Add**
 
 
 ## Create Policies Required to Administer your Big Data Service Instances
 ### Manage Big Data Services and Manage Virtual Cloud Networks
-In the OCI Console navigation menu, select **Identity >> Policies**.  Ensure that you are in the `your-tenancy` compartment. Then, click **Create Policy**.  Name the policy `your-admin-policies` and provide a description.  Then, add the following policiy statements:
+In the OCI Console navigation menu, select **Identity >> Policies**.  Ensure that you are in the `mytenancy` compartment. Then, click **Create Policy**.  Name the policy `myadmin-policies` and provide a description.  Then, add the following policiy statements:
 
-    allow group your-admin-group to manage bds-instance in compartment your-compartment
-    allow group your-admin-group to manage virtual-network-family in compartment your-compartment
+    allow group myadmin-group to manage bds-instance in compartment mycompartment
+    allow group myadmin-group to manage virtual-network-family in compartment mycompartment
 
 ### Creating a Cluster
 
 The Big Data Service creates VMs, creates VNICs and adds them to the customer subnet that is used for accessing BDS instance. Create the following policy in your **root** compartment to allow cluster creation. 
 
-In the OCI Console navigation menu, select **Identity >> Policies**.  Ensure that you are in the **root** compartment.  Click **Create Policy** and name it `your-bds-policy`.  Then, add the following policy statement:
-    
-    allow service bds to VNIC_READ, VNIC_ATTACH, VNIC_CREATE, VNIC_ATTACHMENT_READ, SUBNET_READ, SUBNET_ATTACH in compartment your-compartment
-
+In the OCI Console navigation menu, select **Identity >> Policies**.  Ensure that you are in the **root** compartment.  Click **Create Policy** and name it `mybds-policy`.  Then, add the following policy statement:
+```    
+allow service bdspreprod to {VNIC_READ, VNIC_ATTACH, VNIC_CREATE, VNIC_ATTACHMENT_READ, SUBNET_READ, SUBNET_ATTACH} in compartment mycompartment
+```
 ## Create a Virtual Cloud Network 
 In this section, you will set up the Virtal Cloud Network that will be used by your Big Data Service.  Note, you may also leverage an existing VCN if you already have one.  If you have an existing VCN, ensure it is using a Regional subnet and that the appropriate ports are opened.
 
 ### Create a VCN
 * In the OCI Console navigation menu, select **Networking >> Virtual Cloud Networks**
+* Click **Networking Quickstart**
+* Select **VCN with Internet Connectivity**.  Click **Start Workflow**
+* Basic Information
+    * **VCN Name:** `mynetwork`
+    * **Compartment:** `mycompartment`
+* Configure VCN and Subnets
+    * **CIDR BLOCK:** `10.0.0.0/16` 
+    * **Public Subnet CIDR Block:** `10.0.0.0/24`
+    * **Private Subnet CIDR Block:** `10.0.1.0/24`
+    * Select **Use DNS Hostnames in this VCN:** 
+    * Click **Next**
+* Review and Create
+    * Click **Create**.  
+
+You will now update the security lists next to allow ingress thru specific ports.  Note, the IP addresses will not be accessible over the internet until you explicitly create a public IP address.
+* Click **View Virtual Cloud Network**
+* Click **Security Lists**
+* Click **Default Security List for mynetwork**
+* Click **Add Ingress Rules**
+    * Update Source CDR: `0.0.0.0/0`
+    * Specify the following **Destination Port Range**: `80,1521,7180,7182,7183,8086,9996,9997,5678,8083,8087,9998,9999,8091,9994,9995,7184,8084,10101,19001,9000,7190,7191`
+    * Click **Add Ingress Rules** 
+
+
+
+---
+### Create a VCN
+* In the OCI Console navigation menu, select **Networking >> Virtual Cloud Networks**
 * Click **Create Virtual Cloud Network**
-    * **Name:** `your-network-name`
-    * **Create in Compartment:** `your-compartment`
+    * **Name:** `mynetwork`
+    * **Create in Compartment:** `mycompartment`
     * Select **CREATE VIRTUAL CLOUD NETWORK ONLY**
     * **CIDR BLOCK:** `10.0.0.0/16` (modify as required)
     * Select **Use DNS Hostnames in this VCN:** 
-    * **DNS LABEL:** `bdsnetwork`
+    * **DNS LABEL:** `mybdsnetwork`
     * **Create Virtual Cloud Network**
 
 ### Create a Subnet
 * Click **Create Subnet** in this VCN
-    * **Name:** `your-subnet`
+    * **Name:** `mysubnet`
     * **Subnet Type:** `Regional`
     * **CIDR Block:** `10.0.0.0/24` (modify as required)
-    * **Route Table:**  `Default Route Table for your-network`
+    * **Route Table:**  `Default Route Table for mynetwork`
     * Select **Public Subnet**
     * Check **Use DNS Hostnames in this Subnet**
     * **DNS Label:** `bdssubnet`
-    * **DHCP Options:** `Default DHCP Options for your-network`
-    * **Security List:** `Default Security List for your-network`
+    * **DHCP Options:** `Default DHCP Options for mynetwork`
+    * **Security List:** `Default Security List for mynetwork`
     * Click **Create Subnet**
 
 ### Create a NAT Gateway
 A NAT gateway lets instances that don't have a public IP address access the internet.
 * From the list of Resources, click **NAT Gateways**
 * Click **Create NAT Gateway**
-    * **Name:** `your-nat-gateway`    
-    * **Create in Compartment:** `your-compartment`
+    * **Name:** `mynat-gateway`    
+    * **Create in Compartment:** `mycompartment`
     * Click **Create NAT Gateway**
 
 ### Create an Internet Gateway
 An internet gateway is an optional virtual router you can add to your VCN to enable direct connectivity to the internet.  The gateway supports connections initiated from within the VCN (egress) and connections initiated from the internet (ingress).
 * From the list of Resources, click **Internet Gateways**
 * Click **Create Internet Gateway**
-    * **Name:** `your-internet-gateway`    
-    * **Create in Compartment:** `your-compartment`
+    * **Name:** `myinternet-gateway`    
+    * **Create in Compartment:** `mycompartment`
     * Click **Create Internet Gateway**
 
 ### Create a Service Gateway
 A service gateway enables cloud resources without public IP addresses to privately access Oracle services.  This allows a service to access the Oracle Services Network without the traffic going over the internet.
 * From the list of Resources, click **Service Gateways**
 * Click **Create Service Gateway**
-    * **Name:** `your-service-gateway`    
-    * **Create in Compartment:** `your-compartment`
+    * **Name:** `myservice-gateway`    
+    * **Create in Compartment:** `mycompartment`
     * **Services:** `All <region> Services in Oracle Services Network`
     * Click **Create Service Gateway**
 
@@ -98,31 +126,32 @@ A service gateway enables cloud resources without public IP addresses to private
 ### Create a Routing Rule
 Add two routing rules, one for internet access and the other for the Oracle service gateway
 * From the list of Resources, select **Route Tables**
-* Click **Default Route Table for ``your-network``**
+* Click **Default Route Table for ``mynetwork``**
 * Add the internet access rule.  Click **Add Route Rules**
     * **Target Type:** `Internet Gateway`
     * **Destination CIDR Block:** `0.0.0.0/0`
-    * **Compartment:** `your-compartment`
-    * **Target Internet Gateway:**  `your-internet-gateway`
+    * **Compartment:** `mycompartment`
+    * **Target Internet Gateway:**  `myinternet-gateway`
     * Click **Add Route Rules**
 * Add the service route rule.  Click **Add Route Rules**
     * **Target Type:** `Service Gateway`
     * **Destination Service:** `OCI <region> Object Storage`
-    * **Compartment:** `your-compartment`
-    * **Target Service Gateway:** `your-service-gateway`
+    * **Compartment:** `mycompartment`
+    * **Target Service Gateway:** `myservice-gateway`
     * Click **Add Route Rules**
 
 ### Update the Security List
 Open ports for Hadoop services.  Ports include those required by Hue and Cloudera Manager.
 
 * Click **Security Lists**
-* Click **Default Security List for `your-network-name`**
+* Click **Default Security List for `mynetwork`**
 * Add the following Ingress Rules:
     * Click **Add Ingress Rule**
     * Update Source CDR: `0.0.0.0/0`
     * Specify the following **Destination Port Range**: `7180,7182,7183,8086,9996,9997,5678,8083,8087,9998,9999,8091,9994,9995,7184,8084,10101,19001,9000,7190,7191`
     * Click **Add Ingress Rules** 
 
+---
 ## Configure API Access to OCI
 There are times when you will want programmatic access to OCI.  This is useful, for example, when you want to automate cluster management using the API. 
 
@@ -198,11 +227,11 @@ You now have collected all of the information required to make trusted API calls
 * Add the following to that config file, replacing the highlighted fields with the infomration you collected:
 ```INI
 [DEFAULT]
-user=your-user-ocid
-fingerprint=your-fingerprint
+user=myuser-ocid
+fingerprint=myfingerprint
 key_file=~/.oci/oci_api_key.pem
-tenancy=your-tenancy
-region=your-bds-region
+tenancy=mytenancy
+region=mybds-region
 ```
 Below is an example with all of the fields completed:
 ```INI

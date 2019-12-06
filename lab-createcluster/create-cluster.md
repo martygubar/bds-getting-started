@@ -24,7 +24,7 @@ To complete this lab, you need to have the following:
     * Enter your OCI user name and password
 
 * In the OCI Console naviation menu, select **Big Data**
-* Select **Compartment** `your-compartment` to create the cluster in that compartment
+* Select **Compartment** `mycompartment` to create the cluster in that compartment
 
 ## Create a Big Data Service Cluster
 There are many options when creating a cluster.  You will need to understand the sizing requirements based on your use case and performance needs.  This example will create a development cluster.  It is designed to use all features - but is targeted at small workloads and flexibility. Listed below is the cluster profile:
@@ -36,7 +36,7 @@ For better performance and scalability, change the above specs appropriately.  C
 
 ### Create the Cluster
 Click **Create Cluster**.  Specify the cluster properties:
-* **Cluster Name:** `your-cluster-name`
+* **Cluster Name:** `mycluster`
 * **Cluster Admin Password:** `your-password`  (this will be the administrator password for Cloudera Manager)
 * Select **Secure & Highly Available:** 
 * **Cluster Version:** Select `CDH 6.2`
@@ -50,11 +50,11 @@ Click **Create Cluster**.  Specify the cluster properties:
     * **Block Storage Size per Worker Node (in GB):** `750`
     * **Number of Worker Nodes:** `3`
 * **Network Settings**
-    * **Compartment:** `your-compartment`
-    * **Choose VCN:** `your-vcn`
-    * **Choose Subnet:** `your-subnet`
+    * **Compartment:** `mycompartment`
+    * **Choose VCN:** `mynetwork`
+    * **Choose Subnet:** `Public Subnet-mynetwork`
     * Select **Enable NAT Gateway**
-    * **CIDR Block:** `your-cidr` (private network used for intra-cluster communications. e.g. 10.200.0.0/16)
+    * **CIDR Block:** `10.200.0.0/16` (private network used for intra-cluster communications. e.g. 10.200.0.0/16)
 * **Additional Options**
     * Upload your public key.  The associated private will be used to make SSH connections to the cluster
 * **Click Create**
@@ -62,7 +62,7 @@ Click **Create Cluster**.  Specify the cluster properties:
 ### Monitor Cluster Creation
 The cluster creation will take some time.  You can monitor its progress at any time:
 * Select **Big Data** from the OCI navigation menu
-* Select `your-cluster-name` from the list of clusters
+* Select `mycluster` from the list of clusters
 * Click **Work Requests**
 
 

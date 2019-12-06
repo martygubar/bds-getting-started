@@ -2,113 +2,55 @@
 <html lang="en">
 
 <head>
-    <meta name="partnumber" content="">
-    <meta name="publisheddate" content="">
-    <meta name="contentid" content="">
-    <meta content="text/html; charset=utf-8" http-equiv="content-type">
-    <title></title>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="robots" content="INDEX, FOLLOW">
-    <meta name="description" content="">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://ashwin-agarwal.github.io/tutorials/obe_template/css/normalize.min.css">
-    <link rel="stylesheet" href="https://ashwin-agarwal.github.io/tutorials/obe_template/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://ashwin-agarwal.github.io/tutorials/obe_template/css/obe-lite.css">
-    <script src="https://ashwin-agarwal.github.io/tutorials/obe_template/js/jquery-1.11.0.min.js"></script>
-    <script src="https://ashwin-agarwal.github.io/tutorials/obe_template/js/jquery-ui-1.10.4.custom.js"></script>
-    <script src="https://ashwin-agarwal.github.io/tutorials/obe_template/js/jquery.tocify.jd.js"></script>
-    
-    <link rel="stylesheet" href="https://ashwin-agarwal.github.io/tutorials/common/css/nav.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.0/showdown.js"></script>
-    <script src="https://ashwin-agarwal.github.io/tutorials/common/js/load.js"></script>
-	<script src="https://ashwin-agarwal.github.io/tutorials/common/js/main.js"></script>
-	
-	<link rel="shortcut icon" href="https://ashwin-agarwal.github.io/tutorials/obe_template/img/favicon.ico" />
+    <title>Oracle Hands-on Labs</title>
+
+    <script src="https://oracle.github.io/learning-library/common/redwood-hol/js/jquery-1.11.0.min.js"></script>
+    <script src="https://oracle.github.io/learning-library/common/redwood-hol/js/jquery-ui-1.10.4.custom.js"></script>
+    <script src="https://oracle.github.io/learning-library/common/redwood-hol/js/jquery.tocify.jd.js"></script>
+    <script src="https://oracle.github.io/learning-library/common/redwood-hol/js/main.js"></script>
+
+    <link rel="stylesheet" href="https://oracle.github.io/learning-library/common/redwood-hol/css/style.css" />
+    <link rel="shortcut icon" href="https://oracle.github.io/learning-library/common/redwood-hol/img/favicon.ico" />
 </head>
 
 <body>
-    <header>
-        <div class="w1024" style="min-height:55px; display:block;"> 
-            <a href="https://docs.oracle.com"
-                class="oracle-logo">
-                <img src="https://ashwin-agarwal.github.io/tutorials/obe_template/img/oracle_doc_logo.png"
-                    alt="Oracle Documentation" style="max-width: none;" height="22" width="236"></a>
+    <header class="hol-Header" role="banner">
+        <div class="hol-Header-wrap">
+            <div class="hol-Header-logo"><span>Hands on Labs</span></div>
+            <div class="hol-Header-actions">
+                <button id="openNav" class="hol-Header-button hol-Header-button--menu rightNav" aria-label="Open Menu"
+                    title="Open Menu">
+                    <span class="hol-Header-toggleIcon"></span>
+                </button>
+            </div>
         </div>
-
     </header>
-    <!--end header-->
 
-    <div id="content">
-        <!-- The title below is displayed as the title at the top of the OBE page. It can be shorter than the title in the <title> element, above. -->
-        <!-- Use an imperative verb in the title. -->
-        <h1><img src="https://ashwin-agarwal.github.io/tutorials/obe_template/img/obe_tag.png" align="middle"
-                alt="Oracle by Example branding"></h1>
-        <div class="w1024" style="clear:both; position:relative; margin-top:40px;">
-            <div class="navbackwide border-right">
-                <!-- -->
-            </div>
-            <div id="shownav" title="Show Navigation" tabindex="0"><span class="fa fa-list"></span></div>
-            <div id="sidebar">
-                <!-- -->
-                <div class="left-nav-tut">
-                    <!-- -->
-                    <div id="hidenavw" title="Hide Navigation" tabindex="0"><span class="fa fa-close"></span></div>
-                    <div id="navbar" class="left-nav-w">
-                        <!-- -->
-                        <div id="toc" class="tocify">
-                            <!-- -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="bookContainer"></div>
-            <br class="clearfloat">
+    <div id="mySidenav" class="rightNav">
+        <nav class="hol-Nav">
+            <button id="closeNav" class="hol-Nav-close" aria-label="Close Menu" title="Close Menu"><span
+                    class="hol-Nav-closeIcon"></span></button>
+            <div class="hol-Nav-title">Lab Contents</div>
+            <ul class="hol-Nav-list">
+            </ul>
+        </nav>
+    </div>
+
+    <div id="container">
+        <div id="leftNav">
+            <div id="toc"></div>
+        </div>
+        <div id="contentBox">
+            <main class="hol-Content" id="module-content"></main>
         </div>
     </div>
-    <!--close main-->
-    <!--end content-->
-    <div class="footer-container ">
-        <div style="max-width: 994px; padding:10px 0 0 17px;">
-            <footer class="footer-list">
-                <ul>
-                    <li> <a href="https://www.oracle.com/corporate/index.html" target="_blank">About Oracle</a> </li>
-                    <li> <a href="https://www.oracle.com/us/corporate/contact/index.html" target="_blank">Contact Us</a>
-                    </li>
-                    <li> <a href="https://www.oracle.com/us/legal/index.html" target="_blank">Legal Notices</a> </li>
-                    <li> <a href="https://www.oracle.com/us/legal/terms/index.html" target="_blank">Terms of Use</a>
-                    </li>
-                    <li> <a href="https://www.oracle.com/us/legal/privacy/index.html" target="_blank">Your Privacy
-                            Rights</a> </li>
-                    <li> <a href="https://www.oracle.com/pls/topic/lookup?ctx=cpyr&id=en">Copyright © 2019, Oracle
-                            and/or its affiliates. All rights reserved.</a></li>
-                </ul>
-            </footer>
-        </div>
-        <script type="text/javascript" src="https://www.oracleimg.com/us/assets/metrics/ora_docs.js"></script>
-    </div>
-    <!-- OBE Dialog Box code 10/15/2018 -->
-    <!-- DO NOT ALTER THE CODE BELOW   -->
-    <div id="lpModal" class="modal">
-        <!-- Modal hdr and body -->
-        <div id="obe_dialog" class="modal-content">
-            <div class="modal-header">
-                <a href="#" class="close">
-                    <span class="close">&times;</span>
-                </a>
-                <h1>Associated Learning Paths</h1>
-            </div>
-            <div id="dialog-content">
-            </div>
-            <div id="dialog-close" class="closeBtn">
-                <a href="#" class="close2">
-                    <p class="close2">
-                        <span>&nbsp;&nbsp;View&nbsp;&nbsp;</span>
-                    </p>
-                </a>
-            </div>
-        </div>
-    </div>
-    <!-- END OBE Dialog Box code -->
+
+    <footer class="hol-Footer">
+        <a class="hol-Footer-topLink" href="#top">Return to Top</a>
+    </footer>
 </body>
 
 </html>

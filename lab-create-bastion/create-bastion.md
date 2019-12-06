@@ -39,14 +39,14 @@ To complete this lab, you need to have the following:
 * In the **Create Compute Instance** page, complete the fields similar to the example below.  You will want to use Oracle Linux 7.x.  Size the VM based on your requirements.  In this example, the bastion will only be used for accessing the cluster and submitting jobs, therefore it is sized for that use case.  
 
     In addition, the bastion should be added to the same VCN subnet as your Big Data Service cluster:
-    * **Name your instance:** `your-bastion`
+    * **Name your instance:** `mybastion`
     * **Operating System:** `Oracle Linux 7.7` (this matches the BDS Cluster OS)
     * **Avaiability Domain:** `AD 1`  (choose what is appropriate for your deployment)
     * **Instance Type:** `Virtual Machine`
     * **Instance Shape:** `VM.Standard2.1 (VirtualMachine)`
     * **Configure networking**
-        * **Virtual cloud network compartment:**  `your-bds-network-compartment`
-        * **Virtual cloud network:** `your-bds-vcn`
+        * **Virtual cloud network compartment:**  `mycompartment`
+        * **Virtual cloud network:** `mynetwork`
         * **Subnet compartment:** `your-bds-subnet-compartment`
         * **Subnet:** `your-bds-subnet`
         * **Use network security groups to control traffic:** `enable if used`
@@ -99,7 +99,7 @@ echo "Host your-utility-node1
    User opc
    UserKnownHostsFile /dev/null
    StrictHostKeyChecking no
-   IdentityFile ~opc/.ssh/your-private-key
+   IdentityFile ~opc/.ssh/bdsKey
    
    Host your-master-node1
    Hostname `your-master-node-ip`
@@ -107,14 +107,14 @@ echo "Host your-utility-node1
    User opc
    UserKnownHostsFile /dev/null
    StrictHostKeyChecking no
-   IdentityFile ~opc/.ssh/your-private-key" >> config
+   IdentityFile ~opc/.ssh/bdsKey" >> config
 chmod 644 config
 ```
 You can now connect to the utility node more easily, using just the hostname:
 
     ssh your-utility-node1
 
-Copy this file to the root users .ssh home:
+Copy this file to the root users .ssh home.  This will allow secure copy to work in the next sections:
 ```bash
 sudo cp ~opc/.ssh/config /root/.ssh/
 ```
@@ -149,7 +149,7 @@ $ cat /etc/hosts
 **After**
 ```bash
 $ echo "10.0.0.14 pmteamun0.bmbdcsad1.bmbdcs.oraclevcn.com pmteamun0.bmbdcsad1.bmbdcs.oraclevcn.com. pmteamun0" | sudo tee -a /etc/hosts
-$ echo "10.0.0.12 pmteammn0.bmbdcsad1.bmbdcs.oraclevcn.com pmteamun0.bmbdcsad1.bmbdcs.oraclevcn.com. pmteammn0" | sudo tee -a /etc/hosts
+$ echo "10.0.0.12 pmteammn0.bmbdcsad1.bmbdcs.oraclevcn.com pmteammn0.bmbdcsad1.bmbdcs.oraclevcn.com. pmteammn0" | sudo tee -a /etc/hosts
 
 $ cat /etc/hosts
 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
@@ -174,10 +174,14 @@ sudo scp your-utility-node1:/etc/yum.repos.d/bda.repo /etc/yum.repos.d/
 
 ```
 
-* Now that the Big Data Service software is available, install Kerberos, Cloudera Manager Agents and the Oracle JDK (v8).  As the root user on the utililty node, run the following commands:
+* Now that the Big Data Service software is available, install Kerberos, Cloudera Manager Agents and the Oracle JDK (v8).  As the opc user on the bastion node, run the following commands:
     ```bash
     sudo yum clean all
-    sudo yum install -y krb5-workstation krb5-libs jdk1.8 cloudera-manager-agent
+    sudo yum install -y krb5-workstation krb5-libs jdk1.8
+    export JAVA_HOME=/usr/java/latest 
+    echo "export JAVA_HOME=/usr/java/latest" | sudo tee -a /etc/profile.d/mystartup.sh
+    sudo chmod 644 /etc/profile.d/mystartup.sh
+    sudo yum install -y cloudera-manager-agent
     ```
 ### Configure the Core Software
 There are configuration files that must be updated for each of the newly installed packages:
@@ -194,9 +198,19 @@ Update the Cloudera Manager configuration so that it can connect to the Cloudera
     
     ```bash
     sudo scp pmteamun0:/etc/cloudera-scm-agent/config.ini /etc/cloudera-scm-agent/
+    sudo scp pmteamun0:/etc/cloudera-scm-agent/agentkey.pw /etc/cloudera-scm-agent/
     sudo mkdir -p /opt/cloudera/security/x509/
     sudo scp pmteamun0:/opt/cloudera/security/x509/agents.pem /opt/cloudera/security/x509/
     ```
+* Start the Cloudera Manager Agents
+    ```bash
+    sudo systemctl start cloudera-scm-agent
+    sudo systemctl enable cloudera-scm-agent
+    ````
+
+### Enable Cluster Nodes to Access Bastion
+Update /etc/hosts with the bastion IP
+
 ** Update the /etc/yum.repos.d
 
 
