@@ -24,14 +24,14 @@ To complete this lab, you need to have the following:
 ## Connect to the Cluster's First Master Node
 The KDC is running on the cluster's first master node.  Log into that node as the OPC user:
 
-    ssh `your-first-master-node``
+    ssh myclustmn0
 
 ## Create the Admin `bds` Kerberos Principal
 The opc user has sudo privileges on the cluster - allowing it to switch to the root user and then run privileged commands.  Change to the root user, connect to the Kerberos KDC and add a new kerberos principal `bds`.  Specify a password for this user and keep the password in a safe place.
 
     # sudo bash
     # kadmin.local
-    kamdin.local: addprinc bds
+    kadmin.local: addprinc bds
     kadmin.local: exit
 
 ## Create a `hadoopadmin` Linux OS Group
@@ -60,6 +60,20 @@ You will now need to update the cluster with the new settings by deploying the c
 * Next to the cluster name, click the triangle and then select **Deploy Client Configuration**.  Confirm that the step should be run.  Click **Close** when complete.
 * Restart the cluster by clicking the triangle next to the cluster and select **Restart**.  This action will take a few minutes.
 
+### Access HDFS Using the new User
+Log into any of the Big Data Service nodes.  Then, get Kerberos ticket for the `bds` user and perform a file listing of HDFS:
+
+```bash
+# Get a kerberos ticket
+kinit bds
+
+# Query the file system
+hadoop fs -ls /
+
+Found 2 items
+drwxrwxrwt   - hdfs supergroup          0 2019-12-05 23:32 /tmp
+drwxr-xr-x   - hdfs supergroup          0 2019-12-05 23:32 /user
+```
 
 ## Optionally Add `bds` User to Hue
 Log into Hue as an administrator and add the `bds` user as an administrator.

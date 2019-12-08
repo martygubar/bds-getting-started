@@ -43,12 +43,12 @@ To complete this lab, you need to have the following:
     * **Operating System:** `Oracle Linux 7.7` (this matches the BDS Cluster OS)
     * **Avaiability Domain:** `AD 1`  (choose what is appropriate for your deployment)
     * **Instance Type:** `Virtual Machine`
-    * **Instance Shape:** `VM.Standard2.1 (VirtualMachine)`
+    * **Instance Shape:** `VM.Standard2.1 (VirtualMachine)` (choose what is appropriate for your deployment)
     * **Configure networking**
         * **Virtual cloud network compartment:**  `mycompartment`
         * **Virtual cloud network:** `mynetwork`
-        * **Subnet compartment:** `your-bds-subnet-compartment`
-        * **Subnet:** `your-bds-subnet`
+        * **Subnet compartment:** `mycompartment`
+        * **Subnet:** `Public Subnet-mynetwork (Regional)`
         * **Use network security groups to control traffic:** `enable if used`
         * **Assign public IP address:** `yes`
     * **Boot Volume**
@@ -94,71 +94,92 @@ To make subsequent connections to the cluster nodes easier, create an SSH config
 ```bash
 cd ~opc/.ssh
 
-echo "Host your-utility-node1
+echo "Host myclustun0
    Hostname `your-utility-node-ip`
    ServerAliveInterval 50
    User opc
    UserKnownHostsFile /dev/null
    StrictHostKeyChecking no
-   IdentityFile ~opc/.ssh/bdsKey
+   IdentityFile ~opc/.ssh/your-private-key
    
-   Host your-master-node1
+   Host your-myclustmn0
    Hostname `your-master-node-ip`
    ServerAliveInterval 50
    User opc
    UserKnownHostsFile /dev/null
    StrictHostKeyChecking no
-   IdentityFile ~opc/.ssh/bdsKey" >> config
+   IdentityFile ~opc/.ssh/your-private-key" >> config
 chmod 644 config
 ```
 You can now connect to the utility node more easily, using just the hostname:
 
-    ssh your-utility-node1
+    ssh myclustun0
 
 Copy this file to the root users .ssh home.  This will allow secure copy to work in the next sections:
 ```bash
 sudo cp ~opc/.ssh/config /root/.ssh/
 ```
 
-## DONT THINK DCLI IS REQUIRED
----
-### Enable dcli to Work with the Bastion
-**dcli** is an Oracle utility installed on the cluster nodes that allows you to execute commands and copy files across multiple hosts.  It is an extremely useful utility that we will use later when updating the cluster and the bastion.  **dcli** is typically executed by the root user and requires passwordless connections.  To enable passwordless ssh into the bastion from the cluster, copy the ssh public key from the utility node to the bastion and then add it to the authorized_keys file for the root user.
-
-On the bastion node, run the following commands as the opc user:
-```bash
-cd
-scp your-utility-node1:.ssh/id_rsa.pub .
-cat id_rsa.pub | sudo tee -a /root/.ssh/authorized_keys
-rm id_rsa.pub
-```
----
 ### Update /etc/hosts on the Bastion
-Update the **/etc/hosts** file on the bastion to include the first master and utility node.  To determine the hostname and the fqdn, you can log into the two nodes using the host names that you used in the ssh confg file and then running the `hostname` command.  For example:
+Update the **/etc/hosts** file on the bastion to include the the cluster nodes.  
+NOTE: the IP addresses in the /etc/hosts file on the utility and master nodes will be different than the IP addresses added to the bastion; the IPs in the cluster nodes' /etc/hosts files are private IP addresses used for intra-cluster communication.  You will use the public IP addresses that were added to the SSH config file in the previous section.
+
+Top update the /etc/hosts file, you will:
+1. Backup the **/etc/hosts** file on `mybastion` to `/etc/hosts.bastion`
+1. Log into the utility node and create a `customerhosts` file that uses the customer IP addresses for the cluster
+1. Return the bastion node and copy the generated file
+1. Add the result to the bastion's /etc/hosts file
+
 ```bash
-ssh your-utility-node1
-hostname
+# connect to mybastion
+ssh mybastion
+
+# backup /etc/hosts
+sudo cp /etc/hosts /etc/hosts.bastion
+
+# connect to the utility node
+ssh myclustun0
+
+# Connect to the utility node and generate an hosts file that uses customer IPs
+# Command that will generate the IP address will be saved to a file and executed using dcli
+# Prior to running, ensure that the command below matches your-utility-node-ip from above.  You may need to select a different field (i.e. change -f 2 to -f 1)
+#    echo `hostname -I | cut -d " " -f 2`
+
+# Generate the script
+echo 'echo `hostname -I | cut -d " " -f 2` `hostname -f` `hostname -a`' > gethostmap
+
+# run the script on each node to gather the customer IPs
+dcli -x gethostmap | cut -d ':' -f 2 | awk '{$1=$1};1' > customerhosts
+
+# review the generated file and ensure the ips match the customer IPs
+cat customerhosts
+
+# Return bastion, copy the file and update /etc/hosts
+exit
+scp myclustun0:customerhosts ~opc
+cat customerhosts | sudo tee -a /etc/hosts
 ```
-The hostname that is returned by the command is the fqdn.  The short name is the name prior to the first ".".  Add the IP address, fqdn and host short name to the /etc/hosts file on the bastion.  NOTE: the IP addresses in the /etc/hosts file on the utility and master nodes will be different than the IP addresses add to the bastion; they are private IP addresses used for intra-cluster communication.  Use the IP addresses that you added to the SSH config file in the previous section.
 
-Below is an example of a before and after snapshot of an /etc/hosts file for the ``pmteam`` cluster.
-
-**Before:**
+**Before (example):**
 ```bash
 $ cat /etc/hosts
 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+10.0.0.9 mybastion.sub12052130070.mynetwork.oraclevcn.com mybastion
 ```
-**After**
+**After (change ip addresses and hosts)**
 ```bash
-$ echo "10.0.0.14 pmteamun0.bmbdcsad1.bmbdcs.oraclevcn.com pmteamun0.bmbdcsad1.bmbdcs.oraclevcn.com. pmteamun0" | sudo tee -a /etc/hosts
-$ echo "10.0.0.12 pmteammn0.bmbdcsad1.bmbdcs.oraclevcn.com pmteammn0.bmbdcsad1.bmbdcs.oraclevcn.com. pmteammn0" | sudo tee -a /etc/hosts
-
-$ cat /etc/hosts
+cat /etc/hosts
 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
-10.0.0.14 pmteamun0.bmbdcsad1.bmbdcs.oraclevcn.com pmteamun0.bmbdcsad1.bmbdcs.oraclevcn.com. pmteamun0
-10.0.0.12 pmteammn0.bmbdcsad1.bmbdcs.oraclevcn.com pmteamun0.bmbdcsad1.bmbdcs.oraclevcn.com. pmteammn0
+10.0.0.9 mybastion.sub12052130070.mynetwork.oraclevcn.com mybastion.sub12052130070.mynetwork.oraclevcn.com. mybastion
+10.0.0.5 myclustmn0.bmbdcsad1.bmbdcs.oraclevcn.com myclustmn0.bmbdcsad1.bmbdcs.oraclevcn.com. myclustmn0
+10.0.0.7 myclustun0.bmbdcsad1.bmbdcs.oraclevcn.com myclustun0.bmbdcsad1.bmbdcs.oraclevcn.com. myclustun0
+10.0.0.2 myclustun1.bmbdcsad1.bmbdcs.oraclevcn.com myclustun1.bmbdcsad1.bmbdcs.oraclevcn.com. myclustun1
+10.0.0.6 myclustwn0.bmbdcsad1.bmbdcs.oraclevcn.com myclustwn0.bmbdcsad1.bmbdcs.oraclevcn.com. myclustwn0
+10.0.0.3 myclustwn1.bmbdcsad1.bmbdcs.oraclevcn.com myclustwn1.bmbdcsad1.bmbdcs.oraclevcn.com. myclustwn1
+10.0.0.8 myclustwn2.bmbdcsad1.bmbdcs.oraclevcn.com myclustwn2.bmbdcsad1.bmbdcs.oraclevcn.com. myclustwn2
+10.0.0.4 myclustmn1.bmbdcsad1.bmbdcs.oraclevcn.com myclustmn1.bmbdcsad1.bmbdcs.oraclevcn.com. myclustmn1
 ```
 Your bastion will now be able to communicate with the cluster using both SSH and other protocols.
 
@@ -173,8 +194,8 @@ The core software will be installed from Oracle's software repository.  The Big 
 
 * Make Big Data Service software available to the bastion via YUM.  Copy the **bda.repo** file to the bastion node as the root user.  From the bastion:
 ```bash
-sudo scp your-utility-node1:/etc/yum.repos.d/bda.repo /etc/yum.repos.d/
-
+# copy the repo file from the first utility node
+sudo scp myclustun0:/etc/yum.repos.d/bda.repo /etc/yum.repos.d/
 ```
 
 * Now that the Big Data Service software repo is available, install Kerberos, Cloudera Manager Agents and the Oracle JDK (v8).  As the opc user on the bastion node, run the following commands:
@@ -196,22 +217,22 @@ There are configuration files that must be updated for each of the newly install
 * Java:  Java Cryptography Extension (JCE) unlimited strength jurisdiction policy files.  This is required for Kerberos access to the cluster.
     ```bash
     # Enable Java processes to access Kerberized cluster
-    sudo scp pmteamun0:/usr/java/latest/jre/lib/security/*.jar /usr/java/latest/jre/lib/security/
+    sudo scp myclustun0:/usr/java/latest/jre/lib/security/*.jar /usr/java/latest/jre/lib/security/
     ```
 * Keberos:  Kerberos configuration file
     ```bash
     # Configuration file for Kerberos
-    sudo scp pmteamun0:/etc/krb5.conf /etc/
+    sudo scp myclustun0:/etc/krb5.conf /etc/
     ```
 * Cloudera Manager Agent: Configuration files and PEM file
 Update the Cloudera Manager configuration so that it can connect to the Cloudera Manager Server.
     ```bash
     # Cloudera Manager Agent configuration file 
-    sudo scp pmteamun0:/etc/cloudera-scm-agent/config.ini /etc/cloudera-scm-agent/
+    sudo scp myclustun0:/etc/cloudera-scm-agent/config.ini /etc/cloudera-scm-agent/
 
     # SSH key file required for agents to communicate to CLoudera Manager
     sudo mkdir -p /opt/cloudera/security/x509/
-    sudo scp pmteamun0:/opt/cloudera/security/x509/agents.pem /opt/cloudera/security/x509/
+    sudo scp myclustun0:/opt/cloudera/security/x509/agents.pem /opt/cloudera/security/x509/
     ```
 * Start the Cloudera Manager Agents
     ```bash
@@ -229,157 +250,67 @@ cat /etc/hosts
 Find the line containing the hostname and IP address and save it.  Next, log into the utility node and add that line to each cluster node's /etc/hosts file.  The command below is using an example host/IP mapping.  Update to match your results:
 
 ```bash
-ssh your-utility-node
-# run dcli as root
-sudo bash
-# update line below to match your /etc/hosts results
-dcli 'echo "10.0.0.22 pmedge2.bdssubnet.bdsnetwork.oraclevcn.com pmedge2" | tee -a /etc/hosts'
+# Get the line from /etc/hosts
+grep mybastion /etc/hosts
+
+# Log into the utility node and add a line to each /etc/hosts file
+# Example:
+# 10.0.0.9 mybastion.sub12052130070.mynetwork.oraclevcn.com mybastion.sub12052130070.mynetwork.oraclevcn.com. mybastion
+#
+# Ensure you add a map for the hostname ending in ".".  We'll use the example from above.  Replace the ip/host appropriately
+ssh myclustun0
+dcli "echo '10.0.0.9 mybastion.sub12052130070.mynetwork.oraclevcn.com mybastion.sub12052130070.mynetwork.oraclevcn.com. mybastion' | sudo tee -a /etc/hosts"
 ```
-## Add Bastion to Your Big Data Service Cluster
-You will use Cloudera Manager to add the bastion to the cluster and then assign it gateway roles.  These gateway roles will allow you to access data on the cluster and run jobs.  The bastion Hadoop software will be managed by Cloudera Manager.
+
+## Add Gateway Roles to Bastion from Cloudera Manager
+The bastion node will now be updated with the gateway roles that will allow it to submit jobs and access the HDFS file system.  This will be done using Cloudera Manager.
 
 * Log into Cloudera Manager.  Enter the admin id and password used when creating the cluster:
 
-    https://`your-utility-node1`:7183
+    https://`your-utility-node1-ip`:7183
 
 * Click menu item **Hosts >> Add Hosts**
- * Select **Add hosts to cluster** `mycluster`.  Click **Continue**
- * Enter `mybastion` into the hostname field.  Click **Search**
- * The host will be found and displayed in the table.  If it's not listed, then fix the private IP address.  Click **Continue**
- * Select Repository:  
-    * Choose **Public Cloudera Repository**
-        * If this does not work, select a Custom Repository.  Use the BDA repo located on the Hadoop Cluster's master node:  `http://pmteammn0.bmbdcsad1.bmbdcs.oraclevcn.com/bda`
+* Select **Add hosts to cluster** `mycluster`.  Click **Continue**
+* Specify Hosts
+    * Select **Currently Managed**
+    * Select **Hostname** `mybastion`
     * Click **Continue**
- * **Accept JDK License**
-    * Do not select **Install Oracle Java SE Development Kit (JDK 8)**.  The correct Java version is already installed and configured.
-    * Click **Continue**
- * **Enter Login Credentials**
-    * Select **Login To All Hosts as Another User**: `opc`  
-    * **Authentication Method:** Check **All hosts accept same private key**.  Upload the private key you used to create the cluster.  
-    * Click **Continue**
+* Install Parcels
+    * The parcels will be distributed, unpacked and activated. This will take some time.  When complete, click **Continue**
+* Inspect Hosts for Correctness
+    * This can take a few minutes.  Click **Skip Host Inspection** and then click **Continue**
+* Select Host Template
 
-The Cloudera Manager Agents will then be installed on the bastion node.
+    Create a new Gateway template. It will only contain Gateway roles; no data or processing will take place on this node.
 
+    * Click **Create** a new Host Template
+    * **Template Name:** `mygatewayroles`
+    * Select Gateway roles for the following services:
+        * HDFS
+        * Hive
+        * Spark
+        * Yarn
+    * Click **Create**
+    * Select Host Template `mygatewayroles` and then click **Continue**
+* Command Details
+    * The roles are created and the client configuration is then deployed.  
+    * When complete, click **Continue** and then click **Finish**
 
+## Test the Bastion
+Log into the bastion and run a couple of tests against your cluster.
+```bash
+# Log into the bastion
+ssh mybastion
 
+# Get a kerberos ticket for the bds user.  Use the password provided during setup
+kinit bds
+Password for bds@BDACLOUDSERVICE.ORACLE.COM:
 
+# Review hdfs data at the root directory
+hadoop fs -ls /
 
-
-
-
-
-
-
-
-## Enable Bastion to Communicate to Cloudera Manager Server
-### Bastion to Cloudera Manager Server
-The configuration of the bastion will on the cluster require that it can communicate to Cloudera Manager Server on port 7182.  Update the Security List for the VCN to enable that communication:
-
-REMOVE THIS SECTION
-* Select **Networking >> Virtual Cloud Networks** from the OCI Console navigation menu
-* Select the VCN used by your BDS Cluster
-* Select the Subnet used by your BDS Cluster
-* Select the Security List used by the VCN
-* Click **Add Ingress Rules**
-    * **Source Type:**  `CIDR`
-    * **Source CIDR:**  `range`, e.g. 10.200.0.0/16
-    * **IP Protocol:** `TCP`
-    * **Source Port Range:** All
-    * **Destination Port Range:** 7182
-
-    Click **Add Ingress Rules**
-
-
-## Update /etc/hosts on the bastion
-... specify the updates to =/etc/hosts here
-
-## Add Bastion to Your Big Data Service Cluster
-You will use Cloudera Manager to add the bastion to the cluster and then assign it gateway roles.  These gateway roles will allow you to access data on the cluster and run jobs.  The bastion Hadoop software will be managed by Cloudera Manager.
-
-* Log into Cloudera Manager.  Enter the admin id and password used when creating the cluster:
-
-    https://`your-utility-node1`:7183
-
-
-# ERRORS
-Administration >> Settings >> Security
-Disable Use TLS Encryption for Agents.  Save
-sudo systemctl restart cloudera-scm-server
-
-* Copy the private key for your cluster to the bastion.  From a MacOS or Linux client, use secure copy to copy the private key
-
-    ```bash
-    scp -i your-private-key your-private-key opc@your-bastion:~opc/.ssh/
-    ```
-
-Install Kerberos
-* Log into `your-bastion`
-* Install the Kerberos clients
-
-    sudo yum install -y krb5-workstation krb5-libs
-
-* Copy the bda.repo file to /etc/yum.repos.d/  ### DON"T DO THIS
-    ```bash
-    scp -i ~opc/.ssh/bdsKey 10.0.0.6:/etc/yum.repos.d/bda.repo /tmp
-    sudo mv /tmp/bda.repo /etc/yum.repos.d
-    sudo chown root:root /etc/yum.repos.d/bda.repo
-    sudo chmod 644 /etc/yum.repos.d/bda.repo
-    ```
-* Update /etc/hosts on the bastion with settings from 
-
-
-* Log into the bastion and copy the krb5.conf file from `your-utility-node1` to `your-bastion`
-
-    ```bash
-    scp -i ~opc/.ssh/bdsKey 10.0.0.14:/etc/krb5.conf /tmp
-    sudo mv /tmp/krb5.conf /etc/
-    sudo chown root:root /etc/krb5.conf
-    sudo chmod 644 /etc/krb5.conf
-    ```
-
-Install continued, but then it attempts to install parcels and fails b/c 
-
- * BDS sets up TLS Encryption for Cloudera Manager Agents.  Temporarily disable TLS:
-    * Click **Administration >> Settings**
-    * Select the **Security** category.
-    * Disable TLS by clearing the option: **Use TLS Encryption for Agents**
-    * Click **Save Changes**
-    * Log into the Cloudera Manager host (first utility node)
-    * Restart the Cloudera Manager server
-
-    sudo systemctl restart cloudera-scm-server
-
-    * The server will take a few minutes to restart.  You will not be able to log into Cloudera Manager until the restart successfullhy compltes
-
-
- * Click menu item **Hosts >> Add Hosts**
- * Select **Add hosts to cluster** `your-cluster`.  Click **Continue**
- * Copy the `your-bastion-private-ip` into the hostname field.  Click **Search**
- * The host will be found and displayed in the table.  If it's not listed, then fix the private IP address.  Click **Continue**
- * Select Repository:  
-    * Choose **Public Cloudera Repository**
-        * If this does not work, select a Custom Repository with the Cloudera URL.  For Cloudera 6.32.0, this would be:  `https://archive.cloudera.com/cm6/6.2.0/redhat7/yum/`
-    * Click **Continue**
- * **Accept JDK License**
-    * Select **Install Oracle Java SE Development Kit (JDK 8)**.  
-    * Select **Install Java Unlimited Strength Encryption Policy Files**
-    * Click **Continue**
- * **Enter Login Credentials**
-    * Select **Login To All Hosts as Another User**: `opc`  
-    * **Authentication Method:** Check **All hosts accept same private key**.  Upload the private key you used to create the cluster.  
-    * Click **Continue**
-
-The Cloudera Manager Agents will then be installed on the bastion node.
-
-Error
-If Use TLS Encryption for Agents is enabled in Cloudera Manager (Administration -> Settings -> Security), ensure that /etc/cloudera-scm-agent/config.ini has use_tls=1 on the host being added. Restart the corresponding agent and click the Retry link here.
-
-systemctl restart cloudera-scm-agent.service
-
-/etc/hosts
-10.200.18.34 pmteamun0.bmbdcsad1.bmbdcs.oraclevcn.com pmteamun0.bmbdcsad1.bmbdcs.oraclevcn.com. pmteamun0
+```
 
 ## Summary
-Your Hadoop data and metadata are now backed up to Oracle Object Storage.  You can perform incremental backups of this data by scheduling the backup jobs.  Your next step will be to restore this data to your Big Data Service Hadoop cluster.
-
+You can now connect to the cluster from the bastion and submit jobs.
 **This completes the tutorial!**

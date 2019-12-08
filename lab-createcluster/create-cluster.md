@@ -76,15 +76,15 @@ For the remainder of the tutorial, the names used will match the order of the no
 * [first 6 letters of cluster name][two letters representing node type][the order in the node list]
 
 In our example with the cluster name `mycluster`:
-* Master Nodes:    `myclustmn0`, `myclustmn1`
+* 2 Master Nodes:  `myclustmn0`, `myclustmn1`
 * 2 Utility Nodes: `myclustun0`, `myclustun1`
 * 3 Worker Nodes:  `myclustwn0`, `myclustwn1`, `myclustwn2`
 
 Because this is a highly available cluster, the services are distributed as follows:
 
-| Master Node 1 | Master Node 2 | Utility Node 1 | Utility Node 2 | Worker Nodes |
+| Master Node 1<br />myclustmn0| Master Node 2<br />myclustmn1| Utility Node 1<br />myclustun0| Utility Node 2<br />myclustun1| Worker Nodes<br />myclustwn0...2 |
 |:----|:----|:----|:----|:----|
-HDFS Failover Controller<br />HDFS JournalNode<br />HDFS NameNode<br />Key Trustee KMS Proxy<br />Key Trustee Server Active<br />KTS Active Database<br />Spark History Server<br />YARN JobHistory Server<br />YARN ResourceManager<br />ZooKeeper Server<br />MIT KDC Primary| HDFS Balancer<br />HDFS Failover Controller<br />HDFS HttpFS<br />HDFS JournalNode<br />HDFS NameNode<br />Hue Load Balancer<br />Hue Server<br />Hue Kerberos Ticket Renewer<br />Key Trustee KMS Proxy<br />KTS Passive Database<br />KTS Passive<br />ResourceManager<br />ZooKeeper Server<br />MIT KDC Secondary| HDFS JournalNode<br />CM Service Alert Publisher<br />C<> Service Event Server<br />CM Service Host Monitor<br />CM Service Navigator Audit Server<br />CM Service Navigator Metadata Server<br />CM Service Reports Manager<br />CM Service Monitor<br />Sentry Server<br />Zookeeper Server| Hive Metastore Server<br />HiveServer2<br />Hive WebHCat Server<br />Hue Load Balancer<br />Hue Server<br />Hue Kerberos Ticket Renewer<br />Oozie Server<br />Sentry Server|HDFS DataNode
+HDFS Failover Controller<br />HDFS JournalNode<br />HDFS NameNode<br />Key Trustee KMS Proxy<br />Key Trustee Server Active<br />KTS Active Database<br />Spark History Server<br />YARN JobHistory Server<br />YARN ResourceManager<br />ZooKeeper Server<br />MIT KDC Primary| HDFS Balancer<br />HDFS Failover Controller<br />HDFS HttpFS<br />HDFS JournalNode<br />HDFS NameNode<br />Hue Load Balancer<br />Hue Server<br />Hue Kerberos Ticket Renewer<br />Key Trustee KMS Proxy<br />KTS Passive Database<br />KTS Passive<br />ResourceManager<br />ZooKeeper Server<br />MIT KDC Secondary| HDFS JournalNode<br />CM Service Alert Publisher<br />C<> Service Event Server<br />CM Service Host Monitor<br />CM Service Navigator Audit Server<br />CM Service Navigator Metadata Server<br />CM Service Reports Manager<br />CM Service Monitor<br />Sentry Server<br />Zookeeper Server| Hive Metastore Server<br />HiveServer2<br />Hive WebHCat Server<br />Hue Load Balancer<br />Hue Server<br />Hue Kerberos Ticket Renewer<br />Oozie Server<br />Sentry Server|HDFS DataNode<br />YARN NodeManager
 
 
 

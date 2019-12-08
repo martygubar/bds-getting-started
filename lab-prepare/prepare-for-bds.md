@@ -68,92 +68,16 @@ You will now update the security lists next to allow ingress thru specific ports
 * Click **Security Lists**
 * Click **Default Security List for mynetwork**
 * Click **Add Ingress Rules**
-    * Update Source CDR: `0.0.0.0/0`
-    * Specify the following **Destination Port Range**: `80,1521,7180,7182,7183,8086,9996,9997,5678,8083,8087,9998,9999,8091,9994,9995,7184,8084,10101,19001,9000,7190,7191`
+    * Update Source CDR: `10.0.0.0/16`
+    * IP Protocol: `TCP`
+    * Accept default for following **Destination Port Range**: All
+    * Click **Add Ingress Rules** 
+* Add a second Ingress rule.  Click **Add Ingress Rules**
+    * Update Source CDR: `10.0.0.0/16`
+    * IP Protocol: `UDP`
+    * Accept default for following **Destination Port Range**: All
     * Click **Add Ingress Rules** 
 
-
-
----
-### Create a VCN
-* In the OCI Console navigation menu, select **Networking >> Virtual Cloud Networks**
-* Click **Create Virtual Cloud Network**
-    * **Name:** `mynetwork`
-    * **Create in Compartment:** `mycompartment`
-    * Select **CREATE VIRTUAL CLOUD NETWORK ONLY**
-    * **CIDR BLOCK:** `10.0.0.0/16` (modify as required)
-    * Select **Use DNS Hostnames in this VCN:** 
-    * **DNS LABEL:** `mybdsnetwork`
-    * **Create Virtual Cloud Network**
-
-### Create a Subnet
-* Click **Create Subnet** in this VCN
-    * **Name:** `mysubnet`
-    * **Subnet Type:** `Regional`
-    * **CIDR Block:** `10.0.0.0/24` (modify as required)
-    * **Route Table:**  `Default Route Table for mynetwork`
-    * Select **Public Subnet**
-    * Check **Use DNS Hostnames in this Subnet**
-    * **DNS Label:** `bdssubnet`
-    * **DHCP Options:** `Default DHCP Options for mynetwork`
-    * **Security List:** `Default Security List for mynetwork`
-    * Click **Create Subnet**
-
-### Create a NAT Gateway
-A NAT gateway lets instances that don't have a public IP address access the internet.
-* From the list of Resources, click **NAT Gateways**
-* Click **Create NAT Gateway**
-    * **Name:** `mynat-gateway`    
-    * **Create in Compartment:** `mycompartment`
-    * Click **Create NAT Gateway**
-
-### Create an Internet Gateway
-An internet gateway is an optional virtual router you can add to your VCN to enable direct connectivity to the internet.  The gateway supports connections initiated from within the VCN (egress) and connections initiated from the internet (ingress).
-* From the list of Resources, click **Internet Gateways**
-* Click **Create Internet Gateway**
-    * **Name:** `myinternet-gateway`    
-    * **Create in Compartment:** `mycompartment`
-    * Click **Create Internet Gateway**
-
-### Create a Service Gateway
-A service gateway enables cloud resources without public IP addresses to privately access Oracle services.  This allows a service to access the Oracle Services Network without the traffic going over the internet.
-* From the list of Resources, click **Service Gateways**
-* Click **Create Service Gateway**
-    * **Name:** `myservice-gateway`    
-    * **Create in Compartment:** `mycompartment`
-    * **Services:** `All <region> Services in Oracle Services Network`
-    * Click **Create Service Gateway**
-
-
-### Create a Routing Rule
-Add two routing rules, one for internet access and the other for the Oracle service gateway
-* From the list of Resources, select **Route Tables**
-* Click **Default Route Table for ``mynetwork``**
-* Add the internet access rule.  Click **Add Route Rules**
-    * **Target Type:** `Internet Gateway`
-    * **Destination CIDR Block:** `0.0.0.0/0`
-    * **Compartment:** `mycompartment`
-    * **Target Internet Gateway:**  `myinternet-gateway`
-    * Click **Add Route Rules**
-* Add the service route rule.  Click **Add Route Rules**
-    * **Target Type:** `Service Gateway`
-    * **Destination Service:** `OCI <region> Object Storage`
-    * **Compartment:** `mycompartment`
-    * **Target Service Gateway:** `myservice-gateway`
-    * Click **Add Route Rules**
-
-### Update the Security List
-Open ports for Hadoop services.  Ports include those required by Hue and Cloudera Manager.
-
-* Click **Security Lists**
-* Click **Default Security List for `mynetwork`**
-* Add the following Ingress Rules:
-    * Click **Add Ingress Rule**
-    * Update Source CDR: `0.0.0.0/0`
-    * Specify the following **Destination Port Range**: `7180,7182,7183,8086,9996,9997,5678,8083,8087,9998,9999,8091,9994,9995,7184,8084,10101,19001,9000,7190,7191`
-    * Click **Add Ingress Rules** 
-
----
 ## Configure API Access to OCI
 There are times when you will want programmatic access to OCI.  This is useful, for example, when you want to automate cluster management using the API. 
 
