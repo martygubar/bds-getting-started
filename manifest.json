@@ -33,22 +33,6 @@
             "filename": "lab-create-user/create-user.md"
         },
         {            
-            "title": "Backup Hadoop Cluster to Object Storage",
-            "description": "Backup HDFS data and Hive metadata to Oracle Object Storage",
-            "partnumber": "1",
-            "publisheddate": "11/21/2019",
-            "contentid": "1",
-            "filename": "lab-backuphadoop/bdr-to-objstore.md"
-        },
-        {            
-            "title": "Restore Hadoop Cluster from Object Store",
-            "description": "Restore HDFS data and Hive metadata from Oracle Object Storage",
-            "partnumber": "2",
-            "publisheddate": "11/21/2019",
-            "contentid": "2",
-            "filename": "lab-restorehadoop/bdr-to-hadoop.md"
-        },
-        {            
             "title": "Access a BDS Utility Node Using a Public IP",
             "description": "Create a public IP address and assign it to a BDS Utility Node",
             "partnumber": "2",
@@ -63,6 +47,22 @@
             "publisheddate": "11/21/2019",
             "contentid": "2",
             "filename": "lab-create-bastion/create-bastion.md"
+        },
+        {            
+            "title": "Backup Hadoop Cluster to Object Storage",
+            "description": "Backup HDFS data and Hive metadata to Oracle Object Storage",
+            "partnumber": "1",
+            "publisheddate": "11/21/2019",
+            "contentid": "1",
+            "filename": "lab-backuphadoop/bdr-to-objstore.md"
+        },
+        {            
+            "title": "Restore Hadoop Cluster from Object Store",
+            "description": "Restore HDFS data and Hive metadata from Oracle Object Storage",
+            "partnumber": "2",
+            "publisheddate": "11/21/2019",
+            "contentid": "2",
+            "filename": "lab-restorehadoop/bdr-to-hadoop.md"
         },
         {            
             "title": "Get Started with Cloud SQL",
