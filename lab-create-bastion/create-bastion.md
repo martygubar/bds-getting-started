@@ -124,7 +124,7 @@ sudo cp ~opc/.ssh/config /root/.ssh/
 Update the **/etc/hosts** file on the bastion to include the the cluster nodes.  
 NOTE: the IP addresses in the /etc/hosts file on the utility and master nodes will be different than the IP addresses added to the bastion; the IPs in the cluster nodes' /etc/hosts files are private IP addresses used for intra-cluster communication.  You will use the public IP addresses that were added to the SSH config file in the previous section.
 
-Top update the /etc/hosts file, you will:
+To update the /etc/hosts file, you will:
 1. Backup the **/etc/hosts** file on `mybastion` to `/etc/hosts.bastion`
 1. Log into the utility node and create a `customerhosts` file that uses the customer IP addresses for the cluster
 1. Return the bastion node and copy the generated file
@@ -167,7 +167,7 @@ $ cat /etc/hosts
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
 10.0.0.9 mybastion.sub12052130070.mynetwork.oraclevcn.com mybastion
 ```
-**After (change ip addresses and hosts)**
+**After (example with changes to ip addresses and hosts)**
 ```bash
 cat /etc/hosts
 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
@@ -242,7 +242,26 @@ Update the Cloudera Manager configuration so that it can connect to the Cloudera
     ````
 
 ### Enable Cluster Nodes to Access Bastion
-Update /etc/hosts on the Hadoop cluster nodes with the bastion IP.  While on the bastion, copy the bastion IP and hostname from the **/etc/hosts** file:
+There will be three things to do in order to enable the cluster nodes to connect to the bastion:
+1. Update the bastion's host firewall to allow Apache Spark to run in client mode. 
+1. Update the **authorized_keys** file for both the opc and root user (which will enable dcli to work)
+1. Update /etc/hosts on the Hadoop cluster nodes with the bastion IP.  
+
+Update the bastion's host firewall to allow Apache Spark to run in client mode.  This can be a range of ports.  Below, the firewall is updated to trust sources coming from all of the VCN hosts.  You may want to make this more restrictive:
+```
+sudo firewall-cmd --zone=trusted --add-source=10.0.0.0/16 --permanent						
+sudo firewall-cmd --reload
+```
+
+Next, update the **authorized_keys** file for both the opc and root user so that SSH connections can be made from the cluster to the bastion.  Copy the id_rsa.pub file from a cluster node to the bastion and then update authorized_keys:
+```bash
+ssh mybastion
+scp myclustun0:.ssh/id_rsa.pub ~opc
+cat id_rsa.pub |tee -a ~/.ssh/authorized_keys
+cat id_rsa.pub |sudo tee -a /root/.ssh/authorized_keys
+```
+
+While on the bastion, copy the bastion IP and hostname from the **/etc/hosts** file:
 
 ```bash
 cat /etc/hosts
@@ -308,6 +327,9 @@ Password for bds@BDACLOUDSERVICE.ORACLE.COM:
 
 # Review hdfs data at the root directory
 hadoop fs -ls /
+
+# Submit a spark job that will calculate pi
+spark-submit --class org.apache.spark.examples.SparkPi --master yarn --deploy-mode client /opt/cloudera/parcels/CDH/jars/spark-examples_*.jar 10
 
 ```
 
