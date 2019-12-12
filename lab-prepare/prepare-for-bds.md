@@ -63,7 +63,7 @@ In this section, you will set up the Virtal Cloud Network that will be used by y
 * Review and Create
     * Click **Create**.  
 
-You will now update the security lists next to allow ingress thru specific ports.  Note, the IP addresses will not be accessible over the internet until you explicitly create a public IP address.
+You will now update the security lists next to allow ingress from any host in the VCN (you may want to make this more restrictive).  Note, the IP addresses will not be accessible over the internet until you explicitly create a public IP address.
 * Click **View Virtual Cloud Network**
 * Click **Security Lists**
 * Click **Default Security List for mynetwork**
