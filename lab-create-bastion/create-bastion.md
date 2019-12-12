@@ -241,7 +241,7 @@ Update the Cloudera Manager configuration so that it can connect to the Cloudera
     sudo systemctl enable cloudera-scm-agent
     ````
 
-### Enable Cluster Nodes to Access Bastion
+## Enable Cluster Nodes to Access Bastion
 There will be three things to do in order to enable the cluster nodes to connect to the bastion:
 1. Update the bastion's host firewall to allow Apache Spark to run in client mode. 
 1. Update the **authorized_keys** file for both the opc and root user (which will enable dcli to work)
