@@ -1,19 +1,19 @@
 {
     "tutorials": [
         {            
-            "title": "Migrating to Big Data Service",
-            "description": "Migrating to Big Data Service.  Why?  How?",
+            "title": "Getting Started with Oracle Big Data Service",
+            "description": "Introduction to Big Data Service",
             "partnumber": "0",
             "publisheddate": "11/21/2019",
             "contentid": "0",
-            "filename": "lab-migrating-to-bds/migrating-to-bds.md"
+            "filename": "README.md"
         },
         {            
             "title": "Preparing for Big Data Service",
             "description": "Prerequisite steps required for Big Data Service deployments.",
-            "partnumber": "0",
+            "partnumber": "1",
             "publisheddate": "11/21/2019",
-            "contentid": "0",
+            "contentid": "1",
             "filename":"lab-prepare/prepare-for-bds.md"
         },
         {            
@@ -27,50 +27,57 @@
         {            
             "title": "Create a Hadoop Admin User",
             "description": "Create a Hadoop admin user that will be used for the BDS.  This Hadoop superuser will have access to all data on the cluster an all Hive metadata.",
-            "partnumber": "0",
+            "partnumber": "3",
             "publisheddate": "11/21/2019",
-            "contentid": "0",
+            "contentid": "3",
             "filename": "lab-create-user/create-user.md"
         },
         {            
             "title": "Access a BDS Utility Node Using a Public IP",
             "description": "Create a public IP address and assign it to a BDS Utility Node",
-            "partnumber": "2",
+            "partnumber": "4",
             "publisheddate": "11/21/2019",
-            "contentid": "2",
+            "contentid": "4",
             "filename": "lab-publicip/access-node-public-ip.md"
         },
         {            
             "title": "Create a Bastion to Access Your Cluster",
             "description": "Securely access you cluster using a Bastion",
-            "partnumber": "2",
+            "partnumber": "5",
             "publisheddate": "11/21/2019",
-            "contentid": "2",
+            "contentid": "5",
             "filename": "lab-create-bastion/create-bastion.md"
         },
         {            
             "title": "Backup Hadoop Cluster to Object Storage",
             "description": "Backup HDFS data and Hive metadata to Oracle Object Storage",
-            "partnumber": "1",
+            "partnumber": "6",
             "publisheddate": "11/21/2019",
-            "contentid": "1",
+            "contentid": "6",
             "filename": "lab-backuphadoop/bdr-to-objstore.md"
         },
         {            
             "title": "Restore Hadoop Cluster from Object Store",
             "description": "Restore HDFS data and Hive metadata from Oracle Object Storage",
-            "partnumber": "2",
+            "partnumber": "7",
             "publisheddate": "11/21/2019",
-            "contentid": "2",
+            "contentid": "7",
             "filename": "lab-restorehadoop/bdr-to-hadoop.md"
         },
         {            
             "title": "Get Started with Cloud SQL",
             "description": "Add Cloud SQL to your cluster and query Hadoop using Oracle SQL",
-            "partnumber": "2",
+            "partnumber": "8",
             "publisheddate": "11/21/2019",
-            "contentid": "2",
+            "contentid": "8",
             "filename": "lab-getstarted-cloudsql/cloud-sql-getstarted.md"
+        },{            
+            "title": "Migrating to Big Data Service",
+            "description": "Migrating to Big Data Service.  Why?  How?",
+            "partnumber": "9",
+            "publisheddate": "11/21/2019",
+            "contentid": "9",
+            "filename": "lab-migrating-to-bds/migrating-to-bds.md"
         }
 
     ]
