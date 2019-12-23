@@ -36,7 +36,7 @@ In the OCI Console, select the region where you Big Data Service is located and 
 
 
 ## Assign the Public IP Address to a Utility Node
-You will use a downloadable application to assign the public IP address ([click here](https://confluence.oci.oraclecorp.com/pages/viewpage.action?spaceKey=BDSOCI&title=Public+IP+Assignment+and+Un-assignment+On+OCI&preview=/164693968/164871250/bdsPublicIpcli.jar))
+You will use a downloadable application to assign the public IP address ([download from Oracle Support Document 2622364.1](https://support.oracle.com/epmos/faces/DocumentDisplay?id=2622364.1))
 
 Use the information that you collected and run the following command:
 
