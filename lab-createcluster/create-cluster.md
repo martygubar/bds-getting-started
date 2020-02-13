@@ -30,9 +30,9 @@ To complete this lab, you need to have the following:
 There are many options when creating a cluster.  You will need to understand the sizing requirements based on your use case and performance needs.  This example will create a development cluster.  It is designed to use all features - but is targeted at small workloads and flexibility. Listed below is the cluster profile:
 * Highly available and secure
 * Master and Utility nodes will be 8 cores and use Block Storage
-* Worker nodes will be small - 2 cores and also use Block Storage
+* Worker nodes will be small - 4 cores and also use Block Storage
 
-For better performance and scalability, change the above specs appropriately.  Consider DensIO shapes (with direct attached storage) and bare metal shapes.
+For better performance and scalability, change the above specs appropriately.  Consider DensIO shapes (with direct attached storage) and Bare Metal shapes.
 
 ### Create the Cluster
 Click **Create Cluster**.  Specify the cluster properties:
@@ -91,6 +91,6 @@ HDFS Failover Controller<br />HDFS JournalNode<br />HDFS NameNode<br />Key Trust
 
 
 ## Summary
-You created a secure, highly available cluster that is now ready to be used for developming big data applications and processing data in Hadoop.
+You created a secure, highly available cluster that is now ready to be used for developing big data applications and processing data in Hadoop.
 
 **This completes the tutorial!**

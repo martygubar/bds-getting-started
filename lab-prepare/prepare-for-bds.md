@@ -85,7 +85,7 @@ You will now update the security lists next to allow ingress from any host in th
 ## API Access to Oracle Cloud Infrastructure
 There are times when you will want programmatic access to OCI.  This is useful, for example, when you want to automate cluster management using the API. 
 
-There are a couple of ways to use the API:  1) using the OCI Cloud Console or 2) using a client tool.
+There are a couple of ways to use the API:  1) using Cloud Shell for OCI or 2) using a client tool.
 
 ### Cloud Shell for Oracle Cloud Infrastructure
 The Cloud Shell provides browser based API access.  There is nothing to install or configure; the tool is accessible in the OCI Console.  The connected user simply needs the appropriate IAM policy.  
