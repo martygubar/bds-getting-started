@@ -69,7 +69,7 @@ For more details, see [Using Snapshots with Replication](https://docs.cloudera.c
   * **Name:**  `hive-rep1`
   * **Source:** `hive`
   * **Destination:** `oracle-credential`
-  * **Cloud Root Path:**  `s3a://BDCS-BACKUP/`
+  * **Cloud Root Path:**  `s3a://BDCS-BACKUP/`   (**Note: name of bucket must be upper case**)
   * **Replication Option:**  `Metadata and Data`
   * **Schedule:** `Immediate`
   * **Run As Username:** `Default`

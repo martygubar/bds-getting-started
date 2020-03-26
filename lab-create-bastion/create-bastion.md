@@ -1,9 +1,9 @@
 # Create a Bastion to Access Your Cluster
 
 ## Before You Begin
-A bastion is a compute instance that serves as the public entry point to users that will be accessing the cluster.  It enables you to protect sensitive resources by placing them in private networks that can't be accessed directly from the public internet. You expose a single, known public entry point that you audit regularly, harden,and secure. So you avoid exposing the more sensitive parts of the topology, without compromising access to them.  For more information about bastions, you can refer to the [OCI documentation](https://docs.oracle.com/en/solutions/set-resources-to-provision-deploy-cloud-environment/index.html#GUID-8A2C8FB7-66E8-4838-8162-09EDDC834BE2).
+A bastion is a compute instance that serves as the public entry point to users that will be accessing the cluster.  It enables you to protect sensitive resources by placing them in private networks that can't be accessed directly from the public internet. You expose a single, known public entry point that you audit regularly, harden,and secure. This allows you to avoid exposing the more sensitive parts of the topology, without compromising access to them.  For more information about bastions, you can refer to the [OCI documentation](https://docs.oracle.com/en/solutions/set-resources-to-provision-deploy-cloud-environment/index.html#GUID-8A2C8FB7-66E8-4838-8162-09EDDC834BE2).
 
-In the context of this tutorial, there are two types of bastions.  The first is a simple compute node that provides access to the Big Data Service cluster nodes; these nodes are only accessible thru private IP addresses (unless you decide to assign a public IP to a node).  The second has Hadoop gateway roles deployed to it (e.g. HDFS, Spark, Hive).  This allows you to easily access HDFS and run jobs from the bastion.
+In the context of this tutorial, there are two types of bastions.  The first is a simple compute node that provides access to the Big Data Service cluster nodes.  This can be important because cluster nodes are only accessible thru private IP addresses (unless you decide to assign a public IP to a node).  The second type of bastion has Hadoop gateway roles deployed to it (e.g. HDFS, Spark, Hive).  This allows you to easily access HDFS and run jobs from the bastion.
 
 ### Objectives
 The goal for this tutorial is to create a bastion (aka "Edge Node") to your Hadoop cluster.  From this node, you will connect to the cluster to view its contents, run jobs, and more.  This eliminates the need to connect directly to the cluster nodes from a public network.
@@ -89,7 +89,7 @@ Once connected to the bastion, connect to the first utility node on the Hadoop c
 
     ssh -i ~opc/.ssh/`your-private-key` opc@`your-utility-node1-ip`
 
-To make subsequent connections to the cluster nodes easier, create an SSH configuration file.  Return to the bastion node by typing `exit` from the utility node.  Then, create the configuration file:
+To make subsequent connections to the cluster nodes easier, create an SSH configuration file.  Return to the bastion node by typing `exit` from the utility node.  Make sure you update `your-private-key` and `your-*-node-ip` to match your configuration in the script below.  Then, create the configuration file:
 
 ```bash
 cd ~opc/.ssh
@@ -102,7 +102,7 @@ echo "Host myclustun0
    StrictHostKeyChecking no
    IdentityFile ~opc/.ssh/your-private-key
    
-   Host your-myclustmn0
+   Host myclustmn0
    Hostname `your-master-node-ip`
    ServerAliveInterval 50
    User opc
@@ -122,7 +122,8 @@ sudo cp ~opc/.ssh/config /root/.ssh/
 
 ### Update /etc/hosts on the Bastion
 Update the **/etc/hosts** file on the bastion to include the the cluster nodes.  
-NOTE: the IP addresses in the /etc/hosts file on the utility and master nodes will be different than the IP addresses added to the bastion; the IPs in the cluster nodes' /etc/hosts files are private IP addresses used for intra-cluster communication.  You will use the public IP addresses that were added to the SSH config file in the previous section.
+
+**Note:** The IP addresses in the /etc/hosts file on the utility and master nodes will be different than the IP addresses added to the bastion. The IPs in the cluster nodes' /etc/hosts files are private IP addresses used for intra-cluster communication.  You will use the public IP addresses that were added to the SSH config file in the previous section.
 
 To update the /etc/hosts file, you will:
 1. Backup the **/etc/hosts** file on `mybastion` to `/etc/hosts.bastion`
@@ -140,6 +141,9 @@ sudo cp /etc/hosts /etc/hosts.bastion
 # connect to the utility node
 ssh myclustun0
 
+# chagnge to root user
+sudo bash
+
 # Connect to the utility node and generate an hosts file that uses customer IPs
 # Command that will generate the IP address will be saved to a file and executed using dcli
 # Prior to running, ensure that the command below matches your-utility-node-ip from above.  You may need to select a different field (i.e. change -f 2 to -f 1)
@@ -147,6 +151,7 @@ ssh myclustun0
 
 # Generate the script
 echo 'echo `hostname -I | cut -d " " -f 2` `hostname -f` `hostname -a`' > gethostmap
+chmod +x gethostmap
 
 # run the script on each node to gather the customer IPs
 dcli -x gethostmap | cut -d ':' -f 2 | awk '{$1=$1};1' > customerhosts
@@ -156,8 +161,9 @@ cat customerhosts
 
 # Return bastion, copy the file and update /etc/hosts
 exit
+exit
 scp myclustun0:customerhosts ~opc
-cat customerhosts | sudo tee -a /etc/hosts
+cat ~opc/customerhosts | sudo tee -a /etc/hosts
 ```
 
 **Before (example):**
@@ -190,14 +196,17 @@ Now that connectivity to the cluster is configured, install and configure the re
 * Java 8
 
 ### Install Core Software
-The core software will be installed from Oracle's software repository.  The Big Data Service specific repository is on the first master node of the cluster.  Copy the **bda.repo** file from the cluster node to the bastion.  On the bastion node:
+The core software will be installed from Oracle's software repository.  The Big Data Service specific repository is on the first master node of the cluster.  Ensure that you have updated your VCN's security list to enable connectivity to the first master node on port 80 in order to access the Big Data Service repository (see [Create a Virtual Cloud Network in tutorial Preparing for Big Data Service](?lab=preparing-for-big-data-service#CreateaVCN)).  
+
+Copy the **bda.repo** file from a cluster node to the bastion.  On the bastion node:
 
 * Make Big Data Service software available to the bastion via YUM.  Copy the **bda.repo** file to the bastion node as the root user.  From the bastion:
 ```bash
-# copy the repo file from the first utility node
-sudo scp myclustun0:/etc/yum.repos.d/bda.repo /etc/yum.repos.d/
+# copy the repo file from the first master node
+sudo scp myclustmn0:/etc/yum.repos.d/bda.repo /etc/yum.repos.d/
 ```
-
+**Note:** Ensure that the `baseurl` the bda.repo file includes "/bda" at the end.  It should look similar to the following:
+`baseurl=http://myclustmn0.bmbdcsad1.bmbdcs.oraclevcn.com/bda`
 * Now that the Big Data Service software repo is available, install Kerberos, Cloudera Manager Agents and the Oracle JDK (v8).  As the opc user on the bastion node, run the following commands:
     ```bash
     # install software
@@ -226,14 +235,14 @@ There are configuration files that must be updated for each of the newly install
     ```
 * Cloudera Manager Agent: Configuration files and PEM file
 Update the Cloudera Manager configuration so that it can connect to the Cloudera Manager Server.
-    ```bash
-    # Cloudera Manager Agent configuration file 
-    sudo scp myclustun0:/etc/cloudera-scm-agent/config.ini /etc/cloudera-scm-agent/
+```bash
+# Cloudera Manager Agent configuration file 
+sudo scp myclustun0:/etc/cloudera-scm-agent/config.ini /etc/cloudera-scm-agent/
 
-    # SSH key file required for agents to communicate to CLoudera Manager
-    sudo mkdir -p /opt/cloudera/security/x509/
-    sudo scp myclustun0:/opt/cloudera/security/x509/agents.pem /opt/cloudera/security/x509/
-    ```
+# SSH key file required for agents to communicate to CLoudera Manager
+sudo mkdir -p /opt/cloudera/security/x509/
+sudo scp myclustun0:/opt/cloudera/security/x509/agents.pem /opt/cloudera/security/x509/
+```
 * Start the Cloudera Manager Agents
     ```bash
     # Start agent and enable autostart

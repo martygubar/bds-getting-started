@@ -52,19 +52,23 @@ Update the s3a endpoint to point to Oracle Object Storage.
 * The cluster must be updated once more.  Click **mycluster >> Deploy Client Configuration**.  Once complete, click **Close**
 * Restart the cluster by clicking **mycluster >> Restart**
 
+## Create an HDFS Replication Schedule
+Restore HDFS data that had been backed up to Oracle Object Storage.  In this example, `/data/` directory had been backed up.  Restore the HDFS data to the HDFS file system root directory in order to mirror the source.
+
+* Create an HDFS Replication Schedule.  In Cloudera Manager, select **Backup >> Replication Schedules** and the select **Create Schedule**.  Fill out the details for the HDFS replication schedule.  For example:
+
+  * **Name:**  `hdfs-rep1`
+  * **Source:** `oracle-credential`
+  * **Source Path:** `s3a://BDCS-BACKUP/`
+  * **Destination:** `HDFS`
+  * **Destination Path:**  `/`
+  * **Schedule:** `Immediate`
+  * **Run As Username:** `bds`
+  
+  Click **Save Schedule** and run the restore.
+  
 
 ## Create a Hive Replication Schedule
-**Note:**
-Prior to running this restore, ensure that the `/var/run/cloudera-scm-server` exists on the first utility node. If directory does not exist, the replication job will fail.
-
-```bash
-ssh myclustun0
-sudo bash
-ls /var/run/cloudera-scm-server
-# if ls: cannot access ls: No such file or directory
-install -d -o cloudera-scm -g cloudera-scm /var/run/cloudera-scm-server
-```
-
 Create a Hive Replication Schedule to restore from Oracle Object Storage.  In Cloudera Manager:
 
 * Select **Backup >> Replication Schedules** and the select **Create Schedule**.  Fill out the details for the Hive replication schedule.  For example:
@@ -81,21 +85,6 @@ Create a Hive Replication Schedule to restore from Oracle Object Storage.  In Cl
   
   Click **Save Schedule** and run the restore.  You can monitor the replication in Replication Schedules.
 
-## Create an HDFS Replication Schedule
-Restore HDFS data that had been backed up to Oracle Object Storage.  In this example, `/data/` directory had been backed up.  Restore the HDFS data to the HDFS file system root directory in order to mirror the source.
-
-* Create an HDFS Replication Schedule.  In Cloudera Manager, select **Backup >> Replication Schedules** and the select **Create Schedule**.  Fill out the details for the HDFS replication schedule.  For example:
-
-  * **Name:**  `hdfs-rep1`
-  * **Source:** `oracle-credential`
-  * **Source Path:** `s3a://BDCS-BACKUP/`
-  * **Destination:** `HDFS`
-  * **Destination Path:**  `/`
-  * **Schedule:** `Immediate`
-  * **Run As Username:** `bds`
-  
-  Click **Save Schedule** and run the restore.
-  
 
 ## Summary
 Your Big Data Service cluster has been updated with the data and metadata from your source cluster.  You can now use the cluster to analyze and process data.
