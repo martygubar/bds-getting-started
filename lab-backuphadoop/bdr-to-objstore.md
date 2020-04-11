@@ -43,6 +43,17 @@ If you don't have a Big Data Service cluster created, then you can follow the st
     * Access Key: `myaccesskey`
     * Secret Key: `mysecretkey`
 
+## Update the s3a Endpoint
+Update the s3a endpoint to point to Oracle Object Storage.  See the [OCI documentation](https://docs.cloud.oracle.com/en-us/iaas/Content/Object/Tasks/understandingnamespaces.htm) to determine your Object Storage Namespace
+* Go to the Cloudera Manager home.  
+* Select **S3 Connector >> Configuration**
+* Update the **Default S3 Endpoint** property with the following
+    https://`obj-store-namespace`.compat.objectstorage.`yourregion`.oraclecloud.com`
+
+    For example:
+    `https://oraclebigdatadb.compat.objectstorage.us-phoenix-1.oraclecloud.com`
+* The cluster must be updated once more.  Click **mycluster >> Deploy Client Configuration**.  Once complete, click **Close**
+* Restart the cluster by clicking **mycluster >> Restart**
 
 ## Create an External Account in Cloudera Manager
 Use the Access Key and Secret Key to create an external account in Cloudera Manager

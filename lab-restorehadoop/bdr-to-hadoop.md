@@ -41,11 +41,11 @@ After saving the credential, allow **Cluster Access to S3**:
 Restarting the cluster will take a few minutes.  Click **Continue** and then **Finish** after the restart.
 
 ## Update the s3a Endpoint
-Update the s3a endpoint to point to Oracle Object Storage.  
+Update the s3a endpoint to point to Oracle Object Storage.  See the [OCI documentation](https://docs.cloud.oracle.com/en-us/iaas/Content/Object/Tasks/understandingnamespaces.htm) to determine your Object Storage Namespace
 * Go to the Cloudera Manager home.  
 * Select **S3 Connector >> Configuration**
 * Update the **Default S3 Endpoint** property with the following
-    https://`yourtenancy`.compat.objectstorage.`yourregion`.oraclecloud.com`
+    https://`obj-store-namespace`.compat.objectstorage.`yourregion`.oraclecloud.com`
 
     For example:
     `https://oraclebigdatadb.compat.objectstorage.us-phoenix-1.oraclecloud.com`
