@@ -45,7 +45,7 @@ Update the s3a endpoint to point to Oracle Object Storage.  See the [OCI documen
 * Go to the Cloudera Manager home.  
 * Select **S3 Connector >> Configuration**
 * Update the **Default S3 Endpoint** property with the following
-    https://`obj-store-namespace`.compat.objectstorage.`yourregion`.oraclecloud.com`
+    https://`myobj-store-namespace`.compat.objectstorage.`yourregion`.oraclecloud.com
 
     For example:
     `https://oraclebigdatadb.compat.objectstorage.us-phoenix-1.oraclecloud.com`
