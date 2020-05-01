@@ -1,20 +1,20 @@
-# Create a Bastion to Access Your Cluster
+# Create an Edge Node to Access Your Cluster
 
 ## Before You Begin
-A bastion is a compute instance that serves as the public entry point to users that will be accessing the cluster.  It enables you to protect sensitive resources by placing them in private networks that can't be accessed directly from the public internet. You expose a single, known public entry point that you audit regularly, harden,and secure. This allows you to avoid exposing the more sensitive parts of the topology, without compromising access to them.  For more information about bastions, you can refer to the [OCI documentation](https://docs.oracle.com/en/solutions/set-resources-to-provision-deploy-cloud-environment/index.html#GUID-8A2C8FB7-66E8-4838-8162-09EDDC834BE2).
+An Edge Node is a compute instance that serves as a place for useers to accessing the cluster.  In this exercise, the edge node will also be playing the role of a bastion.  A bastion enables you to protect sensitive resources by placing them in private networks that can't be accessed directly from the public internet. You expose a single, known public entry point that you audit regularly, harden,and secure. This allows you to avoid exposing the more sensitive parts of the topology, without compromising access to them.  For more information about bastions, you can refer to the [OCI documentation](https://docs.oracle.com/en/solutions/set-resources-to-provision-deploy-cloud-environment/index.html#GUID-8A2C8FB7-66E8-4838-8162-09EDDC834BE2).
 
-In the context of this tutorial, there are two types of bastions.  The first is a simple compute node that provides access to the Big Data Service cluster nodes.  This can be important because cluster nodes are only accessible thru private IP addresses (unless you decide to assign a public IP to a node).  The second type of bastion has Hadoop gateway roles deployed to it (e.g. HDFS, Spark, Hive).  This allows you to easily access HDFS and run jobs from the bastion.
+In the context of this tutorial, the edge node will be a simple compute node that provides access to the Big Data Service cluster nodes.  This can be important because cluster nodes are only accessible thru private IP addresses (unless you decide to assign a public IP to a node).  You can also configure it as a Hadoop gateway with Cloudera Manager roles deployed to it (e.g. HDFS, Spark, Hive).  This allows you to easily access HDFS and run jobs from the edge node.
 
 ### Objectives
-The goal for this tutorial is to create a bastion (aka "Edge Node") to your Hadoop cluster.  From this node, you will connect to the cluster to view its contents, run jobs, and more.  This eliminates the need to connect directly to the cluster nodes from a public network.
+The goal for this tutorial is to create an edge node to your Hadoop cluster.  From this node, you will connect to the cluster to view its contents, run jobs, and more.  This eliminates the need to connect directly to the cluster nodes from a public network.
 
-To create the bastion, you will:
+To create the edge node, you will:
 1. Log into Oracle Cloud Infrastructure and create a Compute node in the same subnet as your Big Data Service cluster
-1. Enable Connectivity from the Bastion to the BDS Cluster
-1. Update the bastion with required software (e.g. Kerberos, Java)
+1. Enable Connectivity from the edge node to the BDS Cluster
+1. Update the edge node with required software (e.g. Kerberos, Java)
 1. Connect to Cloudera Manager and add that new Compute Node to the cluster - deploying only gateway roles to it
 
-You can stop after step 2 if you do not want to access HDFS and submit jobs from the bastion.
+You can stop after step 2 if you do not want to access HDFS and submit jobs from the edge node.
 
 ## Requirements
 
@@ -38,8 +38,8 @@ To complete this lab, you need to have the following:
 * Click **Create Instance**
 * In the **Create Compute Instance** page, complete the fields similar to the example below.  You will want to use Oracle Linux 7.x.  Size the VM based on your requirements.  In this example, the bastion will only be used for accessing the cluster and submitting jobs, therefore it is sized for that use case.  
 
-    In addition, the bastion should be added to the same VCN subnet as your Big Data Service cluster:
-    * **Name your instance:** `mybastion`
+    In addition, the edge node should be added to the same VCN subnet as your Big Data Service cluster:
+    * **Name your instance:** `myedge`
     * **Operating System:** `Oracle Linux 7.7` (this matches the BDS Cluster OS)
     * **Avaiability Domain:** `AD 1`  (choose what is appropriate for your deployment)
     * **Instance Type:** `Virtual Machine`
@@ -55,29 +55,29 @@ To complete this lab, you need to have the following:
         * **Custom boot volume size:** Change this value based on requirements
         * Specify values for encryption based on your requirements
     * **Add SSH key**
-        * Select the public key that you plan to use for this bastion host.  The key is used for connecting to the host.
+        * Select the public key that you plan to use for this edge node host.  The key is used for connecting to the host.
     * Click **Create**
 
-### Capture Bastion Instance Details
-Once the Bastion creation is complete, save the key information required to access the cluster:
+### Capture Edge node Instance Details
+Once the Edge node creation is complete, save the key information required to access the cluster:
 * **Public IP Address**
 * **Private IP Adress**
 * **Internal FQDN**
 
 This information will be used to 1) add the host to the cluster and 2) access the host from a client
 
-## Enable Connectivity from the Bastion to the BDS Cluster
-To enable connectivity from the bastion to the BDS Cluster, copy the private key used during BDS cluster creation to ~/opc/.ssh on the bastion. Then, log into the bastion and test connectivity.
+## Enable Connectivity from the Edge node to the BDS Cluster
+To enable connectivity from the edge node to the BDS Cluster, copy the private key used during BDS cluster creation to ~/opc/.ssh on the edge node. Then, log into the edge node and test connectivity.
 
 * Copy the private key used during BDS cluster creation and copy it to ~/opc/.ssh.  The example below is using scp (secure copy):
     
     scp -i `your-private-key` `your-private-key` opc@`your-public-ip`:~/.ssh/
 
-* Connect to `mybastion` using SSH:
+* Connect to `myedge` using SSH:
 
     ssh -i `your-private-key` opc@`your-public-ip`
 
-Once connected to the bastion, connect to the first utility node on the Hadoop cluster.  You can find the utility node IP address by performing the following tasks:
+Once connected to the edge node, connect to the first utility node on the Hadoop cluster.  You can find the utility node IP address by performing the following tasks:
 * In a browser, log into your tenancy on OCI using the following URL:
 
     https://console.us-ashburn-1.oraclecloud.com/
@@ -89,7 +89,7 @@ Once connected to the bastion, connect to the first utility node on the Hadoop c
 
     ssh -i ~opc/.ssh/`your-private-key` opc@`your-utility-node1-ip`
 
-To make subsequent connections to the cluster nodes easier, create an SSH configuration file.  Return to the bastion node by typing `exit` from the utility node.  Make sure you update `your-private-key` and `your-*-node-ip` to match your configuration in the script below.  Then, create the configuration file:
+To make subsequent connections to the cluster nodes easier, create an SSH configuration file.  Return to the edge node node by typing `exit` from the utility node.  Make sure you update `your-private-key` and `your-*-node-ip` to match your configuration in the script below.  Then, create the configuration file:
 
 ```bash
 cd ~opc/.ssh
@@ -120,23 +120,23 @@ Copy this file to the root users .ssh home.  This will allow secure copy to work
 sudo cp ~opc/.ssh/config /root/.ssh/
 ```
 
-### Update /etc/hosts on the Bastion
-Update the **/etc/hosts** file on the bastion to include the the cluster nodes.  
+### Update /etc/hosts on the Edge node
+Update the **/etc/hosts** file on the edge node to include the the cluster nodes.  
 
-**Note:** The IP addresses in the /etc/hosts file on the utility and master nodes will be different than the IP addresses added to the bastion. The IPs in the cluster nodes' /etc/hosts files are private IP addresses used for intra-cluster communication.  You will use the public IP addresses that were added to the SSH config file in the previous section.
+**Note:** The IP addresses in the /etc/hosts file on the utility and master nodes will be different than the IP addresses added to the edge node. The IPs in the cluster nodes' /etc/hosts files are private IP addresses used for intra-cluster communication.  You will use the public IP addresses that were added to the SSH config file in the previous section.
 
 To update the /etc/hosts file, you will:
-1. Backup the **/etc/hosts** file on `mybastion` to `/etc/hosts.bastion`
+1. Backup the **/etc/hosts** file on `myedge` to `/etc/hosts.edge`
 1. Log into the utility node and create a `customerhosts` file that uses the customer IP addresses for the cluster
-1. Return the bastion node and copy the generated file
-1. Add the result to the bastion's /etc/hosts file
+1. Return the edge node and copy the generated file
+1. Add the result to the edge node's /etc/hosts file
 
 ```bash
-# connect to mybastion
-ssh mybastion
+# connect to myedge
+ssh myedge
 
 # backup /etc/hosts
-sudo cp /etc/hosts /etc/hosts.bastion
+sudo cp /etc/hosts /etc/hosts.edge
 
 # connect to the utility node
 ssh myclustun0
@@ -159,7 +159,7 @@ dcli -x gethostmap | cut -d ':' -f 2 | awk '{$1=$1};1' > customerhosts
 # review the generated file and ensure the ips match the customer IPs
 cat customerhosts
 
-# Return bastion, copy the file and update /etc/hosts
+# Return edge node, copy the file and update /etc/hosts
 exit
 exit
 scp myclustun0:customerhosts ~opc
@@ -171,14 +171,14 @@ cat ~opc/customerhosts | sudo tee -a /etc/hosts
 $ cat /etc/hosts
 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
-10.0.0.9 mybastion.sub12052130070.mynetwork.oraclevcn.com mybastion
+10.0.0.9 myedge.sub12052130070.mynetwork.oraclevcn.com myedge
 ```
 **After (example with changes to ip addresses and hosts)**
 ```bash
 cat /etc/hosts
 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
-10.0.0.9 mybastion.sub12052130070.mynetwork.oraclevcn.com mybastion.sub12052130070.mynetwork.oraclevcn.com. mybastion
+10.0.0.9 myedge.sub12052130070.mynetwork.oraclevcn.com myedge.sub12052130070.mynetwork.oraclevcn.com. myedge
 10.0.0.5 myclustmn0.bmbdcsad1.bmbdcs.oraclevcn.com myclustmn0.bmbdcsad1.bmbdcs.oraclevcn.com. myclustmn0
 10.0.0.7 myclustun0.bmbdcsad1.bmbdcs.oraclevcn.com myclustun0.bmbdcsad1.bmbdcs.oraclevcn.com. myclustun0
 10.0.0.2 myclustun1.bmbdcsad1.bmbdcs.oraclevcn.com myclustun1.bmbdcsad1.bmbdcs.oraclevcn.com. myclustun1
@@ -187,9 +187,9 @@ cat /etc/hosts
 10.0.0.8 myclustwn2.bmbdcsad1.bmbdcs.oraclevcn.com myclustwn2.bmbdcsad1.bmbdcs.oraclevcn.com. myclustwn2
 10.0.0.4 myclustmn1.bmbdcsad1.bmbdcs.oraclevcn.com myclustmn1.bmbdcsad1.bmbdcs.oraclevcn.com. myclustmn1
 ```
-Your bastion will now be able to communicate with the cluster using both SSH and other protocols.
+Your edge node will now be able to communicate with the cluster using both SSH and other protocols.
 
-## Update the Bastion with Required Software
+## Update the Edge node with Required Software
 Now that connectivity to the cluster is configured, install and configure the required software for the ede node:
 * Kerberos
 * Cloudera Manager Agents
@@ -198,16 +198,16 @@ Now that connectivity to the cluster is configured, install and configure the re
 ### Install Core Software
 The core software will be installed from Oracle's software repository.  The Big Data Service specific repository is on the first master node of the cluster.  Ensure that you have updated your VCN's security list to enable connectivity to the first master node on port 80 in order to access the Big Data Service repository (see [Create a Virtual Cloud Network in tutorial Preparing for Big Data Service](?lab=preparing-for-big-data-service#CreateaVCN)).  
 
-Copy the **bda.repo** file from a cluster node to the bastion.  On the bastion node:
+Copy the **bda.repo** file from a cluster node to the edge node.  On the edge node:
 
-* Make Big Data Service software available to the bastion via YUM.  Copy the **bda.repo** file to the bastion node as the root user.  From the bastion:
+* Make Big Data Service software available to the edge node via YUM.  Copy the **bda.repo** file to the edge node as the root user.  From the edge node:
 ```bash
 # copy the repo file from the first master node
 sudo scp myclustmn0:/etc/yum.repos.d/bda.repo /etc/yum.repos.d/
 ```
 **Note:** Ensure that the `baseurl` the bda.repo file includes "/bda" at the end.  It should look similar to the following:
 `baseurl=http://myclustmn0.bmbdcsad1.bmbdcs.oraclevcn.com/bda`
-* Now that the Big Data Service software repo is available, install Kerberos, Cloudera Manager Agents and the Oracle JDK (v8).  As the opc user on the bastion node, run the following commands:
+* Now that the Big Data Service software repo is available, install Kerberos, Cloudera Manager Agents and the Oracle JDK (v8).  As the opc user on the edge node node, run the following commands:
     ```bash
     # install software
     sudo yum clean all
@@ -224,25 +224,28 @@ sudo scp myclustmn0:/etc/yum.repos.d/bda.repo /etc/yum.repos.d/
 ### Configure the Core Software
 There are configuration files that must be updated for each of the newly installed packages:
 * Java:  Java Cryptography Extension (JCE) unlimited strength jurisdiction policy files.  This is required for Kerberos access to the cluster.
+
     ```bash
     # Enable Java processes to access Kerberized cluster
     sudo scp myclustun0:/usr/java/latest/jre/lib/security/*.jar /usr/java/latest/jre/lib/security/
     ```
 * Keberos:  Kerberos configuration file
+
     ```bash
     # Configuration file for Kerberos
     sudo scp myclustun0:/etc/krb5.conf /etc/
     ```
 * Cloudera Manager Agent: Configuration files and PEM file
 Update the Cloudera Manager configuration so that it can connect to the Cloudera Manager Server.
-```bash
-# Cloudera Manager Agent configuration file 
-sudo scp myclustun0:/etc/cloudera-scm-agent/config.ini /etc/cloudera-scm-agent/
 
-# SSH key file required for agents to communicate to CLoudera Manager
-sudo mkdir -p /opt/cloudera/security/x509/
-sudo scp myclustun0:/opt/cloudera/security/x509/agents.pem /opt/cloudera/security/x509/
-```
+    ```bash
+    # Cloudera Manager Agent configuration file 
+    sudo scp myclustun0:/etc/cloudera-scm-agent/config.ini /etc/cloudera-scm-agent/
+
+    # SSH key file required for agents to communicate to CLoudera Manager
+    sudo mkdir -p /opt/cloudera/security/x509/
+    sudo scp myclustun0:/opt/cloudera/security/x509/agents.pem /opt/cloudera/security/x509/
+    ```
 * Start the Cloudera Manager Agents
     ```bash
     # Start agent and enable autostart
@@ -250,27 +253,27 @@ sudo scp myclustun0:/opt/cloudera/security/x509/agents.pem /opt/cloudera/securit
     sudo systemctl enable cloudera-scm-agent
     ````
 
-## Enable Cluster Nodes to Access Bastion
-There will be three things to do in order to enable the cluster nodes to connect to the bastion:
-1. Update the bastion's host firewall to allow Apache Spark to run in client mode. 
+## Enable Cluster Nodes to Access Edge node
+There will be three things to do in order to enable the cluster nodes to connect to the edge node:
+1. Update the edge node's host firewall to allow Apache Spark to run in client mode. 
 1. Update the **authorized_keys** file for both the opc and root user (which will enable dcli to work)
-1. Update /etc/hosts on the Hadoop cluster nodes with the bastion IP.  
+1. Update /etc/hosts on the Hadoop cluster nodes with the edge node IP.  
 
-Update the bastion's host firewall to allow Apache Spark to run in client mode.  This can be a range of ports.  Below, the firewall is updated to trust sources coming from all of the VCN hosts.  You may want to make this more restrictive:
+Update the edge node's host firewall to allow Apache Spark to run in client mode.  This can be a range of ports.  Below, the firewall is updated to trust sources coming from all of the VCN hosts.  You may want to make this more restrictive:
 ```
 sudo firewall-cmd --zone=trusted --add-source=10.0.0.0/16 --permanent						
 sudo firewall-cmd --reload
 ```
 
-Next, update the **authorized_keys** file for both the opc and root user so that SSH connections can be made from the cluster to the bastion.  Copy the id_rsa.pub file from a cluster node to the bastion and then update authorized_keys:
+Next, update the **authorized_keys** file for both the opc and root user so that SSH connections can be made from the cluster to the edge node.  Copy the id_rsa.pub file from a cluster node to the edge node and then update authorized_keys:
 ```bash
-ssh mybastion
+ssh myedge
 scp myclustun0:.ssh/id_rsa.pub ~opc
 cat id_rsa.pub |tee -a ~/.ssh/authorized_keys
 cat id_rsa.pub |sudo tee -a /root/.ssh/authorized_keys
 ```
 
-While on the bastion, copy the bastion IP and hostname from the **/etc/hosts** file:
+While on the edge node, copy the edge node IP and hostname from the **/etc/hosts** file:
 
 ```bash
 cat /etc/hosts
@@ -279,19 +282,19 @@ Find the line containing the hostname and IP address and save it.  Next, log int
 
 ```bash
 # Get the line from /etc/hosts
-grep mybastion /etc/hosts
+grep myedge /etc/hosts
 
 # Log into the utility node and add a line to each /etc/hosts file
 # Example:
-# 10.0.0.9 mybastion.sub12052130070.mynetwork.oraclevcn.com mybastion.sub12052130070.mynetwork.oraclevcn.com. mybastion
+# 10.0.0.9 myedge.sub12052130070.mynetwork.oraclevcn.com myedge.sub12052130070.mynetwork.oraclevcn.com. myedge
 #
 # Ensure you add a map for the hostname ending in ".".  We'll use the example from above.  Replace the ip/host appropriately
 ssh myclustun0
-dcli "echo '10.0.0.9 mybastion.sub12052130070.mynetwork.oraclevcn.com mybastion.sub12052130070.mynetwork.oraclevcn.com. mybastion' | sudo tee -a /etc/hosts"
+dcli "echo '10.0.0.9 myedge.sub12052130070.mynetwork.oraclevcn.com myedge.sub12052130070.mynetwork.oraclevcn.com. myedge' | sudo tee -a /etc/hosts"
 ```
 
-## Add Gateway Roles to Bastion from Cloudera Manager
-The bastion node will now be updated with the gateway roles that will allow it to submit jobs and access the HDFS file system.  This will be done using Cloudera Manager.
+## Add Gateway Roles to Edge node from Cloudera Manager
+The edge node node will now be updated with the gateway roles that will allow it to submit jobs and access the HDFS file system.  This will be done using Cloudera Manager.
 
 * Log into Cloudera Manager.  Enter the admin id and password used when creating the cluster:
 
@@ -301,7 +304,7 @@ The bastion node will now be updated with the gateway roles that will allow it t
 * Select **Add hosts to cluster** `mycluster`.  Click **Continue**
 * Specify Hosts
     * Select **Currently Managed**
-    * Select **Hostname** `mybastion`
+    * Select **Hostname** `myedge`
     * Click **Continue**
 * Install Parcels
     * The parcels will be distributed, unpacked and activated. This will take some time.  When complete, click **Continue**
@@ -324,11 +327,11 @@ The bastion node will now be updated with the gateway roles that will allow it t
     * The roles are created and the client configuration is then deployed.  
     * When complete, click **Continue** and then click **Finish**
 
-## Test the Bastion
-Log into the bastion and run a couple of tests against your cluster.
+## Test the Edge node
+Log into the edge node and run a couple of tests against your cluster.
 ```bash
-# Log into the bastion
-ssh mybastion
+# Log into the edge node
+ssh myedge
 
 # Get a kerberos ticket for the bds user.  Use the password provided during setup
 kinit bds
@@ -343,5 +346,5 @@ spark-submit --class org.apache.spark.examples.SparkPi --master yarn --deploy-mo
 ```
 
 ## Summary
-You can now connect to the cluster from the bastion and submit jobs.
+You can now connect to the cluster from the edge node and submit jobs.
 **This completes the tutorial!**

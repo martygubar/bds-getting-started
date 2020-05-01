@@ -41,12 +41,12 @@
             "filename": "lab-publicip/access-node-public-ip.md"
         },
         {            
-            "title": "Create a Bastion to Access Your Cluster",
-            "description": "Securely access you cluster using a Bastion",
+            "title": "Create an Edge Node for Your Cluster",
+            "description": "Access your cluster and run jobs from the Edge Node",
             "partnumber": "5",
             "publisheddate": "11/21/2019",
             "contentid": "5",
-            "filename": "lab-create-bastion/create-bastion.md"
+            "filename": "lab-create-edge/create-edge.md"
         },
         {            
             "title": "Backup Hadoop Cluster to Object Storage",

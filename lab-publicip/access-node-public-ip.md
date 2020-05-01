@@ -2,7 +2,7 @@
 
 ## Before You Begin
 
-When Big Data Service deploys a cluster, the nodes are not accessible on the public internet.  They can only be accessed via hosts on the same virtual cloud network.  In this example, we will make the BDS Utility node running Cloudera Manager (first utility node) available externally by a creating public IP that maps to the node's private IP address.  In another tutorial, you will access the cluster using a bastion host [Create a Bastion to Access Your Cluster](?lab=).
+When Big Data Service deploys a cluster, the nodes are not accessible on the public internet.  They can only be accessed via hosts on the same virtual cloud network.  In this example, we will make the BDS Utility node running Cloudera Manager (first utility node) available externally by a creating public IP that maps to the node's private IP address.  In another tutorial, you will access the cluster using an edge node [Create an Node to Access Your Cluster](?lab=).
 
 To make a utility node available using a public IP address:
 * Configure API Access to OCI (see [Preparing for Big Data Service](?lab=preparing-for-big-data-service))

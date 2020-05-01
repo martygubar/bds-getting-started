@@ -17,7 +17,7 @@ In this tutorial, you will:
 To complete this lab, you need to have the following:
 
 * Created a Hadoop Cluster
-* Set up access to the cluster using either a bastion (see [Create a Bastion to Access Your Cluster](?lab=create-bastion-access-cluster)) or a public IP address (see [Access a BDS Node Using a Public IP
+* Set up access to the cluster using either an edge node (see [Create an Edge Node to Access Your Cluster](?lab=create-edge-access-cluster)) or a public IP address (see [Access a BDS Node Using a Public IP
 ](?lab=access-bds-utility-node-using-public-ip))
 
 
