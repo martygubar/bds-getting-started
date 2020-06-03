@@ -3,7 +3,7 @@
 # Run this on the edge node
 
 # Set env vars that describe the cluster configuration
-. setup-env.sh
+. env.sh
 
 # Pick up env vars from setup-env.sh
 BASEDIR=$(dirname $0)
