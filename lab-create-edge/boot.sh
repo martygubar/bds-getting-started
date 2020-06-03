@@ -3,17 +3,17 @@
 # Run this on the edge node
 
 # Set env vars that describe the cluster configuration
-. env.sh
+. setup-env.sh
 
 # Pick up env vars from setup-env.sh
 BASEDIR=$(dirname $0)
 cd $BASEDIR
 
-echo "begin"
-echo "....setting up environment"
-echo "....updating ~opc/.ssh/config file"
+echo "$(date +"%T") begin"
+echo "....$(date +"%T") setting up environment"
+echo "....$(date +"%T") updating ~opc/.ssh/config file"
 
-echo "Enable simple ssh to $MN0_HOSTNAME"
+echo "....$(date +"%T") enable simple ssh to $MN0_HOSTNAME"
 echo "Host $MN0_HOSTNAME
    Hostname $MN0_IP
    ServerAliveInterval 50
@@ -26,7 +26,7 @@ chmod 644 ~opc/.ssh/config
 # Copy the private key for connecting to bastion to the master
 scp -i $PRIVATE_KEY $PRIVATE_KEY ${MN0_IP}:/home/opc/.ssh/
 
-echo "....generating /etc/yum.repos.d/bda.repo"
+echo "....$(date +"%T") generating /etc/yum.repos.d/bda.repo"
 #Prepare for running YUM (change this)
 echo "[bda]
 name=BDA repository
@@ -35,19 +35,19 @@ enabled=1
 gpgcheck=0
 enablegroups=1" | sudo tee /etc/yum.repos.d/bda.repo
 
-echo "....installing base software (kerberos, java)"
+echo "....$(date +"%T") installing base software (kerberos, java)"
 # install software
 sudo yum clean all
 sudo yum install -y krb5-workstation krb5-libs jdk1.8
 
-echo "....configuring base software (kerberos, java)"
+echo "....$(date +"%T") configuring base software (kerberos, java)"
 # set JAVA_HOME
 export JAVA_HOME=/usr/java/latest 
 echo "export JAVA_HOME=/usr/java/latest" | sudo tee /etc/profile.d/mystartup.sh
 sudo chmod 644 /etc/profile.d/mystartup.sh
 . /etc/profile.d/mystartup.sh
 
-echo "....configure firewall to enable hosts on subnet to connect"
+echo "....$(date +"%T") configure firewall to enable hosts on subnet to connect"
 # Update the firewall
 sudo firewall-cmd --zone=trusted --add-source=$SUBNET_CIDR --permanent						
 sudo firewall-cmd --reload
@@ -70,6 +70,7 @@ sudo firewall-cmd --reload
 
 
 # Copy
+echo "....$(date +"%T") update authorized keys"
 scp $MN0_HOSTNAME:~opc/.ssh/id_rsa.pub /tmp/
 
 cp ~opc/.ssh/authorized_keys ~opc/.ssh/authorized_keys.`date +%F-%H-%M-%S`
@@ -78,21 +79,22 @@ sudo cp /root/.ssh/authorized_keys /root/.ssh/authorized_keys.`date +%F-%H-%M-%S
 cat id_rsa.pub |sudo tee -a /root/.ssh/authorized_keys
 
 # Enable Java processes to access Kerberized cluster by copying security files
-echo "....enable java processes to access kerberized cluster"
+echo "....$(date +"%T") enable java processes to access kerberized cluster"
 mkdir /tmp/edgefiles
 scp -i $PRIVATE_KEY $MN0_HOSTNAME:/usr/java/latest/jre/lib/security/*.jar 
 sudo mv /tmp/edgefiles/*.jar /usr/java/latest/jre/lib/security/
 
 # Configuration file for Kerberos
-echo "....copying /etc/krb5.conf from master"
+echo "....$(date +"%T") copying /etc/krb5.conf from master"
 scp $MN0_HOSTNAME:/etc/krb5.conf /tmp/edgefiles/
 sudo mv /tmp/edgefiles/krb5.conf /etc/
 
-echo "....installing CM Agent"
+echo "....$(date +"%T") installing CM Agent"
 # install Cloudera Manager Agents
 sudo yum install -y cloudera-manager-agent
+sudo systemctl stop cloudera-scm-agent
 
-echo "....configuring CM Agent"
+echo ".....$(date +"%T") configuring CM Agent"
 # Cloudera Manager Agent configuration file 
 rm -f /tmp/edgefiles/*
 scp $MN0_HOSTNAME:/etc/cloudera-scm-agent/* /tmp/edgefiles/
@@ -106,7 +108,7 @@ fi
 
 
 # SSH key file required for agents to communicate to Cloudera Manager
-echo "....updating keystore and truststore"
+echo "....$(date +"%T") updating keystore and truststore"
 sudo mkdir -p /opt/cloudera/security/x509/
 scp $MN0_HOSTNAME:/opt/cloudera/security/x509/agents.pem /tmp/edgefiles/
 sudo mv /tmp/edgefiles/agents.pem /opt/cloudera/security/x509/
@@ -119,12 +121,12 @@ scp $MN0_HOSTNAME:/opt/cloudera/security/jks/$CLUSTER.truststore /tmp/edgefiles/
 sudo mv /tmp/edgefiles/$CLUSTER.truststore /opt/cloudera/security/jks/
 sudo chown root:root /opt/cloudera/security/jks/$CLUSTER.truststore
 
-echo "....starting CM Agent"
+echo "....$(date +"%T") starting CM Agent"
 # Start agent and enable autostart
 sudo systemctl restart cloudera-scm-agent
 sudo systemctl enable cloudera-scm-agent
 
-echo "....TO DO add edge node to CM"
+echo "$(date +"%T") finished host setup."
+./add-to-cm.sh
 
 
-echo "end setup"

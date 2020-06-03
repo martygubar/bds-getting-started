@@ -2,6 +2,7 @@
 
 . env.sh
 
+echo "$(date +"%T") add host to Cloudera Manager and deploy parcels"
 
 function call-cm() {
 # echo -e $4
@@ -23,7 +24,7 @@ call-cm parcelInfo GET clusters/$CLUSTER/parcels
 cdhParcel=`echo $parcelInfo | jq '.items[] | select(.product=="CDH" and .stage=="ACTIVATED")'`
 cdhVersion=`echo $cdhParcel | jq -r '.version'` 
 
-echo "Running CDH Version:  $cdhVersion"
+echo "....$(date +"%T") Running CDH Version:  $cdhVersion"
 
 ####################
 # download parcel
@@ -33,7 +34,7 @@ echo "Running CDH Version:  $cdhVersion"
 call-cm downloading POST clusters/$CLUSTER/parcels/products/CDH/versions/$cdhVersion/commands/startDownload
 
 if [ $? -ne 0 ]; then 
-  echo "ERROR:  Unable to download parcel."
+  echo "$(date +"%T") ERROR:  Unable to download parcel."
   echo $downloading
   exit 1; 
 fi
@@ -45,26 +46,25 @@ do
   downloadstat=`echo $downloadstat | jq -r '.stage'` 
   if [ "$downloadstat" = "DOWNLOADED" ]; then
     curdat=`date`
-    echo -e "\nParcel download finished after $((10*$i)) seconds, Current date $curdat"
+    echo -e "....$(date +"%T") Parcel download finished after $((10*$i)) seconds"
     break
   elif [ "$downloadstat" != "DOWNLOADING" ]; then
     if [ "$downloadstat" == "DISTRIBUTING" ] || [ "$downloadstat" == "DISTRIBUTED" ]; then
       curdat=`date`
-      echo -e "\nParcel is $downloadstat after $((10*$i)) seconds. Skipping Download, Current date $curdat"
+      echo -e "....$(date +"%T") Parcel is $downloadstat after $((10*$i)) seconds. Skipping Download"
       break
     elif [ "$downloadstat" == "ACTIVATING" ] || [ "$downloadstat" == "ACTIVATED" ]; then
       curdat=`date`
-      echo -e "\nParcel is $downloadstat after $((10*$i)) seconds. Skipping Download, Current date $curdat"
+      echo -e "$(date +"%T") Parcel is $downloadstat after $((10*$i)) seconds. Skipping Download"
       break
     else
-      echo -e "\nCould not perform parcel download properly after $((10*$i)) seconds."
-      cat $logdir/$logname.out
+      echo -e "$(date +"%T") Could not perform parcel download properly after $((10*$i)) seconds."
       exit 1
     fi
   fi
   echo -n .
   if [ $i -eq 90 ]; then
-    /bin/echo "Parcel download timed out."
+    /bin/echo "$(date +"%T") Parcel download timed out."
     exit 1
   fi
   /bin/sleep 10
@@ -75,12 +75,12 @@ done
 #########################
 
 # Distribute CDH parcel
-echo "starting parcel deployment to edge"
-echo "...distributing parcel"
+echo "$(date +"%T") starting parcel deployment to edge"
+echo "...$(date +"%T") distributing parcel"
 call-cm distributing POST clusters/$CLUSTER/parcels/products/CDH/versions/$cdhVersion/commands/startDistribution
 
 if [ $? -ne 0 ]; then 
-  echo "ERROR:  Unable to distribute parcel."
+  echo "$(date +"%T") ERROR:  Unable to distribute parcel."
   echo $distributing
   exit 1; 
 fi
@@ -94,21 +94,21 @@ do
   
   if [ "$distributestat" = "DISTRIBUTED" ]; then
     curdat=`date`
-    echo -e ".....parcel distribution finished after $((10*$i)) seconds, Current date $curdat"
+    echo -e ".....$(date +"%T") parcel distribution finished after $((10*$i)) seconds"
     break
   elif [ "$distributestat" != "DISTRIBUTING" ]; then
     if [ "$distributestat" == "ACTIVATING" ] || [ "$distributestat" == "ACTIVATED" ]; then
       curdat=`date`
-      echo -e "....parcel is $distributestat after $((10*$i)) seconds. Skipping Distribution, Current date $curdat"
+      echo -e "...$(date +"%T") parcel is $distributestat after $((10*$i)) seconds. Skipping Distribution"
       break
     else
-      echo -e "\nCould not perform parcel distribution properly after $((10*$i)) seconds."
+      echo -e "$(date +"%T") Could not perform parcel distribution properly after $((10*$i)) seconds."
       exit 1
     fi
   fi
   echo -n .
   if [ $i -eq 180 ]; then
-    /bin/echo "Parcel distribution timed out."
+    /bin/echo "$(date +"%T") Parcel distribution timed out."
     exit 1
   fi
   /bin/sleep 10
@@ -117,11 +117,11 @@ done
 ########################
 # Activate Parcel
 ########################
-echo "...activating parcel"
+echo "...$(date +"%T") activating parcel"
 call-cm activating POST clusters/$CLUSTER/parcels/products/CDH/versions/$cdhVersion/commands/activate
 
 if [ $? -ne 0 ]; then 
-  echo "ERROR:  Unable to activate parcel."
+  echo "$(date +"%T") ERROR:  Unable to activate parcel."
   echo $activating
   exit 1; 
 fi
@@ -134,24 +134,24 @@ do
   
   if [ "$activatestat" = "ACTIVATED" ]; then
     curdat=`date`
-    echo -e "...parcel activation finished after $((5*$i)) seconds, Current date $curdat"
+    echo -e "...$(date +"%T") parcel activation finished after $((5*$i)) seconds"
     break
   elif [ "$activatestat" != "ACTIVATING" ]; then
-    echo -e "\nCould not perform parcel activation properly after $((5*$i)) seconds."
+    echo -e "$(date +"%T") Could not perform parcel activation properly after $((5*$i)) seconds."
     exit 1
   fi
   echo -n .
   if [ $i -eq 120 ]; then
-    echo "Parcel activation timed out."
+    echo "$(date +"%T") Parcel activation timed out."
     exit 1
   fi
 done
-echo "end parcel deployment"
+echo "$(date +"%T") end parcel deployment"
 
 ###############################
 #  Add gateway roles to edge
 ###############################
-echo "begin gateway role deployment"
+echo "$(date +"%T") begin gateway role deployment"
 # Get the hostId.  Needed for deploying gateway roles
 call-cm allHosts GET clusters/$CLUSTER/hosts
 
@@ -160,24 +160,26 @@ hostId=`echo $host | jq -r '.hostId'`
 
 for role in hive spark_on_yarn yarn hdfs
 do
-    echo "...add $role gateway to edge node."
+    echo "...$(date +"%T") add $role gateway to edge node."
     call-cm gateway POST clusters/$CLUSTER/services/$role/roles \
     "{ \"items\": [
     { \"name\": null, \"type\": \"GATEWAY\", \"hostRef\": { \"hostId\": \"$hostId\" } }
     ] }" 
 
     if [ $? -ne 0 ]; then
-        echo "Error assigning $role Gateway to edge node."
+        echo "$(date +"%T") Error assigning $role Gateway to edge node."
         echo $gateway
     fi
 
 done
-echo "end gateway role deployment"
+echo "$(date +"%T") end gateway role deployment"
 
 #################################
 # Deploy client configurations
 #################################
-echo "begin client configuration deployment"
+echo "$(date +"%T") begin client configuration deployment"
 call-cm deployConfig POST clusters/$CLUSTER/commands/deployClientConfig
 echo $deployConfig
-echo "end client configuration deployment"
+echo "$(date +"%T") end client configuration deployment"
+
+exit 0
