@@ -4,6 +4,7 @@
 
 # Set env vars that describe the cluster configuration
 . env.sh
+ssh_opt="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
 
 # Pick up env vars from env.sh
 BASEDIR=$(dirname $0)
@@ -24,7 +25,7 @@ echo "Host $MN0_HOSTNAME
 chmod 644 ~opc/.ssh/config
 
 # Copy the private key for connecting to bastion to the master
-scp -i $PRIVATE_KEY $PRIVATE_KEY ${MN0_IP}:/home/opc/.ssh/
+scp $ssh_opt -i $PRIVATE_KEY $PRIVATE_KEY ${MN0_IP}:/home/opc/.ssh/
 
 echo "....$(date +"%T") generating /etc/yum.repos.d/bda.repo"
 #Prepare for running YUM (change this)
@@ -71,22 +72,22 @@ sudo firewall-cmd --reload
 
 # Copy
 echo "....$(date +"%T") update authorized keys"
-scp $MN0_HOSTNAME:~opc/.ssh/id_rsa.pub /tmp/
+scp $ssh_opt $MN0_HOSTNAME:~opc/.ssh/id_rsa.pub /tmp/
 
 cp ~opc/.ssh/authorized_keys ~opc/.ssh/authorized_keys.`date +%F-%H-%M-%S`
-cat id_rsa.pub |tee -a ~/.ssh/authorized_keys
+cat /tmp/id_rsa.pub |tee -a ~/.ssh/authorized_keys
 sudo cp /root/.ssh/authorized_keys /root/.ssh/authorized_keys.`date +%F-%H-%M-%S`
-cat id_rsa.pub |sudo tee -a /root/.ssh/authorized_keys
+cat /tmp/id_rsa.pub |sudo tee -a /root/.ssh/authorized_keys
 
 # Enable Java processes to access Kerberized cluster by copying security files
 echo "....$(date +"%T") enable java processes to access kerberized cluster"
 mkdir /tmp/edgefiles
-scp -i $PRIVATE_KEY $MN0_HOSTNAME:/usr/java/latest/jre/lib/security/*.jar 
+scp $ssh_opt -i $PRIVATE_KEY $MN0_HOSTNAME:/usr/java/latest/jre/lib/security/*.jar  /tmp/edgefiles/
 sudo mv /tmp/edgefiles/*.jar /usr/java/latest/jre/lib/security/
 
 # Configuration file for Kerberos
 echo "....$(date +"%T") copying /etc/krb5.conf from master"
-scp $MN0_HOSTNAME:/etc/krb5.conf /tmp/edgefiles/
+scp $ssh_opt $MN0_HOSTNAME:/etc/krb5.conf /tmp/edgefiles/
 sudo mv /tmp/edgefiles/krb5.conf /etc/
 
 echo "....$(date +"%T") installing CM Agent"
@@ -97,7 +98,7 @@ sudo systemctl stop cloudera-scm-agent
 echo ".....$(date +"%T") configuring CM Agent"
 # Cloudera Manager Agent configuration file 
 rm -f /tmp/edgefiles/*
-scp $MN0_HOSTNAME:/etc/cloudera-scm-agent/* /tmp/edgefiles/
+scp $ssh_opt $MN0_HOSTNAME:/etc/cloudera-scm-agent/* /tmp/edgefiles/
 sudo mv /tmp/edgefiles/* /etc/cloudera-scm-agent/
 sudo chown cloudera-scm:cloudera-scm /etc/cloudera-scm-agent/*
 
@@ -110,14 +111,14 @@ fi
 # SSH key file required for agents to communicate to Cloudera Manager
 echo "....$(date +"%T") updating keystore and truststore"
 sudo mkdir -p /opt/cloudera/security/x509/
-scp $MN0_HOSTNAME:/opt/cloudera/security/x509/agents.pem /tmp/edgefiles/
+scp $ssh_opt $MN0_HOSTNAME:/opt/cloudera/security/x509/agents.pem /tmp/edgefiles/
 sudo mv /tmp/edgefiles/agents.pem /opt/cloudera/security/x509/
 sudo chown root:root /opt/cloudera/security/x509/agents.pem
 
 
 # Truststore
 sudo mkdir -p /opt/cloudera/security/jks/
-scp $MN0_HOSTNAME:/opt/cloudera/security/jks/$CLUSTER.truststore /tmp/edgefiles/
+scp $ssh_opt $MN0_HOSTNAME:/opt/cloudera/security/jks/$CLUSTER.truststore /tmp/edgefiles/
 sudo mv /tmp/edgefiles/$CLUSTER.truststore /opt/cloudera/security/jks/
 sudo chown root:root /opt/cloudera/security/jks/$CLUSTER.truststore
 

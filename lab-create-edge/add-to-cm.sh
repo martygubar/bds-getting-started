@@ -12,11 +12,31 @@ function call-cm() {
     eval $_resultvar="'$myresult'"
     #echo $retval
 }
-# get hosts
-# call-cm GET clusters/$CLUSTER/hosts ""
-
 # add host
-#PRIVATE_KEY_STR=$(cat $PRIVATE_KEY | tr -d '\n')
+echo "....$(date +"%T") adding host $EDGE_FQDN Cloudera Manager"
+call-cm addhost POST hosts \
+    "{ \"items\": [
+        { \"ipAddress\": \"$EDGE_IP\", 
+          \"hostId\": \"$EDGE_FQDN\", 
+          \"hostname\": \"$EDGE_FQDN\", 
+          \"clusterRef\" : {
+              \"clusterName\" : \"$CLUSTER\"
+             }
+      }
+    ] }" 
+
+echo "....$(date +"%T") snoozing a little"
+sleep 5
+
+echo "....$(date +"%T") adding host $EDGE_FQDN to cluster"
+call-cm addclusterhost POST clusters/$CLUSTER/hosts \
+    "{ \"items\": [
+    { \"hostId\": \"$EDGE_FQDN\", \"hostname\": \"$EDGE_FQDN\" }
+    ] }" 
+
+echo $addclusterhost
+echo "....$(date +"%T") snoozing a little"
+sleep 15
 
 # Get the CDH Parcel information for the currently activated CDH version
 # This parcel will then be distributed to the edge node.
