@@ -24,6 +24,20 @@ echo "Host $MN0_HOSTNAME
    IdentityFile $PRIVATE_KEY" >> ~opc/.ssh/config
 chmod 644 ~opc/.ssh/config
 
+echo "....$(date +"%T") update /etc/hosts as workaround for networking issue"
+sudo cp /etc/hosts /etc/hosts.`date +%F-%H-%M-%S`
+
+clusterhost=`ssh $ssh_opt -i $PRIVATE_KEY $CM_IP "hostname | tr -d '[:space:]'"`
+clusterhost=$clusterhost". $clusterhost"
+etchosts="$CM_IP $clusterhost"
+grep -qxF "$etchosts" /etc/hosts || echo $etchosts | sudo tee -a /etc/hosts
+
+# Add master node to /etc/hosts
+clusterhost=`ssh $ssh_opt -i $PRIVATE_KEY $MN0_IP "hostname | tr -d '[:space:]'"`
+clusterhost=$clusterhost". $clusterhost" 
+etchosts="$MN0_IP $clusterhost"
+grep -qxF "$etchosts" /etc/hosts || echo $etchosts | sudo tee -a /etc/hosts
+
 # Copy the private key for connecting to bastion to the master
 scp $ssh_opt -i $PRIVATE_KEY $PRIVATE_KEY ${MN0_IP}:/home/opc/.ssh/
 
@@ -129,5 +143,3 @@ sudo systemctl enable cloudera-scm-agent
 
 echo "$(date +"%T") finished host setup."
 ./add-to-cm.sh
-
-
