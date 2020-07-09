@@ -12,21 +12,29 @@ function call-cm() {
     eval $_resultvar="'$myresult'"
     #echo $retval
 }
-# add host
-echo "....$(date +"%T") adding host $EDGE_FQDN Cloudera Manager"
-call-cm addhost POST hosts \
-    "{ \"items\": [
-        { \"ipAddress\": \"$EDGE_IP\", 
-          \"hostId\": \"$EDGE_FQDN\", 
-          \"hostname\": \"$EDGE_FQDN\", 
-          \"clusterRef\" : {
-              \"clusterName\" : \"$CLUSTER\"
-             }
-      }
-    ] }" 
 
-echo "....$(date +"%T") snoozing a little"
-sleep 5
+echo "....$(date +"%T") check if host $EDGE_FQDN is managed by clouder manager"
+call-cm allhosts GET hosts
+hostName=`echo $allhosts | jq --arg EDGE_FQDN "$EDGE_FQDN" '.items[] | select(.hostname==$EDGE_FQDN)'`
+
+# if hostname isn't in the list - add it
+if [ -z "$hostName" ]
+then
+  echo "....$(date +"%T") adding host $EDGE_FQDN Cloudera Manager"
+  call-cm addhost POST hosts \
+      "{ \"items\": [
+          { \"ipAddress\": \"$EDGE_IP\", 
+            \"hostId\": \"$EDGE_FQDN\", 
+            \"hostname\": \"$EDGE_FQDN\", 
+            \"clusterRef\" : {
+                \"clusterName\" : \"$CLUSTER\"
+              }
+        }
+      ] }" 
+
+  echo "....$(date +"%T") snoozing a little"
+  sleep 5
+fi
 
 echo "....$(date +"%T") adding host $EDGE_FQDN to cluster"
 call-cm addclusterhost POST clusters/$CLUSTER/hosts \
@@ -34,7 +42,7 @@ call-cm addclusterhost POST clusters/$CLUSTER/hosts \
     { \"hostId\": \"$EDGE_FQDN\", \"hostname\": \"$EDGE_FQDN\" }
     ] }" 
 
-echo $addclusterhost
+# echo $addclusterhost
 echo "....$(date +"%T") snoozing a little"
 sleep 15
 
@@ -51,6 +59,7 @@ echo "....$(date +"%T") Running CDH Version:  $cdhVersion"
 ####################
 
 # Download CDH parcel
+echo "$(date +"%T") ....begin parcel download"
 call-cm downloading POST clusters/$CLUSTER/parcels/products/CDH/versions/$cdhVersion/commands/startDownload
 
 if [ $? -ne 0 ]; then 
@@ -63,7 +72,14 @@ fi
 for i in $(seq 1 90)
 do
   call-cm downloadstat GET clusters/$CLUSTER/parcels/products/CDH/versions/$cdhVersion
+  
+  echo "Try number $i"
+  echo .
+  echo $downloadstat
+
   downloadstat=`echo $downloadstat | jq -r '.stage'` 
+  echo "stage=$downloadstat"
+  
   if [ "$downloadstat" = "DOWNLOADED" ]; then
     curdat=`date`
     echo -e "....$(date +"%T") Parcel download finished after $((10*$i)) seconds"
@@ -77,17 +93,14 @@ do
       curdat=`date`
       echo -e "$(date +"%T") Parcel is $downloadstat after $((10*$i)) seconds. Skipping Download"
       break
-    else
+    elif [ $i -eq 90 ]; then
       echo -e "$(date +"%T") Could not perform parcel download properly after $((10*$i)) seconds."
+      echo "$(date +"%T") Parcel download timed out."
       exit 1
     fi
   fi
-  echo -n .
-  if [ $i -eq 90 ]; then
-    /bin/echo "$(date +"%T") Parcel download timed out."
-    exit 1
-  fi
-  /bin/sleep 10
+  
+  sleep 10
 done
 
 #########################
@@ -121,17 +134,13 @@ do
       curdat=`date`
       echo -e "...$(date +"%T") parcel is $distributestat after $((10*$i)) seconds. Skipping Distribution"
       break
-    else
+    elif [ $i -eq 180 ]; then
       echo -e "$(date +"%T") Could not perform parcel distribution properly after $((10*$i)) seconds."
+      echo "$(date +"%T") Parcel distribution timed out."
       exit 1
     fi
   fi
-  echo -n .
-  if [ $i -eq 180 ]; then
-    /bin/echo "$(date +"%T") Parcel distribution timed out."
-    exit 1
-  fi
-  /bin/sleep 10
+  sleep 10
 done
 
 ########################
@@ -156,15 +165,12 @@ do
     curdat=`date`
     echo -e "...$(date +"%T") parcel activation finished after $((5*$i)) seconds"
     break
-  elif [ "$activatestat" != "ACTIVATING" ]; then
+  elif [ "$activatestat" != "ACTIVATING" && $i -eq 120 ]; then
     echo -e "$(date +"%T") Could not perform parcel activation properly after $((5*$i)) seconds."
-    exit 1
-  fi
-  echo -n .
-  if [ $i -eq 120 ]; then
     echo "$(date +"%T") Parcel activation timed out."
     exit 1
   fi
+  
 done
 echo "$(date +"%T") end parcel deployment"
 

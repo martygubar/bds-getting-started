@@ -1,10 +1,10 @@
 # Update vars below to match your environment
-export CLUSTER="martyg"
-export MN0_HOSTNAME="martygmn0"  # first master node
-export MN0_IP="10.0.0.42"
-export CM_IP="10.0.0.41"  # first utility node
+export CLUSTER="devint"
+export MN0_HOSTNAME="devintmn0"  # first master node
+export MN0_IP="10.0.0.5"
+export CM_IP="10.0.0.2"  # first utility node
 export CM_ADMIN_USER=admin
-export CM_ADMIN_PASSWORD=Welcome1!
+export CM_ADMIN_PASSWORD=letsintegrateBDS1!
 export PRIVATE_KEY="/home/opc/.ssh/bdsKey"  # private key used to connect to cluster
 export SUBNET_CIDR="10.0.0.0/24"    # customer subnet CIDR block.  Will be used to update firewall rules
 
