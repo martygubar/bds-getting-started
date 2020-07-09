@@ -12,13 +12,15 @@ ls $TARGET_DIR
 
 # download files from S3 and unzip
 
+cd $TARGET_DIR
 for file in $FILE_LIST 
 do
    s3obj="https://s3.amazonaws.com/tripdata/$file"
    echo "... downloading $s3obj to $TARGET_DIR"
-   wget --quiet --output-file setup-workshop-data.log -nc -c $s3obj -P $TARGET_DIR
+ #  wget --quiet --output-file setup-workshop-data.log -nc -c $s3obj -P $TARGET_DIR
+   curl --remote-name --silent $s3obj 
    echo "... extracting $file to $TARGET_DIR"
-   unzip $TARGET_DIR/$file -d $TARGET_DIR
+   unzip -o $TARGET_DIR/$file -d $TARGET_DIR
 done
 
 echo "Directory listing AFTER download and extraction:"

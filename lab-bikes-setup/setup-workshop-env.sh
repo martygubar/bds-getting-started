@@ -3,7 +3,7 @@
 
 export COMPARTMENT_OCID="ocid1.compartment.oc1..aaaaaaaa27osxvjegj2ai6qivvomc7xy5kryfq26zbuv4nlcr42rhdeonsaq"
 export BUCKET_NAME="cloudsqlworkshop"
-export TARGET_DIR="/tmp/"
+export TARGET_DIR="/tmp"
 export FILE_HOST="https://s3.amazonaws.com/tripdata/"
 export FILE_LIST="
 JC-201901-citibike-tripdata.csv.zip
