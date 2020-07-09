@@ -29,7 +29,7 @@ ls $TARGET_DIR
 echo "... Upload csv files to /data/biketrips"
 hadoop fs -mkdir -p /data/biketrips
 hadoop fs -chmod 777 /data/biketrips
-hadoop fs -put $TARGET_DIR/JC-*.csv /data/biketrips/
+hadoop fs -put -f $TARGET_DIR/JC-*.csv /data/biketrips/
 
 echo "... create Hive tables in database BIKES"
 
