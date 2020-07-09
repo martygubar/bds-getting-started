@@ -5,9 +5,9 @@
 
 echo "Downloading TRIPS data from New York City’s Citi Bike bicycle sharing service"
 echo "You can view the Citi Bike licensing information here:  https://www.citibikenyc.com/data-sharing-policy"
-echo "Copying to $TARGET_DIR"  
+echo "... copying to $TARGET_DIR"  
 
-echo "Directory listing prior to download:"
+echo "... directory listing prior to download:"
 ls $TARGET_DIR
 
 # download files from S3 and unzip
@@ -15,21 +15,21 @@ ls $TARGET_DIR
 for file in $FILE_LIST 
 do
    s3obj="https://s3.amazonaws.com/tripdata/$file"
-   echo "...downloading $s3obj to $TARGET_DIR"
+   echo "... downloading $s3obj to $TARGET_DIR"
    wget --quiet --output-file setup-workshop-data.log -nc -c $s3obj -P $TARGET_DIR
-   echo "...extracting $file to $TARGET_DIR"
+   echo "... extracting $file to $TARGET_DIR"
    unzip $TARGET_DIR/$file -d $TARGET_DIR
 done
 
 echo "Directory listing AFTER download and extraction:"
 ls $TARGET_DIR
 
-echo "Upload csv files to /data/biketrips"
+echo "... Upload csv files to /data/biketrips"
 hadoop fs -mkdir -p /data/biketrips
 hadoop fs -chmod 777 /data/biketrips
 hadoop fs -put $TARGET_DIR/JC-*.csv /data/biketrips/
 
-echo "Create Hive table"
+echo "... create Hive tables in database BIKES"
 
 hive -e "
 create database if not exists bikes;
