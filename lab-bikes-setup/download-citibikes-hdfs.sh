@@ -3,33 +3,60 @@
 
 . setup-workshop-env.sh
 
-echo "Downloading TRIPS data from New York City’s Citi Bike bicycle sharing service"
-echo "You can view the Citi Bike licensing information here:  https://www.citibikenyc.com/data-sharing-policy"
-echo "... copying to $TARGET_DIR"  
+export FILE_HOST="https://s3.amazonaws.com/tripdata/"
+export FILE_LIST="
+JC-201901-citibike-tripdata.csv.zip
+JC-201902-citibike-tripdata.csv.zip
+JC-201903-citibike-tripdata.csv.zip
+JC-201904-citibike-tripdata.csv.zip
+JC-201905-citibike-tripdata.csv.zip
+JC-201906-citibike-tripdata.csv.zip
+JC-201907-citibike-tripdata.csv.zip
+JC-201908-citibike-tripdata.csv.zip
+JC-201909-citibike-tripdata.csv.zip
+JC-201910-citibike-tripdata.csv.zip
+JC-201911-citibike-tripdata.csv.zip
+JC-201912-citibike-tripdata.csv.zip"
 
-echo "... directory listing prior to download:"
-ls $TARGET_DIR
+echo "Downloading bike rental data from New York City’s Citi Bike bicycle sharing service"
+echo "You can view the Citi Bike licensing information here:  https://www.citibikenyc.com/data-sharing-policy"
+
+echo "... retrieving station information from Citi Bikes feed"
+curl https://gbfs.citibikenyc.com/gbfs/es/station_information.json | jq -c '.data.stations[]' > $TARGET_DIR/stations.json
+
+echo "... copy the station JSON data to hdfs: /data/stations/"
+hadoop fs -mkdir -p /data/stations
+hadoop fs -put -f $TARGET_DIR/stations.json /data/stations/
+
+echo "... retrieving detail trip data to $TARGET_DIR"
+
+cd $TARGET_DIR
+mkdir -p $TARGET_DIR/csv_tmp
+rm $TARGET_DIR/csv_tmp/*
 
 # download files from S3 and unzip
 
-cd $TARGET_DIR
 for file in $FILE_LIST 
 do
    s3obj="https://s3.amazonaws.com/tripdata/$file"
    echo "... downloading $s3obj to $TARGET_DIR"
- #  wget --quiet --output-file setup-workshop-data.log -nc -c $s3obj -P $TARGET_DIR
    curl --remote-name --silent $s3obj 
    echo "... extracting $file to $TARGET_DIR"
-   unzip -o $TARGET_DIR/$file -d $TARGET_DIR
+   unzip -o $TARGET_DIR/$file -d $TARGET_DIR/csv_tmp
 done
 
-echo "Directory listing AFTER download and extraction:"
-ls $TARGET_DIR
+# Remove first header line from each file
+for file in $TARGET_DIR/csv_tmp/*.csv
+do
+  echo "... removing header row from $file"
+  sed -i 1d $file
+done
 
 echo "... Upload csv files to /data/biketrips"
 hadoop fs -mkdir -p /data/biketrips
 hadoop fs -chmod 777 /data/biketrips
-hadoop fs -put -f $TARGET_DIR/JC-*.csv /data/biketrips/
+hadoop fs -rm /data/biketrips/*
+hadoop fs -put -f $TARGET_DIR/csv_tmp/JC-*.csv /data/biketrips/
 
 echo "... create Hive tables in database BIKES"
 
@@ -58,10 +85,11 @@ CREATE EXTERNAL TABLE bikes.trips_ext (
   ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
   STORED AS TEXTFILE
   location '/data/biketrips/'
-  tblproperties ('skip.header.line.count'='1');
+;
   
 create table bikes.trips ( 
   trip_duration int,
+  start_month string,
   start_time string,
   start_hour int,
   stop_time  string,
@@ -78,7 +106,7 @@ create table bikes.trips (
   birth_year int,
   gender int	
 )
-PARTITIONED BY (start_month string)
+PARTITIONED BY (p_start_month string)
 STORED AS PARQUET  
 ;
 
@@ -88,6 +116,7 @@ FROM bikes.trips_ext t
 INSERT OVERWRITE TABLE bikes.trips PARTITION(start_month) 
 SELECT 
   trip_duration,
+  substr(start_time, 1, 7),
   start_time,
   substr(start_time, 12, 2),
   stop_time,
