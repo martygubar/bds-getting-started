@@ -12,3 +12,4 @@ wget https://raw.githubusercontent.com/martygubar/bds-getting-started/master/lab
 wget https://raw.githubusercontent.com/martygubar/bds-getting-started/master/lab-bikes-setup/download-citibikes-hdfs.sh
 wget https://raw.githubusercontent.com/martygubar/bds-getting-started/master/lab-bikes-setup/download-weather-hdfs.sh
 wget https://raw.githubusercontent.com/martygubar/bds-getting-started/master/lab-bikes-setup/download-weather-objstore.sh
+chmod +x *.sh

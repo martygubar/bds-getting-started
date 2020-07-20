@@ -5,7 +5,7 @@
 # Lookup of postal code based on lat/lon
 #http://maps.us.oracle.com/geocoder/xmlreq.html
 
-. setup-workshop-env.sh
+. env.sh
 
 # List buckets
 # oci os bucket list --compartment-id $COMPARTMENT_OCID --name cloudsqlworkshop

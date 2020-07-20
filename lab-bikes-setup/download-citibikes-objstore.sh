@@ -1,7 +1,7 @@
 #!/bin/bash
 # Download trips data and upload to boject storage
 
-. setup-workshop-env.sh
+. env.sh
 
 export FILE_HOST="https://s3.amazonaws.com/tripdata/"
 export FILE_LIST="

@@ -1,7 +1,7 @@
 #!/bin/bash
 # Download trips data and setup hive
 
-. setup-workshop-env.sh
+. env.sh
 
 export FILE_HOST="https://s3.amazonaws.com/tripdata/"
 export FILE_LIST="
@@ -113,7 +113,7 @@ STORED AS PARQUET
 set hive.exec.dynamic.partition=true;
 set hive.exec.dynamic.partition.mode=nonstrict;
 FROM bikes.trips_ext t
-INSERT OVERWRITE TABLE bikes.trips PARTITION(start_month) 
+INSERT OVERWRITE TABLE bikes.trips PARTITION(p_start_month) 
 SELECT 
   trip_duration,
   substr(start_time, 1, 7),
