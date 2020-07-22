@@ -8,7 +8,7 @@
 cd $TARGET_DIR
 echo "Adding weather data"
 echo "... download weather data"
-curl -o "wweather-newark-airport.csv" "https://raw.githubusercontent.com/martygubar/bds-getting-started/master/lab-bikes-setup/weather-newark-airport.csv"
+curl -o "weather-newark-airport.csv" "https://raw.githubusercontent.com/martygubar/bds-getting-started/master/lab-bikes-setup/weather-newark-airport.csv"
 echo "... remove header row"
 sed -i 1d weather-newark-airport.csv
 
@@ -30,8 +30,8 @@ CREATE EXTERNAL TABLE weather_ext (
   precipitation float,
   snow float,
   snowdepth float,
-  temp_max int,
-  temp_min int
+  temp_max smallint,
+  temp_min smallint
    
  ) 
   ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
