@@ -23,7 +23,7 @@ create database if not exists weather;
 DROP TABLE IF EXISTS weather.weather_ext;
 
 
-CREATE EXTERNAL TABLE weather_ext (
+CREATE EXTERNAL TABLE weather.weather_ext (
   location string,
   reported_date  string,
   wind_avg float,

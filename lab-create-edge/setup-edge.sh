@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# Run this on the edge node
-source /home/opc/env.sh 
 # Set env vars that describe the cluster configuration
 . env.sh
 ssh_opt="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
