@@ -31,11 +31,11 @@ CREATE EXTERNAL TABLE weather.weather_ext (
   snow float,
   snowdepth float,
   temp_max smallint,
-  temp_min smallint 
-   
+  temp_min smallint    
  ) 
-  ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+  ROW FORMAT DELIMITED
+  FIELDS TERMINATED BY ','
   STORED AS TEXTFILE
-  location '/data/weather/'
+  location '/data/weather/';
 ;"
 
