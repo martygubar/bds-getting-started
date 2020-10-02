@@ -56,7 +56,7 @@ Click **Create Cluster**.  Specify the cluster properties:
     * Select **Deploy Oracle-managed Service gateway and NAT gateway (Quick Start)**
 * **Additional Options**
     * Upload your public key.  The associated private will be used to make SSH connections to the cluster
-* **Click Create**
+* Click **Create Cluster**
 
 ### Monitor Cluster Creation
 The cluster creation will take some time.  You can monitor its progress at any time:
