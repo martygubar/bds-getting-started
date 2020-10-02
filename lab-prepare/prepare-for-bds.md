@@ -159,7 +159,7 @@ openssl rsa -pubout -in ~/.oci/oci_api_key.pem -out ~/.oci/oci_api_key_public.pe
 * Navigate to the IAM user that will be making the API call.
 * Click **API Keys** on the left side of the page
 * Click **Add Public Key**
-* Copy the entire contents of the public key `~/.oci/oci_api_key_public.pem' into the **Public Key** field
+* Copy the entire contents of the public key `~/.oci/oci_api_key_public.pem` into the **Public Key** field
 * Click **Add**
 * Copy the generated **Fingerprint** and save it to a safe place
 
