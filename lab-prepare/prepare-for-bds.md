@@ -53,7 +53,7 @@ In this section, you will set up the Virtal Cloud Network that will be used by y
 
 ### Create a VCN
 * In the OCI Console navigation menu, select **Networking >> Virtual Cloud Networks**
-* Click **Networking Quickstart**
+* Click **Start VCN Wizard**
 * Select **VCN with Internet Connectivity**.  Click **Start Workflow**
 * Basic Information
     * **VCN Name:** `mynetwork`
