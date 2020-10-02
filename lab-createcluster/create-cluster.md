@@ -53,8 +53,7 @@ Click **Create Cluster**.  Specify the cluster properties:
     * **Compartment:** `mycompartment`
     * **Choose VCN:** `mynetwork`
     * **Choose Subnet:** `Public Subnet-mynetwork`
-    * Select **Enable NAT Gateway**
-    * **CIDR Block:** `10.200.0.0/16` (private network used for intra-cluster communications. e.g. 10.200.0.0/16)
+    * Select **Deploy Oracle-managed Service gateway and NAT gateway (Quick Start)**
 * **Additional Options**
     * Upload your public key.  The associated private will be used to make SSH connections to the cluster
 * **Click Create**
