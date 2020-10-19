@@ -28,10 +28,10 @@ echo "... copy the station JSON data to hdfs: $HDFS_ROOT/stations/"
 hadoop fs -mkdir -p $HDFS_ROOT/stations
 hadoop fs -put -f $TARGET_DIR/stations.json $HDFS_ROOT/stations/
 
+echo "... create local directory $TARGET_DIR, $TARGET_DIR/csv_tmp"
 echo "... retrieving detail trip data to $TARGET_DIR"
-
-cd $TARGET_DIR
 mkdir -p $TARGET_DIR/csv_tmp
+cd $TARGET_DIR
 rm $TARGET_DIR/csv_tmp/*
 
 # download files from S3 and unzip
