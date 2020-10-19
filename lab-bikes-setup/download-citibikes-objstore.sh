@@ -34,14 +34,13 @@ oci os object put --content-type application/json --force --bucket-name $BUCKET_
 echo "... retrieving detail trip data"
 echo "... copying to $TARGET_DIR"  
 echo "... directory listing prior to download:"
+mkdir -p $TARGET_DIR/csv_tmp
+cd $TARGET_DIR
+rm $TARGET_DIR/csv_tmp/*
+
 ls $TARGET_DIR
 
 # download files from S3 and unzip
-
-cd $TARGET_DIR
-mkdir -p $TARGET_DIR/csv_tmp
-rm $TARGET_DIR/csv_tmp/*
-
 for file in $FILE_LIST 
 do
    s3obj="https://s3.amazonaws.com/tripdata/$file"
