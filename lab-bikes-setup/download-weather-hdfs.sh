@@ -6,22 +6,22 @@
 # oci os bucket list --compartment-id $COMPARTMENT_OCID --name cloudsqlworkshop
 # Create Bucket
 cd $TARGET_DIR
-echo "Adding weather data"
+echo "Adding weather data for Newark Airport"
 echo "... download weather data"
 curl -o "weather-newark-airport.csv" "https://raw.githubusercontent.com/martygubar/bds-getting-started/master/lab-bikes-setup/weather-newark-airport.csv"
+
 echo "... remove header row"
 sed -i 1d weather-newark-airport.csv
 
 echo "... creating HDFS directory"
 hadoop fs -mkdir -p $HDFS_ROOT/weather
 echo "... upload file"
-hadoop fs -put -f weather-newark-airport.csv /data/weather/
+hadoop fs -put -f weather-newark-airport.csv $HDFS_ROOT/weather/
 
 echo "... create hive table"
 hive -e "
 create database if not exists weather;
 DROP TABLE IF EXISTS weather.weather_ext;
-
 
 CREATE EXTERNAL TABLE weather.weather_ext (
   location string,
@@ -39,3 +39,4 @@ CREATE EXTERNAL TABLE weather.weather_ext (
   location '/data/weather/';
 ;"
 
+echo "Weather data loaded."
