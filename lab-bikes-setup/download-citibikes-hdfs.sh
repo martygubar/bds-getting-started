@@ -18,15 +18,15 @@ JC-201910-citibike-tripdata.csv.zip
 JC-201911-citibike-tripdata.csv.zip
 JC-201912-citibike-tripdata.csv.zip"
 
-echo "Downloading bike rental data from New York City’s Citi Bike bicycle sharing service"
+echo "Downloading bike rental data from NYC Bike Share, LLC and Jersey City Bike Share data sharing service."
 echo "You can view the Citi Bike licensing information here:  https://www.citibikenyc.com/data-sharing-policy"
 
 echo "... retrieving station information from Citi Bikes feed"
 curl https://gbfs.citibikenyc.com/gbfs/es/station_information.json | jq -c '.data.stations[]' > $TARGET_DIR/stations.json
 
-echo "... copy the station JSON data to hdfs: /data/stations/"
-hadoop fs -mkdir -p /data/stations
-hadoop fs -put -f $TARGET_DIR/stations.json /data/stations/
+echo "... copy the station JSON data to hdfs: $HDFS_ROOT/stations/"
+hadoop fs -mkdir -p $HDFS_ROOT/stations
+hadoop fs -put -f $TARGET_DIR/stations.json $HDFS_ROOT/stations/
 
 echo "... retrieving detail trip data to $TARGET_DIR"
 
@@ -52,11 +52,11 @@ do
   sed -i 1d $file
 done
 
-echo "... Upload csv files to /data/biketrips"
-hadoop fs -mkdir -p /data/biketrips
-hadoop fs -chmod 777 /data/biketrips
-hadoop fs -rm /data/biketrips/*
-hadoop fs -put -f $TARGET_DIR/csv_tmp/JC-*.csv /data/biketrips/
+echo "... Upload csv files to $HDFS_ROOT/biketrips"
+hadoop fs -rm -r $HDFS_ROOT/biketrips
+hadoop fs -mkdir -p $HDFS_ROOT/biketrips
+hadoop fs -chmod 777 $HDFS_ROOT/biketrips
+hadoop fs -put -f $TARGET_DIR/csv_tmp/JC-*.csv $HDFS_ROOT/biketrips/
 
 echo "... create Hive tables in database BIKES"
 
@@ -84,7 +84,7 @@ CREATE EXTERNAL TABLE bikes.trips_ext (
  ) 
   ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
   STORED AS TEXTFILE
-  location '/data/biketrips/'
+  location '$HDFS_ROOT/biketrips/'
 ;
   
 create table bikes.trips ( 
