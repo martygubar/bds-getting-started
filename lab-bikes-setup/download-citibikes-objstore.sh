@@ -18,10 +18,10 @@ JC-201910-citibike-tripdata.csv.zip
 JC-201911-citibike-tripdata.csv.zip
 JC-201912-citibike-tripdata.csv.zip"
 
-echo "Downloading bike rental data from New York City’s Citi Bike bicycle sharing service"
+echo "Downloading bike rental data from NYC Bike Share, LLC and Jersey City Bike Share data sharing service."
 echo "You can view the Citi Bike licensing information here:  https://www.citibikenyc.com/data-sharing-policy"
 
-echo "... creating bucket $BUCKET_NAME"
+echo "... creating bucket $BUCKET_NAME in your home region."
 oci os bucket create --compartment-id $COMPARTMENT_OCID --name $BUCKET_NAME
 
 echo "... retrieving station information from Citi Bikes feed"

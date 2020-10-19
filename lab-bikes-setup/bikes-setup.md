@@ -11,6 +11,7 @@ Download data:
 
 * HDFS
 ```
+wget https://raw.githubusercontent.com/martygubar/bds-getting-started/master/lab-bikes-setup/env.sh
 wget https://raw.githubusercontent.com/martygubar/bds-getting-started/master/lab-bikes-setup/download-all-hdfs-data.sh
 chmod +x *.sh
 ```
@@ -18,9 +19,7 @@ chmod +x *.sh
 * object store
 ```
 wget https://raw.githubusercontent.com/martygubar/bds-getting-started/master/lab-bikes-setup/env.sh
-wget https://raw.githubusercontent.com/martygubar/bds-getting-started/master/lab-bikes-setup/download-weather-objstore.sh
-wget https://raw.githubusercontent.com/martygubar/bds-getting-started/master/lab-bikes-setup/download-citibikes-objstore.sh
-
+wget https://raw.githubusercontent.com/martygubar/bds-getting-started/master/lab-bikes-setup/download-all-objstore.sh
 chmod +x *.sh
 ```
 
