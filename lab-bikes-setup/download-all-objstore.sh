@@ -17,3 +17,7 @@ echo "Running scripts."
 
 
 echo "Done."
+compartment_name=`oci iam compartment get --compartment-id $COMPARTMENT_OCID | jq -r '.data.name'`
+echo "Data can be found in:"
+echo "   Compartment:  $compartment_name"
+echo "        Bucket:  $BUCKET_NAME"
