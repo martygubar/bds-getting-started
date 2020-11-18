@@ -5,7 +5,7 @@
 export COMPARTMENT_OCID=""
 
 # Object Store:  Bucket where data will be copied
-export BUCKET_NAME="livelabs"
+export BUCKET_NAME="training"
 
 # HDFS:  root directory in HDFS for the data
 export HDFS_ROOT="/data"
