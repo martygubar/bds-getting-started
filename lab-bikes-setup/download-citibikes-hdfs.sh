@@ -1,7 +1,14 @@
 #!/bin/bash
 # Download trips data and setup hive
 
-. env.sh
+
+SCRIPT_FULL_PATH=$(dirname "$0")
+. $SCRIPT_FULL_PATH/env.sh
+
+echo "**********************************************************"
+echo "* Writing data to $TARGET_DIR on the local file system"
+echo "* Writing data to $HDFS_DIR HDFS directory"
+echo "**********************************************************"
 
 export FILE_HOST="https://s3.amazonaws.com/tripdata/"
 export FILE_LIST="
