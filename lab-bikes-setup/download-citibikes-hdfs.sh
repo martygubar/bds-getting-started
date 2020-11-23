@@ -7,7 +7,7 @@ SCRIPT_FULL_PATH=$(dirname "$0")
 
 echo "**********************************************************"
 echo "* Writing data to $TARGET_DIR on the local file system"
-echo "* Writing data to $HDFS_DIR HDFS directory"
+echo "* Writing data to $HDFS_ROOT HDFS directory"
 echo "**********************************************************"
 
 export FILE_HOST="https://s3.amazonaws.com/tripdata/"
@@ -29,16 +29,16 @@ echo "Downloading bike rental data from NYC Bike Share, LLC and Jersey City Bike
 echo "You can view the Citi Bike licensing information here:  https://www.citibikenyc.com/data-sharing-policy"
 
 echo "... retrieving station information from Citi Bikes feed"
+echo "... create local directory $TARGET_DIR, $TARGET_DIR/csv_tmp"
+mkdir -p $TARGET_DIR/csv_tmp
+cd $TARGET_DIR
 curl https://gbfs.citibikenyc.com/gbfs/es/station_information.json | jq -c '.data.stations[]' > $TARGET_DIR/stations.json
 
 echo "... copy the station JSON data to hdfs: $HDFS_ROOT/stations/"
 hadoop fs -mkdir -p $HDFS_ROOT/stations
 hadoop fs -put -f $TARGET_DIR/stations.json $HDFS_ROOT/stations/
 
-echo "... create local directory $TARGET_DIR, $TARGET_DIR/csv_tmp"
 echo "... retrieving detail trip data to $TARGET_DIR"
-mkdir -p $TARGET_DIR/csv_tmp
-cd $TARGET_DIR
 rm $TARGET_DIR/csv_tmp/*
 
 # download files from S3 and unzip
