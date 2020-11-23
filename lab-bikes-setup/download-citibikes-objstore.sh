@@ -1,7 +1,13 @@
 #!/bin/bash
 # Download trips data and upload to boject storage
 
-. env.sh
+SCRIPT_FULL_PATH=$(dirname "$0")
+. $SCRIPT_FULL_PATH/env.sh
+
+echo "**********************************************************"
+echo "* Writing data to $TARGET_DIR on the local file system"
+echo "* Writing data to $BUCKET_NAME bucket"
+echo "**********************************************************"
 
 export FILE_HOST="https://s3.amazonaws.com/tripdata/"
 export FILE_LIST="
@@ -24,6 +30,11 @@ echo "You can view the Citi Bike licensing information here:  https://www.citibi
 echo "... creating bucket $BUCKET_NAME in your home region."
 oci os bucket create --compartment-id $COMPARTMENT_OCID --name $BUCKET_NAME
 
+echo "... create local directory $TARGET_DIR, $TARGET_DIR/csv_tmp"
+mkdir -p $TARGET_DIR/csv_tmp
+cd $TARGET_DIR
+rm $TARGET_DIR/csv_tmp/*
+
 echo "... retrieving station information from Citi Bikes feed"
 curl https://gbfs.citibikenyc.com/gbfs/es/station_information.json | jq -c '.data.stations[]' > $TARGET_DIR/stations.json
 
@@ -34,9 +45,6 @@ oci os object put --content-type application/json --force --bucket-name $BUCKET_
 echo "... retrieving detail trip data"
 echo "... copying to $TARGET_DIR"  
 echo "... directory listing prior to download:"
-mkdir -p $TARGET_DIR/csv_tmp
-cd $TARGET_DIR
-rm $TARGET_DIR/csv_tmp/*
 
 ls $TARGET_DIR
 
