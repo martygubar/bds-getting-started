@@ -8,7 +8,7 @@
 cd $TARGET_DIR
 echo "Adding weather data for Newark Airport"
 echo "... download weather data"
-curl -o "weather-newark-airport.csv" "https://raw.githubusercontent.com/martygubar/bds-getting-started/master/lab-bikes-setup/weather-newark-airport.csv"
+curl -o "weather-newark-airport.csv" "https://objectstorage.us-ashburn-1.oraclecloud.com/p/w2Hu5LewkIuEhbl0-G9xK61WOMg0rVmm0H3pwn7NR6Arr8T_O1zapUgd1nI_8Rt6/n/c4u03/b/data-management-library-files/o/Getting%20Started%20with%20Oracle%20Big%20Data%20Service%20(non-HA)/weather-newark-airport.csv"
 
 echo "... remove header row"
 sed -i 1d weather-newark-airport.csv

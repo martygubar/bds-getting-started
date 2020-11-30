@@ -11,15 +11,15 @@ Download data:
 
 * HDFS
 ```
-wget https://raw.githubusercontent.com/martygubar/bds-getting-started/master/lab-bikes-setup/env.sh
-wget https://raw.githubusercontent.com/martygubar/bds-getting-started/master/lab-bikes-setup/download-all-hdfs-data.sh
+wget https://objectstorage.us-ashburn-1.oraclecloud.com/p/x3p8hu-92jf0ypH_ZiVhUyS3L-zeQOiNzOn_o_wzVZajUG-8e_KVrtN1Pd6bxZhK/n/c4u03/b/data-management-library-files/o/Getting%20Started%20with%20Oracle%20Big%20Data%20Service%20(non-HA)/env.sh
+wget https://objectstorage.us-ashburn-1.oraclecloud.com/p/BxuET89f_2j5vJYY1MRc6iR2hovqATQrhOzwqBbu_0azwx3eLiRLDkLEQ42_nLaJ/n/c4u03/b/data-management-library-files/o/Getting%20Started%20with%20Oracle%20Big%20Data%20Service%20(non-HA)/download-all-hdfs-data.sh
 chmod +x *.sh
 ```
 
 * object store
 ```
-wget https://raw.githubusercontent.com/martygubar/bds-getting-started/master/lab-bikes-setup/env.sh
-wget https://raw.githubusercontent.com/martygubar/bds-getting-started/master/lab-bikes-setup/download-all-objstore.sh
+wget https://objectstorage.us-ashburn-1.oraclecloud.com/p/x3p8hu-92jf0ypH_ZiVhUyS3L-zeQOiNzOn_o_wzVZajUG-8e_KVrtN1Pd6bxZhK/n/c4u03/b/data-management-library-files/o/Getting%20Started%20with%20Oracle%20Big%20Data%20Service%20(non-HA)/env.sh
+wget https://objectstorage.us-ashburn-1.oraclecloud.com/p/Zwahcgh0XiqINjj4nak1bF91glbki8SieslQ9K3hqMQu8dTXX09IiRqYyce6AUte/n/c4u03/b/data-management-library-files/o/Getting%20Started%20with%20Oracle%20Big%20Data%20Service%20(non-HA)/download-all-objstore.sh
 chmod +x *.sh
 ```
 
