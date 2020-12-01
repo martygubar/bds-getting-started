@@ -12,3 +12,6 @@ export HDFS_ROOT="/data"
 
 # HDFS:  local target directory where files will be downloaded
 export TARGET_DIR="$HOME/Downloads"
+
+# Object store source prefix
+export SOURCE_PREFIX="https://objectstorage.us-phoenix-1.oraclecloud.com/n/oraclebigdatadb/b/workshop-data/o/bds-livelabs"
