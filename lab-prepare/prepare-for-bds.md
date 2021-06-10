@@ -53,8 +53,8 @@ In this section, you will set up the Virtal Cloud Network that will be used by y
 
 ### Create a VCN
 * In the OCI Console navigation menu, select **Networking >> Virtual Cloud Networks**
-* Click **Networking Quickstart**
-* Select **VCN with Internet Connectivity**.  Click **Start Workflow**
+* Click **Start VCN Wizard**
+* Select **VCN with Internet Connectivity**.  Click **Start VCN Wizard**
 * Basic Information
     * **VCN Name:** `mynetwork`
     * **Compartment:** `mycompartment`
@@ -159,7 +159,7 @@ openssl rsa -pubout -in ~/.oci/oci_api_key.pem -out ~/.oci/oci_api_key_public.pe
 * Navigate to the IAM user that will be making the API call.
 * Click **API Keys** on the left side of the page
 * Click **Add Public Key**
-* Copy the entire contents of the public key `~/.oci/oci_api_key_public.pem' into the **Public Key** field
+* Copy the entire contents of the public key `~/.oci/oci_api_key_public.pem` into the **Public Key** field
 * Click **Add**
 * Copy the generated **Fingerprint** and save it to a safe place
 
